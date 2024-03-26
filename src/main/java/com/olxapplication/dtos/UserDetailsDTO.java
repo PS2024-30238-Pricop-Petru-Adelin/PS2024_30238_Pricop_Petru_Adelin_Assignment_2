@@ -1,6 +1,7 @@
 package com.olxapplication.dtos;
 
 import com.olxapplication.entity.Announcement;
+import com.olxapplication.entity.RoleType;
 import lombok.*;
 
 import java.util.List;
@@ -20,5 +21,6 @@ public class UserDetailsDTO {
     private String lastName;
     private String email;
     private String password;
+    private String role;
     private List<String> announces;
 }

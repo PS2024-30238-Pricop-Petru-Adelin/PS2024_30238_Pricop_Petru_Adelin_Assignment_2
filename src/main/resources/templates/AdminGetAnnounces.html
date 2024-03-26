@@ -1,10 +1,369 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:text-align="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Announces List</title>
+    <style>
+        h1{text-align: center;
+        }
+        h2{text-align: center;
+        }
+        body {
+            font-family: "Britannic Bold";
+        (background-image: url('data:image/png;base64,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');
+            background-repeat: no-repeat;
+            background-attachment: scroll;
+            opacity: 0.5;)
+        background-size: 100% 100%;
+        }
+        table {
+            width: 95%;
+            margin: auto;
+            border-collapse: collapse;
+        }
+        th, td {
+            overflow: auto;
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #002e32;
+            color: #22dcd3;
+            font-size: 20px;
+            font-family: 'Courier New', monospace
+        }
+        tr:nth-child(even) {
+            background-color: #f7f7f7;
+        }
+        tr:hover {
+            background-color: #ddd;
+        }
+        .button {
+            display: inline-block;
+            border-radius: 4px;
+            background-color: #002e32;
+            border: none;
+            color: #22dcd3;
+            text-align: center;
+            font-size: 16px;
+            padding: 6px;
+            width: 95%;
+            height: 40px;
+            margin-left: 2.5%;
+            transition: all 0.5s;
+            cursor: pointer;
+        }
+
+        .button span {
+            cursor: pointer;
+            display: inline-block;
+            position: relative;
+            transition: 0.5s;
+        }
+
+        .button span:after {
+            content: '\00bb';
+            position: absolute;
+            opacity: 0;
+            top: 0;
+            right: -20px;
+            transition: 0.5s;
+        }
+
+        .button:hover span {
+            padding-right: 25px;
+        }
+
+        .button:hover span:after {
+            opacity: 1;
+            right: 0;
+        }
+        .button-delete span {
+            cursor: pointer;
+            display: inline-block;
+            position: relative;
+            transition: 0.5s;
+        }
+
+        .button-delete span:after {
+            content: '\00bb';
+            position: absolute;
+            opacity: 0;
+            top: 0;
+            right: -20px;
+            transition: 0.5s;
+        }
+
+        .button-delete:hover span {
+            padding-right: 25px;
+        }
+
+        .button-delete:hover span:after {
+            opacity: 1;
+            right: 0;
+        }
+        .updateBtn{
+            background-color: #4c7eaf;
+            color: white;
+            border: none;
+            padding: 3px 3px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 2px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+            height: 50%;
+            width: 100%;
+        }
+
+        /* The Modal (background) */
+        .modalInsert {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            padding-top: 100px; /* Location of the box */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+
+        .modalUpdate {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            padding-top: 100px; /* Location of the box */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+
+        /* Modal Content */
+        .modalInsert-content {
+            background-color: #a1e1d5;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            text-align: left;
+            width: 90%;
+        }
+
+        /* The Close Button */
+        .close1 {
+            color: #aaaaaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close1:hover,
+        .close1:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .close {
+            color: #aaaaaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .formField {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            width: 95%;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        input[type="text"], input[type="email"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #22dcd3;
+        }
+        input[type="submit"] {
+            background-color: #fb232a;
+            color: white;
+            border: none;
+            padding: 3px 3px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 2px 2px;
+            cursor: pointer;
+            height: 50%;
+            width: 100%;
+            border-radius: 5px;
+
+        }
+    </style>
 </head>
 <body>
+<h1>Registered users</h1>
+<br>
 
+<!--<form th:action="@{/announcement/insert}" method="get">-->
+<!--    <input class="button" style="vertical-align:middle" value="Register"/>-->
+<!--    <span>-->
+<!--</form> <br>-->
+<button id="insertBtn" class = "button" style="vertical-align:middle" ><span>Register new announcement</span></button><br>
+<div id="modalInsert" class="modalInsert">
+
+    <!-- Modal content -->
+    <div class="modalInsert-content">
+        <h2 class="modal-title" >Insert new announcement
+            <span class="close1">&times;</span>
+        </h2>
+        <form class="formField" th:action="@{/announcement/insert}" method="post" >
+            <label for="title">Title:</label>
+            <input type="text" id="title" name="title" required><br>
+
+            <label for="description">Description:</label>
+            <input type="text" id="description" name="description" required><br>
+
+            <label for="price">Price:    </label>
+            <input type="text" id="price" name="price" required><br>
+
+            <label for="user">User:</label>
+            <input type="text" id="user" name="user" required><br>
+
+            <label for="category">Category:</label>
+            <input type="text" id="category" name="category" required><br>
+
+            <input type="submit" value="Register">
+        </form>
+    </div>
+
+</div>
+<br>
+<table id="myTable">
+    <tr>
+        <th></th>
+        <th>Id</th>
+        <th>Title</th>
+        <th>Description</th>
+        <th>Price</th>
+        <th>User</th>
+        <th>Category</th>
+        <th>Actions</th>
+    </tr>
+    <tr th:each="announcement : ${announces}">
+        <td></td>
+        <td th:text="${announcement.id}"></td>
+        <td th:text="${announcement.title}"></td>
+        <td th:text="${announcement.description}"></td>
+        <td th:text="${announcement.price}"></td>
+        <td th:text="${announcement.user.getLastName()}"></td>
+        <td th:text="${announcement.category.getCategoryName()}"></td>
+        <td>
+
+            <form th:action="@{/announcement/delete/} + ${announcement.id}" method="post">
+                <input type="hidden" name="_method" value="delete" />
+                <input type="submit" value="Delete" onclick="return confirm('Are you sure you want to delete this item?');" class="delete-button" readonly/>
+            </form>
+
+            <button class="updateBtn"  style="vertical-align:middle" ><span>Update</span></button>
+            <div class="modalUpdate" >
+
+                <!-- Modal content -->
+                <div class="modalInsert-content">
+                    <h2 class="modal-title" >Update announcement
+                        <span class="close">&times;</span>
+                    </h2>
+                    <form class="formField" th:action="@{/announcement/update/} + ${announcement.id}" method="post">
+                        <input type="hidden" name="_method" value="put" />
+                        <label >Id:</label>
+                        <input type="text" th:value="${announcement.id}" name="id" readonly disabled><br>
+                        <label for="title">Title:</label>
+                        <input type="text" th:value="${announcement.title}" name="title" required><br>
+                        <label for="description">Description:</label>
+                        <input type="text" th:value="${announcement.description}" name="description" required><br>
+                        <label for="price">Price:</label>
+                        <input type="text" th:value="${announcement.price}" name="price" required><br>
+                        <label for="user">User id:</label>
+                        <input type="text" th:value="${announcement.user.getId()}" name="user" required><br>
+                        <label for="category">Category name:</label>
+                        <input type="text" th:value="${announcement.category.getId()}" name="category" required><br>
+                        <input type="submit" value="Register">
+                    </form>
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+<script>
+
+    var modal = document.getElementById("modalInsert");
+    // Get the button that opens the modal
+    var btn = document.getElementById("insertBtn");
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close1")[0];
+    // var span1 = document.getElementsByClassName("close")[1];
+
+    var btns = document.getElementsByClassName("updateBtn");
+    var modals = document.getElementsByClassName("modalUpdate");
+    var spans = document.getElementsByClassName("close");
+
+    // When the announcement clicks the button, open the modal
+    btn.onclick = function() {
+        modal.style.display = "block";
+    }
+
+    // When the announcement clicks on <span> (x), close the modal
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    // When the announcement clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+
+    for(let i = 0; i < btns.length; i++){
+        btns[i].onclick = function() {
+            modals[i].style.display = "block";
+        }
+        spans[i].onclick = function() {
+            modals[i].style.display = "none";
+        }
+        window.onclick = function(event) {
+            if (event.target == modals[i]) {
+                modals[i].style.display = "none";
+            }
+        }
+    }
+
+
+    var table = document.getElementById("myTable");
+    for(var i = 1; i < table.rows.length; i++)
+    {
+        table.rows[i].cells[0].innerHTML = i;
+    }
+
+</script>
+<p th:text="${message}"></p>
 </body>
 </html>

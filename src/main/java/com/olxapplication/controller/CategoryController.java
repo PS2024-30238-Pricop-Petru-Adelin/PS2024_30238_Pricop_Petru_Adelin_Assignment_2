@@ -91,7 +91,7 @@ public class CategoryController {
     @PostMapping("/delete/{id}")
     public ModelAndView deleteCategory(@PathVariable("id") String categoryId, RedirectAttributes redirectAttributes) {
         String string = categoryService.deleteCategoryById(categoryId);
-        redirectAttributes.addFlashAttribute("message", "User(" + string +") deleted successfully");
+        redirectAttributes.addFlashAttribute("message", "Category (" + string +") deleted successfully");
         ModelAndView mav = new ModelAndView("redirect:/category/get");
         return mav;
     }

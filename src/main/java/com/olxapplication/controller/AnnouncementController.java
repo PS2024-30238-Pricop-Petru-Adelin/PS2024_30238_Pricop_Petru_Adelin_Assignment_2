@@ -2,18 +2,26 @@ package com.olxapplication.controller;
 
 import com.olxapplication.dtos.AnnouncementDTO;
 import com.olxapplication.dtos.AnnouncementDetailsDTO;
+import com.olxapplication.dtos.AnnouncementWebDTO;
+import com.olxapplication.mappers.CategoryMapper;
+import com.olxapplication.mappers.UserMapper;
 import com.olxapplication.service.AnnouncementService;
+import com.olxapplication.service.CategoryService;
+import com.olxapplication.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -21,7 +29,7 @@ import java.util.List;
  * The controller class for managing announcements.
  * Handles HTTP requests related to announcements, interacting with a JPA data layer.
  */
-@RestController
+@Controller
 @CrossOrigin
 @RequestMapping(value = "/announcement")
 @Setter
@@ -31,16 +39,22 @@ import java.util.List;
 @Slf4j
 public class AnnouncementController {
     private final AnnouncementService announcementService;
+    private final CategoryController categoryController;
+    private final UserController userController;
+    private final UserService userService;
+    private final CategoryService categoryService;
 
     /**
      * Retrieves a list of all available announcements.
      *
      * @return A response entity containing a list of AnnouncementDetailsDTO objects representing all announcements.
      */
-    @GetMapping()
-    public ResponseEntity<List<AnnouncementDetailsDTO>> getAnnounces(){
+    @GetMapping("/get")
+    public ModelAndView getAnnounces(){
         List<AnnouncementDetailsDTO> dtos = announcementService.findAnnounces();
-        return new ResponseEntity<>(dtos, HttpStatus.OK);
+        ModelAndView mav = new ModelAndView("AdminGetAnnounces");
+        mav.addObject("announces", dtos);
+        return mav;
     }
 
     /**
@@ -90,10 +104,12 @@ public class AnnouncementController {
      * @return A response entity with the created announcement's ID upon successful creation,
      *         including a CREATED status code.
      */
-    @PostMapping()
-    public ResponseEntity<String> insertAnnouncement(@RequestBody AnnouncementDetailsDTO announcementDTO) {
+    @PostMapping("/insert")
+    public ModelAndView insertAnnouncement(@ModelAttribute("announcement") AnnouncementWebDTO announcementDTO) {
+
         String announcementId = announcementService.insert(announcementDTO);
-        return new ResponseEntity<>(announcementId, HttpStatus.CREATED);
+        ModelAndView mav = new ModelAndView("redirect:/announcement/get");
+        return mav;
     }
 
     /**
@@ -103,7 +119,7 @@ public class AnnouncementController {
      * @return A response entity containing the AnnouncementDetailsDTO object for the retrieved announcement
      *         upon successful retrieval, including an OK status code.
      */
-    @GetMapping("/{id}")
+    @GetMapping("/get/{id}")
     public ResponseEntity<AnnouncementDetailsDTO> getAnnouncement(@PathVariable("id") String announcementId) {
         AnnouncementDetailsDTO announcementDetailsDTO = announcementService.findAnnouncementById(announcementId);
         return new ResponseEntity<>(announcementDetailsDTO, HttpStatus.OK);
@@ -115,10 +131,12 @@ public class AnnouncementController {
      * @param announcementId The unique identifier of the announcement to be deleted.
      * @return An String response entity upon successful deletion, including a NO_CONTENT status code.
      */
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteAnnouncement(@PathVariable("id") String announcementId) {
-        String String = announcementService.deleteAnnouncementById(announcementId);
-        return new ResponseEntity<>(String, HttpStatus.OK);
+    @PostMapping("/delete/{id}")
+    public ModelAndView deleteAnnouncement(@PathVariable("id") String announcementId, RedirectAttributes redirectAttributes) {
+        String string = announcementService.deleteAnnouncementById(announcementId);
+        ModelAndView mav = new ModelAndView("redirect:/announcement/get");
+        redirectAttributes.addFlashAttribute("message", "Announcement (" + string +") deleted successfully");
+        return mav;
     }
 
     /**
@@ -130,9 +148,13 @@ public class AnnouncementController {
      * @return A response entity containing the updated AnnouncementDetailsDTO object upon successful update,
      *         including an OK status code.
      */
-    @PutMapping("/{id}")
-    public ResponseEntity<AnnouncementDTO> updateAnnouncement(@PathVariable("id") String announcementId, @RequestBody AnnouncementDetailsDTO announcementDTO) {
-        AnnouncementDTO announcement = announcementService.updateAnnouncementById(announcementId, announcementDTO);
-        return new ResponseEntity<>(announcement, HttpStatus.OK);
+    @PostMapping("/update/{id}")
+    public ModelAndView updateAnnouncement(@PathVariable("id") String announcementId, @ModelAttribute("announcement") AnnouncementWebDTO announcementDTO) {
+
+        System.out.println("-"+announcementDTO.getCategory()+"-" + "     " + "-"+announcementDTO.getUser()+"-");
+
+        AnnouncementDTO announcementUpdated = announcementService.updateAnnouncementById(announcementId, announcementDTO);
+        ModelAndView mav = new ModelAndView("redirect:/announcement/get");
+        return mav;
     }
 }

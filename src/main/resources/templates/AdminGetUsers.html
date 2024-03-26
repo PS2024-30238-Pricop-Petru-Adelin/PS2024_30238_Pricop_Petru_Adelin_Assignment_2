@@ -126,12 +126,12 @@
             text-align: center;
             text-decoration: none;
             display: inline-block;
-            font-size: 18px;
+            font-size: 16px;
             margin: 2px 2px;
             cursor: pointer;
             border-radius: 5px;
             height: 50%;
-            width: 50%;
+            width: 100%;
         }
 
         /* The Modal (background) */
@@ -227,7 +227,7 @@
             margin: 2px 2px;
             cursor: pointer;
             height: 50%;
-            width: 50%;
+            width: 100%;
             border-radius: 5px;
 
         }
@@ -262,6 +262,10 @@
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required><br>
 
+            <select name="role" id="role" >Select the role of the new user:
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+            </select><br>
             <input type="submit" value="Register">
         </form>
     </div>
@@ -276,6 +280,7 @@
         <th>Last Name</th>
         <th>Email</th>
         <th>Password</th>
+        <th>Role</th>
         <th>Actions</th>
     </tr>
     <tr th:each="user : ${users}">
@@ -285,6 +290,7 @@
         <td th:text="${user.lastName}"></td>
         <td th:text="${user.email}"></td>
         <td th:text="${user.password}"></td>
+        <td th:text="${user.role}"></td>
         <td>
 
             <form th:action="@{/user/delete/} + ${user.id}" method="post">

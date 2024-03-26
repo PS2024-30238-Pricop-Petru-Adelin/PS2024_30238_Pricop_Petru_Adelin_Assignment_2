@@ -2,12 +2,16 @@ package com.olxapplication.service;
 
 import com.olxapplication.dtos.AnnouncementDTO;
 import com.olxapplication.dtos.AnnouncementDetailsDTO;
+import com.olxapplication.dtos.AnnouncementWebDTO;
+import com.olxapplication.dtos.UserDetailsDTO;
 import com.olxapplication.exception.ResourceNotFoundException;
 import com.olxapplication.mappers.AnnouncementMapper;
 import com.olxapplication.entity.Announcement;
 import com.olxapplication.mappers.CategoryMapper;
 import com.olxapplication.mappers.UserMapper;
 import com.olxapplication.repository.AnnouncementRepository;
+import com.olxapplication.repository.CategoryRepository;
+import com.olxapplication.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +30,8 @@ import java.util.stream.Collectors;
 public class AnnouncementService {
     private static final Logger LOGGER = LoggerFactory.getLogger(AnnouncementService.class);
     private final AnnouncementRepository announcementRepository;
+    private final UserRepository userRepository;
+    private final CategoryRepository categoryRepository;
 
     /**
      * Retrieves a list of all announcement details available in the system.
@@ -111,6 +117,20 @@ public class AnnouncementService {
         return announcement.getId();
     }
 
+    public String insert(AnnouncementWebDTO announcementWebDTO) {
+        AnnouncementDetailsDTO ann = AnnouncementDetailsDTO.builder()
+                .title(announcementWebDTO.getTitle())
+                .description(announcementWebDTO.getDescription())
+                .price(announcementWebDTO.getPrice())
+                .user(UserMapper.toUserDetailsDTO(userRepository.findById(announcementWebDTO.getUser()).get()))
+                .category(CategoryMapper.toCategoryDetailsDTO(categoryRepository.findById(announcementWebDTO.getCategory()).get()))
+                .build();
+        Announcement announcement = AnnouncementMapper.toEntity(ann);
+        announcement = announcementRepository.save(announcement);
+        LOGGER.debug("Announcement with id {} was inserted in db", announcement.getId());
+        return announcement.getId();
+    }
+
     /**
      * Deletes an announcement identified by its unique String.
      *
@@ -150,6 +170,24 @@ public class AnnouncementService {
             toBeUpdated.setPrice(announcementDTO.getPrice());
             toBeUpdated.setUser(UserMapper.toEntity(announcementDTO.getUser()));
             toBeUpdated.setCategory(CategoryMapper.toEntity(announcementDTO.getCategory()));
+            announcementRepository.save(toBeUpdated);
+            LOGGER.debug("Announcement with id {} was successfully updated", id);
+        }
+        return AnnouncementMapper.toAnnouncementDTO(announcementOptional.get());
+    }
+
+    public AnnouncementDTO updateAnnouncementById(String id, AnnouncementWebDTO announcementWebDTO) {
+        Optional<Announcement> announcementOptional = announcementRepository.findById(id);
+
+        if (!announcementOptional.isPresent()) {
+            LOGGER.error("Announcement with id {} was not found in db", id);
+        } else {
+            Announcement toBeUpdated = announcementOptional.get();
+            toBeUpdated.setTitle(announcementWebDTO.getTitle());
+            toBeUpdated.setDescription(announcementWebDTO.getDescription());
+            toBeUpdated.setPrice(announcementWebDTO.getPrice());
+            toBeUpdated.setUser(userRepository.findById(announcementWebDTO.getUser()).get());
+            toBeUpdated.setCategory(categoryRepository.findById(announcementWebDTO.getCategory()).get());
             announcementRepository.save(toBeUpdated);
             LOGGER.debug("Announcement with id {} was successfully updated", id);
         }

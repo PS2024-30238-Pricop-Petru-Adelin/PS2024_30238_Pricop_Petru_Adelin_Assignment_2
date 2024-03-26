@@ -29,6 +29,7 @@ public class UserMapper {
                 .lastName(user.getLastName())
                 .email(user.getEmail())
                 .password(user.getPassword())
+                .role(user.getRole())
                 .announces(user.getAnnounces().stream().toList())
                 .build();
     }
@@ -51,6 +52,7 @@ public class UserMapper {
                 .lastName(user.getLastName())
                 .email(user.getEmail())
                 .password(user.getPassword())
+                .role(user.getRole())
                 .announces(StringList)
                 .build();
     }
@@ -68,6 +70,7 @@ public class UserMapper {
                 .lastName(userDTO.getLastName())
                 .email(userDTO.getEmail())
                 .password(userDTO.getPassword())
+                .role(userDTO.getRole())
                 .announces(userDTO.getAnnounces().stream().collect(Collectors.toList()))
                 .build();
     }
@@ -86,6 +89,7 @@ public class UserMapper {
                 .lastName(userDTO.getLastName())
                 .email(userDTO.getEmail())
                 .password(userDTO.getPassword())
+                .role(userDTO.getRole())
                 .announces((new ArrayList<Announcement>()).stream().collect(Collectors.toList()))
                 .build();
     }

@@ -49,6 +49,11 @@ public class CategoryService {
                 .collect(Collectors.toList());
     }
 
+    public CategoryDetailsDTO findCategoryByName(String name) {
+        List<Category> categoryList = categoryRepository.findCategoriesByCategoryNameContainsIgnoreCase(name);
+        return CategoryMapper.toCategoryDetailsDTO(categoryList.getFirst());
+    }
+
     /**
      * Retrieves the details of a specific category identified by its unique String.
      *
