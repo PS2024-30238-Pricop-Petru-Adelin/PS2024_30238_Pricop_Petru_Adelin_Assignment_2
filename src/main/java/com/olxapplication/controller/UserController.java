@@ -36,18 +36,18 @@ public class UserController {
     @GetMapping("/get")
     public ModelAndView getUsers(){
         List<UserDetailsDTO> users = userService.findUsers();
-        ModelAndView mav = new ModelAndView("AdminGet");
+        ModelAndView mav = new ModelAndView("AdminGetUsers");
         mav.addObject("users", users);
         //mav.setViewName("/get");
         return mav;
     }
 
-    @GetMapping("/insert")
-    public ModelAndView showInsertForm() {
-        ModelAndView modelAndView = new ModelAndView("insert"); // The name of your HTML file (without the .html extension)
-        modelAndView.addObject("user", new UserDTO()); // Assuming you have a User class
-        return modelAndView;
-    }
+//    @GetMapping("/insert")
+//    public ModelAndView showInsertForm() {
+//        ModelAndView modelAndView = new ModelAndView("insert"); // The name of your HTML file (without the .html extension)
+//        modelAndView.addObject("user", new UserDTO()); // Assuming you have a User class
+//        return modelAndView;
+//    }
     /**
      * Creates a new user account.
      *
@@ -79,12 +79,8 @@ public class UserController {
     }
 
 
-   @GetMapping("/confirm-delete/{id}")
-    public ModelAndView confirmDelete(@PathVariable("id") String userId) {
-        ModelAndView mav = new ModelAndView("confirmDelete");
-        mav.addObject("userId", userId);
-    return mav;
-}
+
+
     /**
      * Deletes a user account identified by its unique identifier.
      *
@@ -125,6 +121,8 @@ public class UserController {
         return new ResponseEntity<>(dtos, HttpStatus.OK);
     }
 
+
+
     /**
      * Updates the details of an existing user account.
      *
@@ -134,10 +132,11 @@ public class UserController {
      * @return A response entity containing the updated UserDetailsDTO object upon successful update,
      *         including an OK status code.
      */
-    @PutMapping("/update/{id}")
-    public ResponseEntity<UserDetailsDTO> updateUser(@PathVariable("id") String userId, @RequestBody UserDetailsDTO userDTO) {
+    @PostMapping("/update/{id}")
+    public ModelAndView updateUser(@PathVariable("id") String userId, @ModelAttribute("user") UserDetailsDTO userDTO) {
         UserDetailsDTO user = userService.updateUserById(userId, userDTO);
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        ModelAndView mav = new ModelAndView("redirect:/user/get");
+        return mav;
     }
 
 

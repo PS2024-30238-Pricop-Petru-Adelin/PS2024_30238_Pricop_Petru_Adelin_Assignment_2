@@ -9,7 +9,10 @@ import lombok.Setter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,10 +32,12 @@ public class CategoryController {
      *
      * @return A response entity containing a list of CategoryDetailsDTO objects representing all categories.
      */
-    @GetMapping()
-    public ResponseEntity<List<CategoryDetailsDTO>> getCategorys(){
+    @GetMapping("/get")
+    public ModelAndView getCategorys(){
         List<CategoryDetailsDTO> dtos = categoryService.findCategories();
-        return new ResponseEntity<>(dtos, HttpStatus.OK);
+        ModelAndView mav = new ModelAndView("AdminGetCategories");
+        mav.addObject("categories", dtos);
+        return mav;
     }
 
     /**
@@ -43,10 +48,12 @@ public class CategoryController {
      * @return A response entity with the created category's ID upon successful creation,
      *         including a CREATED status code.
      */
-    @PostMapping()
-    public ResponseEntity<String> insertCategory(@RequestBody CategoryDTO categoryDTO) {
+    @PostMapping("/insert")
+    public ModelAndView insertCategory(@ModelAttribute("category") CategoryDTO categoryDTO) {
+        categoryDTO.setAnnounces(new ArrayList<>());
         String categoryID = categoryService.insert(categoryDTO);
-        return new ResponseEntity<>(categoryID, HttpStatus.CREATED);
+        ModelAndView mav = new ModelAndView("redirect:/category/get");
+        return mav;
     }
 
     /**
@@ -56,7 +63,7 @@ public class CategoryController {
      * @return A response entity containing the CategoryDetailsDTO object for the retrieved category
      *         upon successful retrieval, including an OK status code.
      */
-    @GetMapping("/{id}")
+    @GetMapping("/get/{id}")
     public ResponseEntity<CategoryDetailsDTO> getCategory(@PathVariable("id") String categoryId) {
         CategoryDetailsDTO categoryDto = categoryService.findCategoryById(categoryId);
         return new ResponseEntity<>(categoryDto, HttpStatus.OK);
@@ -81,10 +88,12 @@ public class CategoryController {
      * @param categoryId The unique identifier of the category to be deleted.
      * @return An empty response entity upon successful deletion, including a NO_CONTENT status code.
      */
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteCategory(@PathVariable("id") String categoryId) {
-        String String = categoryService.deleteCategoryById(categoryId);
-        return new ResponseEntity<>(String, HttpStatus.OK);
+    @PostMapping("/delete/{id}")
+    public ModelAndView deleteCategory(@PathVariable("id") String categoryId, RedirectAttributes redirectAttributes) {
+        String string = categoryService.deleteCategoryById(categoryId);
+        redirectAttributes.addFlashAttribute("message", "User(" + string +") deleted successfully");
+        ModelAndView mav = new ModelAndView("redirect:/category/get");
+        return mav;
     }
 
     /**
@@ -95,9 +104,10 @@ public class CategoryController {
      * @return A response entity containing the updated CategoryDetailsDTO object upon successful update,
      *         including an OK status code.
      */
-    @PutMapping("/{id}")
-    public ResponseEntity<CategoryDetailsDTO> updateCategoryName(@PathVariable("id") String categoryId, @RequestBody CategoryDetailsDTO categoryDTO) {
+    @PostMapping("/update/{id}")
+    public ModelAndView updateCategoryName(@PathVariable("id") String categoryId, @ModelAttribute("category") CategoryDetailsDTO categoryDTO) {
         CategoryDetailsDTO category = categoryService.updateCategoryNameById(categoryId, categoryDTO);
-        return new ResponseEntity<>(category, HttpStatus.OK);
+        ModelAndView mav = new ModelAndView("redirect:/category/get");
+        return mav;
     }
 }

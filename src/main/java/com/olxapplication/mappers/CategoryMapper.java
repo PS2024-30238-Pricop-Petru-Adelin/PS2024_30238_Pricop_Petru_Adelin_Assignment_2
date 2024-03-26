@@ -56,7 +56,7 @@ public class CategoryMapper {
         return Category.builder()
                 .id(categoryDTO.getId())
                 .categoryName(categoryDTO.getCategoryName())
-                .announces(categoryDTO.getAnnounces().stream().collect(Collectors.toList()))
+                .announces(new ArrayList<Announcement>())
                 .build();
     }
 
