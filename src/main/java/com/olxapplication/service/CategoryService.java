@@ -2,10 +2,12 @@ package com.olxapplication.service;
 
 import com.olxapplication.dtos.CategoryDTO;
 import com.olxapplication.dtos.CategoryDetailsDTO;
+import com.olxapplication.exception.PatternNotMathcedException;
 import com.olxapplication.exception.ResourceNotFoundException;
 import com.olxapplication.mappers.CategoryMapper;
 import com.olxapplication.entity.Category;
 import com.olxapplication.repository.CategoryRepository;
+import com.olxapplication.validators.CategoryValidators;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +26,7 @@ import java.util.stream.Collectors;
 public class CategoryService {
     private static final Logger LOGGER = LoggerFactory.getLogger(com.olxapplication.service.CategoryService.class);
     private final CategoryRepository categoryRepository;
+    private final CategoryValidators categoryValidators = new CategoryValidators();
 
     /**
      * Retrieves a list of all category details available in the system.
@@ -77,10 +80,16 @@ public class CategoryService {
      * @return The String of the newly created category.
      */
     public String insert(CategoryDTO categoryDTO) {
-        Category category = CategoryMapper.toEntity(categoryDTO);
-        category = categoryRepository.save(category);
-        LOGGER.debug("Category with id {} was inserted in db", category.getId());
-        return category.getId();
+        try {
+            categoryValidators.categoryDtoValidator(categoryDTO);
+            Category category = CategoryMapper.toEntity(categoryDTO);
+            category = categoryRepository.save(category);
+            LOGGER.debug("Category with id {} was inserted in db", category.getId());
+            return category.getId();
+        }catch (PatternNotMathcedException e){
+            LOGGER.error(e.getMessage());
+            return null;
+        }
     }
 
     /**
@@ -111,18 +120,24 @@ public class CategoryService {
      * @throws ResourceNotFoundException If no category with the provided ID exists.
      */
     public CategoryDetailsDTO updateCategoryNameById(String id, CategoryDetailsDTO categoryDTO) {
-        Optional<Category> categoryOptional = categoryRepository.findById(id);
+        try {
+            categoryValidators.categoryDetailsDtoValidator(categoryDTO);
+            Optional<Category> categoryOptional = categoryRepository.findById(id);
 
-        if (!categoryOptional.isPresent()) {
-            LOGGER.error("Category with id {} was not found in db", id);
-        } else {
-            Category toBeUpdated = categoryOptional.get();
-            toBeUpdated.setCategoryName(categoryDTO.getCategoryName());
+            if (!categoryOptional.isPresent()) {
+                LOGGER.error("Category with id {} was not found in db", id);
+            } else {
+                Category toBeUpdated = categoryOptional.get();
+                toBeUpdated.setCategoryName(categoryDTO.getCategoryName());
 //            toBeUpdated.setAnnounces(categoryDTO.getAnnounces());
-            categoryRepository.save(toBeUpdated);
-            LOGGER.debug("Category with id {} was successfully updated", id);
+                categoryRepository.save(toBeUpdated);
+                LOGGER.debug("Category with id {} was successfully updated", id);
+            }
+            return CategoryMapper.toCategoryDetailsDTO(categoryOptional.get());
+        }catch (PatternNotMathcedException e){
+            LOGGER.error(e.getMessage());
+            return null;
         }
-        return CategoryMapper.toCategoryDetailsDTO(categoryOptional.get());
     }
 
 }

@@ -4,6 +4,7 @@ import com.olxapplication.dtos.AnnouncementDTO;
 import com.olxapplication.dtos.AnnouncementDetailsDTO;
 import com.olxapplication.dtos.AnnouncementWebDTO;
 import com.olxapplication.dtos.UserDetailsDTO;
+import com.olxapplication.exception.PatternNotMathcedException;
 import com.olxapplication.exception.ResourceNotFoundException;
 import com.olxapplication.mappers.AnnouncementMapper;
 import com.olxapplication.entity.Announcement;
@@ -12,6 +13,7 @@ import com.olxapplication.mappers.UserMapper;
 import com.olxapplication.repository.AnnouncementRepository;
 import com.olxapplication.repository.CategoryRepository;
 import com.olxapplication.repository.UserRepository;
+import com.olxapplication.validators.AnnouncementValidator;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +32,7 @@ import java.util.stream.Collectors;
 public class AnnouncementService {
     private static final Logger LOGGER = LoggerFactory.getLogger(AnnouncementService.class);
     private final AnnouncementRepository announcementRepository;
+    private final AnnouncementValidator announcementValidator = new AnnouncementValidator();
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
 
@@ -131,17 +134,26 @@ public class AnnouncementService {
     }
 
     public String insert(AnnouncementWebDTO announcementWebDTO) {
-        AnnouncementDetailsDTO ann = AnnouncementDetailsDTO.builder()
-                .title(announcementWebDTO.getTitle())
-                .description(announcementWebDTO.getDescription())
-                .price(announcementWebDTO.getPrice())
-                .user(UserMapper.toUserDetailsDTO(userRepository.findById(announcementWebDTO.getUser()).get()))
-                .category(CategoryMapper.toCategoryDetailsDTO(categoryRepository.findById(announcementWebDTO.getCategory()).get()))
-                .build();
-        Announcement announcement = AnnouncementMapper.toEntity(ann);
-        announcement = announcementRepository.save(announcement);
-        LOGGER.debug("Announcement with id {} was inserted in db", announcement.getId());
-        return announcement.getId();
+        try{
+
+            announcementValidator.announcementWebDtoValidator(announcementWebDTO);
+            AnnouncementDetailsDTO ann = AnnouncementDetailsDTO.builder()
+                    .title(announcementWebDTO.getTitle())
+                    .description(announcementWebDTO.getDescription())
+                    .price(announcementWebDTO.getPrice())
+                    .user(UserMapper.toUserDetailsDTO(userRepository.findById(announcementWebDTO.getUser()).get()))
+                    .category(CategoryMapper.toCategoryDetailsDTO(categoryRepository.findById(announcementWebDTO.getCategory()).get()))
+                    .build();
+            Announcement announcement = AnnouncementMapper.toEntity(ann);
+            announcement = announcementRepository.save(announcement);
+            LOGGER.debug("Announcement with id {} was inserted in db", announcement.getId());
+            return announcement.getId();
+
+        } catch (PatternNotMathcedException e){
+            LOGGER.error(e.getMessage());
+            return null;
+        }
+
     }
 
     /**
@@ -158,7 +170,6 @@ public class AnnouncementService {
         } else {
             announcementRepository.delete(announcementOptional.get());
             LOGGER.debug("Announcement with id {} was successfully deleted", id);
-
         }
         return announcementOptional.get().getId();
     }
@@ -190,20 +201,26 @@ public class AnnouncementService {
     }
 
     public AnnouncementDTO updateAnnouncementById(String id, AnnouncementWebDTO announcementWebDTO) {
-        Optional<Announcement> announcementOptional = announcementRepository.findById(id);
+        try {
+            announcementValidator.announcementWebDtoValidator(announcementWebDTO);
+            Optional<Announcement> announcementOptional = announcementRepository.findById(id);
 
-        if (!announcementOptional.isPresent()) {
-            LOGGER.error("Announcement with id {} was not found in db", id);
-        } else {
-            Announcement toBeUpdated = announcementOptional.get();
-            toBeUpdated.setTitle(announcementWebDTO.getTitle());
-            toBeUpdated.setDescription(announcementWebDTO.getDescription());
-            toBeUpdated.setPrice(announcementWebDTO.getPrice());
-            toBeUpdated.setUser(userRepository.findById(announcementWebDTO.getUser()).get());
-            toBeUpdated.setCategory(categoryRepository.findById(announcementWebDTO.getCategory()).get());
-            announcementRepository.save(toBeUpdated);
-            LOGGER.debug("Announcement with id {} was successfully updated", id);
+            if (!announcementOptional.isPresent()) {
+                LOGGER.error("Announcement with id {} was not found in db", id);
+            } else {
+                Announcement toBeUpdated = announcementOptional.get();
+                toBeUpdated.setTitle(announcementWebDTO.getTitle());
+                toBeUpdated.setDescription(announcementWebDTO.getDescription());
+                toBeUpdated.setPrice(announcementWebDTO.getPrice());
+                toBeUpdated.setUser(userRepository.findById(announcementWebDTO.getUser()).get());
+                toBeUpdated.setCategory(categoryRepository.findById(announcementWebDTO.getCategory()).get());
+                announcementRepository.save(toBeUpdated);
+                LOGGER.debug("Announcement with id {} was successfully updated", id);
+            }
+            return AnnouncementMapper.toAnnouncementDTO(announcementOptional.get());
+        } catch (PatternNotMathcedException e){
+            LOGGER.error(e.getMessage());
+            return null;
         }
-        return AnnouncementMapper.toAnnouncementDTO(announcementOptional.get());
     }
 }

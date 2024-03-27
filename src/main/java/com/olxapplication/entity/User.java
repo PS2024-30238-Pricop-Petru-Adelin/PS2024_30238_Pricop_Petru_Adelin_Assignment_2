@@ -45,6 +45,9 @@ public class User {
     @Column(name = "email", nullable = false)
     private String email;
 
+    /**
+     * The user's role, which serves as their role in the application.
+     */
     @Column(name = "role", nullable = false)
     private String role;
 

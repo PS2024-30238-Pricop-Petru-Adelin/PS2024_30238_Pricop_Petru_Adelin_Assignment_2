@@ -1,10 +1,12 @@
 package com.olxapplication.service;
 
 import com.olxapplication.dtos.UserDetailsDTO;
+import com.olxapplication.exception.PatternNotMathcedException;
 import com.olxapplication.exception.ResourceNotFoundException;
 import com.olxapplication.mappers.UserMapper;
 import com.olxapplication.entity.User;
 import com.olxapplication.repository.UserRepository;
+import com.olxapplication.validators.UserValidators;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +26,7 @@ import java.util.stream.Collectors;
 public class UserService {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
     private final UserRepository userRepository;
+    private final UserValidators userValidators = new UserValidators();
 
     /**
      * Retrieves a list of all user details available in the system.
@@ -74,10 +77,16 @@ public class UserService {
      * @return The String of the newly created user.
      */
     public String insert(UserDetailsDTO userDTO) {
-        User user = UserMapper.toEntity(userDTO);
-        user = userRepository.save(user);
-        LOGGER.debug("User with id {} was inserted in db", user.getId());
-        return user.getId();
+        try {
+            userValidators.userDtoValidator(userDTO);
+            User user = UserMapper.toEntity(userDTO);
+            user = userRepository.save(user);
+            LOGGER.debug("User with id {} was inserted in db", user.getId());
+            return user.getId();
+        }catch (PatternNotMathcedException e){
+            LOGGER.error(e.getMessage());
+            return null;
+        }
     }
 
     /**
@@ -108,21 +117,27 @@ public class UserService {
      * @throws ResourceNotFoundException If no user with the provided ID exists.
      */
     public UserDetailsDTO updateUserById(String id, UserDetailsDTO userDTO) {
-        Optional<User> userOptional = userRepository.findById(id);
-        
-        if (!userOptional.isPresent()) {
-            LOGGER.error("User with id {} was not found in db", id);
-        } else {
-            User toBeUpdated = userOptional.get();
-            toBeUpdated.setFirstName(userDTO.getFirstName());
-            toBeUpdated.setLastName(userDTO.getLastName());
-            toBeUpdated.setEmail(userDTO.getEmail());
-            toBeUpdated.setPassword(userDTO.getPassword());
+        try {
+            userValidators.userDtoValidator(userDTO);
+            Optional<User> userOptional = userRepository.findById(id);
+
+            if (!userOptional.isPresent()) {
+                LOGGER.error("User with id {} was not found in db", id);
+            } else {
+                User toBeUpdated = userOptional.get();
+                toBeUpdated.setFirstName(userDTO.getFirstName());
+                toBeUpdated.setLastName(userDTO.getLastName());
+                toBeUpdated.setEmail(userDTO.getEmail());
+                toBeUpdated.setPassword(userDTO.getPassword());
 //            toBeUpdated.setAnnounces(userDTO.getAnnounces());
-            userRepository.save(toBeUpdated);
-            LOGGER.debug("User with id {} was successfully updated", id);
+                userRepository.save(toBeUpdated);
+                LOGGER.info("User with id {} was successfully updated", id);
+            }
+            return UserMapper.toUserDetailsDTO(userOptional.get());
+        }catch (PatternNotMathcedException e){
+            LOGGER.error("----> " + e.getMessage() + " <-----");
+            return null;
         }
-        return UserMapper.toUserDetailsDTO(userOptional.get());
     }
 
 
