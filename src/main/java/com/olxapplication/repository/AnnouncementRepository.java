@@ -15,4 +15,5 @@ public interface AnnouncementRepository extends JpaRepository<Announcement, Stri
     List<Announcement> findAnnouncementsByCategory_Id(String category_id);
     List<Announcement> findAnnouncementsByUser_Id(String category_id);
     List<Announcement> findAnnouncementsByTitleContainsIgnoreCase(String title);
+
 }

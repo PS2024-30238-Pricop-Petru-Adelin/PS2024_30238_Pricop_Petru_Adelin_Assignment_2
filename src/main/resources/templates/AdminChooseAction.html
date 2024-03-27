@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Announces List</title>
+</head>
+<body>
+    <form action="/index/admin" method="post">
+        <input id="newLink1" name="newLink" value="redirect:/user/get" type="hidden">
+        <input type="submit" value="Manage Users"/>
+    </form><br>
+
+    <form action="/index/admin" method="post">
+        <input id="newLink2" name="newLink" value="redirect:/category/get" type="hidden">
+        <input type="submit" value="Manage Categories"/>
+    </form><br>
+
+    <form action="/index/admin" method="post">
+        <input id="newLink3" name="newLink" value="redirect:/announcement/get" type="hidden">
+        <input type="submit" value="Manage Announces"/>
+    </form><br>
+</body>
+</html>

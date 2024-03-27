@@ -45,6 +45,19 @@ public class AnnouncementService {
                 .collect(Collectors.toList());
     }
 
+    public List<AnnouncementDetailsDTO> findOtherAnnounces(String id){
+        List<Announcement> announcementList = announcementRepository.findAll();
+        for(int i = announcementList.size()-1; i >= 0; i--){
+            Announcement a = announcementList.get(i);
+            if(a.getUser().getId().equals(id)){
+                announcementList.remove(announcementList.get(i));
+            }
+        }
+        return announcementList.stream()
+                .map(AnnouncementMapper::toAnnouncementDetailsDTO)
+                .collect(Collectors.toList());
+    }
+
     /**
      * Retrieves the details of a specific announcement identified by its unique String.
      *

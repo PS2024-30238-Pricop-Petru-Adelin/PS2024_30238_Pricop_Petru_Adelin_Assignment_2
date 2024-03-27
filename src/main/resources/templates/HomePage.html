@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>LogIn Page</title>
+</head>
+<body>
+<label for="userId">Choose a user:</label>
+<form th:action="@{/index/redirectPage}" method="post">
+    <select name="userId" id="userId">
+        <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.lastName}"></option>
+    </select>
+    <input type="submit" value="Yes, delete this user" />
+</form>
+</body>
+</html>

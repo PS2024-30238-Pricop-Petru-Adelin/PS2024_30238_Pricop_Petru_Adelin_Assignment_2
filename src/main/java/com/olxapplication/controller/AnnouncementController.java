@@ -112,6 +112,13 @@ public class AnnouncementController {
         return mav;
     }
 
+    @PostMapping("/insertMine/{id}")
+    public ModelAndView insertMyAnnouncement(@PathVariable("id") String id, @ModelAttribute("announcement") AnnouncementWebDTO announcementDTO) {
+        String announcementId = announcementService.insert(announcementDTO);
+        ModelAndView mav = new ModelAndView("redirect:/announcement/getMine/" + announcementDTO.getUser());
+        return mav;
+    }
+
     /**
      * Retrieves a specific announcement by its unique identifier.
      *
@@ -123,6 +130,22 @@ public class AnnouncementController {
     public ResponseEntity<AnnouncementDetailsDTO> getAnnouncement(@PathVariable("id") String announcementId) {
         AnnouncementDetailsDTO announcementDetailsDTO = announcementService.findAnnouncementById(announcementId);
         return new ResponseEntity<>(announcementDetailsDTO, HttpStatus.OK);
+    }
+
+    @GetMapping("/getMine/{id}")
+    public ModelAndView getMyAnnouncements(@PathVariable("id") String userId) {
+        List<AnnouncementDetailsDTO> dtos = announcementService.findAnnouncementByUserId(userId);
+        ModelAndView mav = new ModelAndView("UserGetMyAnnounces");
+        mav.addObject("announces", dtos);
+        return mav;
+    }
+
+    @GetMapping("/getOthers/{id}")
+    public ModelAndView getOtherAnnouncements(@PathVariable("id") String userId) {
+        List<AnnouncementDetailsDTO> dtos = announcementService.findOtherAnnounces(userId);
+        ModelAndView mav = new ModelAndView("UserGetOtherAnnounces");
+        mav.addObject("announces", dtos);
+        return mav;
     }
 
     /**
@@ -139,6 +162,15 @@ public class AnnouncementController {
         return mav;
     }
 
+    @PostMapping("/deleteMine/{idUser}/{id}")
+    public ModelAndView deleteMyAnnouncement(@PathVariable("id") String announcementId, @PathVariable("idUser") String userId, RedirectAttributes redirectAttributes) {
+
+        String string = announcementService.deleteAnnouncementById(announcementId);
+        ModelAndView mav = new ModelAndView("redirect:/announcement/getMine/" + userId);
+        redirectAttributes.addFlashAttribute("message", "Announcement (" + string +") deleted successfully");
+        return mav;
+    }
+
     /**
      * Updates an existing announcement with the provided details.
      *
@@ -150,11 +182,16 @@ public class AnnouncementController {
      */
     @PostMapping("/update/{id}")
     public ModelAndView updateAnnouncement(@PathVariable("id") String announcementId, @ModelAttribute("announcement") AnnouncementWebDTO announcementDTO) {
-
-        System.out.println("-"+announcementDTO.getCategory()+"-" + "     " + "-"+announcementDTO.getUser()+"-");
-
         AnnouncementDTO announcementUpdated = announcementService.updateAnnouncementById(announcementId, announcementDTO);
         ModelAndView mav = new ModelAndView("redirect:/announcement/get");
         return mav;
     }
+
+    @PostMapping("/updateMine/{id}")
+    public ModelAndView updateMyAnnouncement(@PathVariable("id") String announcementId, @ModelAttribute("announcement") AnnouncementWebDTO announcementDTO) {
+        AnnouncementDTO announcementUpdated = announcementService.updateAnnouncementById(announcementId, announcementDTO);
+        ModelAndView mav = new ModelAndView("redirect:/announcement/getMine/" + announcementUpdated.getUser().getId());
+        return mav;
+    }
+
 }
