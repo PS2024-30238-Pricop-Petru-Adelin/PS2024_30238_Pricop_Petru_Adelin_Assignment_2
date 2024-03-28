@@ -15,6 +15,7 @@ public class CategoryValidators {
         Pattern pattern = Pattern.compile("^[-a-zA-Z ]+$");
         Matcher matcher = pattern.matcher(name);
         if(matcher.find()){
+            matcher.reset();
             return matcher.find();
         } else {
             throw new PatternNotMathcedException(CategoryMessages.NAME_PATTERN_NOT_MATCHED);
@@ -23,14 +24,12 @@ public class CategoryValidators {
 
 
 
-    public boolean categoryDtoValidator(CategoryDTO categoryDTO){
-        try {
-            nameValidator(categoryDTO.getCategoryName());
-        }catch (PatternNotMathcedException e){
-            System.out.println(e.getMessage());
+    public boolean categoryDtoValidator(CategoryDTO categoryDTO) throws PatternNotMathcedException{
+        if(nameValidator(categoryDTO.getCategoryName())){
+            return true;
+        }else{
             return false;
         }
-        return true;
     }
     public boolean categoryDetailsDtoValidator(CategoryDetailsDTO categoryDTO) throws PatternNotMathcedException{
 

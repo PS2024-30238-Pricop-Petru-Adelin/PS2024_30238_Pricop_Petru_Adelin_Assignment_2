@@ -105,17 +105,19 @@ public class AnnouncementController {
      *         including a CREATED status code.
      */
     @PostMapping("/insert")
-    public ModelAndView insertAnnouncement(@ModelAttribute("announcement") AnnouncementWebDTO announcementDTO) {
+    public ModelAndView insertAnnouncement(@ModelAttribute("announcement") AnnouncementWebDTO announcementDTO,RedirectAttributes redirectAttributes) {
 
-        String announcementId = announcementService.insert(announcementDTO);
+        String msg = announcementService.insert(announcementDTO);
         ModelAndView mav = new ModelAndView("redirect:/announcement/get");
+        redirectAttributes.addFlashAttribute("message", msg);
         return mav;
     }
 
     @PostMapping("/insertMine/{id}")
-    public ModelAndView insertMyAnnouncement(@PathVariable("id") String id, @ModelAttribute("announcement") AnnouncementWebDTO announcementDTO) {
-        String announcementId = announcementService.insert(announcementDTO);
-        ModelAndView mav = new ModelAndView("redirect:/announcement/getMine/" + announcementDTO.getUser());
+    public ModelAndView insertMyAnnouncement(@PathVariable("id") String id, @ModelAttribute("announcement") AnnouncementWebDTO announcementDTO, RedirectAttributes redirectAttributes) {
+        String msg = announcementService.insert(announcementDTO);
+        ModelAndView mav = new ModelAndView("redirect:/announcement/getMine/" + id);
+        redirectAttributes.addFlashAttribute("message", msg);
         return mav;
     }
 
@@ -156,18 +158,18 @@ public class AnnouncementController {
      */
     @PostMapping("/delete/{id}")
     public ModelAndView deleteAnnouncement(@PathVariable("id") String announcementId, RedirectAttributes redirectAttributes) {
-        String string = announcementService.deleteAnnouncementById(announcementId);
+        String msg = announcementService.deleteAnnouncementById(announcementId);
         ModelAndView mav = new ModelAndView("redirect:/announcement/get");
-        redirectAttributes.addFlashAttribute("message", "Announcement (" + string +") deleted successfully");
+        redirectAttributes.addFlashAttribute("message", msg);
         return mav;
     }
 
     @PostMapping("/deleteMine/{idUser}/{id}")
     public ModelAndView deleteMyAnnouncement(@PathVariable("id") String announcementId, @PathVariable("idUser") String userId, RedirectAttributes redirectAttributes) {
 
-        String string = announcementService.deleteAnnouncementById(announcementId);
+        String msg = announcementService.deleteAnnouncementById(announcementId);
         ModelAndView mav = new ModelAndView("redirect:/announcement/getMine/" + userId);
-        redirectAttributes.addFlashAttribute("message", "Announcement (" + string +") deleted successfully");
+        redirectAttributes.addFlashAttribute("message", msg);
         return mav;
     }
 
@@ -181,16 +183,18 @@ public class AnnouncementController {
      *         including an OK status code.
      */
     @PostMapping("/update/{id}")
-    public ModelAndView updateAnnouncement(@PathVariable("id") String announcementId, @ModelAttribute("announcement") AnnouncementWebDTO announcementDTO) {
-        AnnouncementDTO announcementUpdated = announcementService.updateAnnouncementById(announcementId, announcementDTO);
+    public ModelAndView updateAnnouncement(@PathVariable("id") String announcementId, @ModelAttribute("announcement") AnnouncementWebDTO announcementDTO, RedirectAttributes redirectAttributes) {
+        String msg = announcementService.updateAnnouncementById(announcementId, announcementDTO);
         ModelAndView mav = new ModelAndView("redirect:/announcement/get");
+        redirectAttributes.addFlashAttribute("message", msg);
         return mav;
     }
 
     @PostMapping("/updateMine/{id}")
-    public ModelAndView updateMyAnnouncement(@PathVariable("id") String announcementId, @ModelAttribute("announcement") AnnouncementWebDTO announcementDTO) {
-        AnnouncementDTO announcementUpdated = announcementService.updateAnnouncementById(announcementId, announcementDTO);
-        ModelAndView mav = new ModelAndView("redirect:/announcement/getMine/" + announcementUpdated.getUser().getId());
+    public ModelAndView updateMyAnnouncement(@PathVariable("id") String announcementId, @ModelAttribute("announcement") AnnouncementWebDTO announcementDTO, RedirectAttributes redirectAttributes) {
+        String msg = announcementService.updateAnnouncementById(announcementId, announcementDTO);
+        redirectAttributes.addFlashAttribute("message", msg);
+        ModelAndView mav = new ModelAndView("redirect:/announcement/getMine/" + announcementId);
         return mav;
     }
 

@@ -20,6 +20,7 @@ public class AnnouncementValidator {
         Pattern pattern = Pattern.compile("^[-a-zA-Z,; ]{3,30}$");
         Matcher matcher = pattern.matcher(title);
         if(matcher.find()){
+            matcher.reset();
             return matcher.find();
         } else {
             throw new PatternNotMathcedException(AnnouncementMessages.TITLE_PATTERN_NOT_MATCHED);
@@ -31,6 +32,7 @@ public class AnnouncementValidator {
         Matcher matcher = pattern.matcher(description);
 
         if(matcher.find()){
+            matcher.reset();
             return matcher.find();
         } else {
             throw new PatternNotMathcedException(AnnouncementMessages.DESCRIPTION_PATTERN_NOT_MATCHED);
@@ -40,6 +42,7 @@ public class AnnouncementValidator {
     public boolean priceValidator(Double price) throws PatternNotMathcedException{
 
         if(price >= 0){
+
             return true;
         } else {
             throw new PatternNotMathcedException(AnnouncementMessages.PRICE_PATTERN_NOT_MATCHED);
@@ -51,7 +54,8 @@ public class AnnouncementValidator {
         Matcher matcher = pattern.matcher(id);
 
         if(matcher.find()){
-            return matcher.find();
+            matcher.reset();
+            return true;
         } else {
             throw new PatternNotMathcedException(AnnouncementMessages.ID_PATTERN_NOT_MATCHED);
         }
@@ -61,7 +65,6 @@ public class AnnouncementValidator {
     public boolean announcementWebDtoValidator(AnnouncementWebDTO announcementWebDTO) throws PatternNotMathcedException{
         if(titleValidator(announcementWebDTO.getTitle())&&descriptionValidator(announcementWebDTO.getDescription())&&
                 priceValidator(announcementWebDTO.getPrice())&&idValidator(announcementWebDTO.getUser())&&idValidator(announcementWebDTO.getCategory())) {
-
             return true;
         }else{
             return false;

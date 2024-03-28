@@ -1,9 +1,11 @@
 package com.olxapplication.service;
 
-import com.olxapplication.dtos.AnnouncementDTO;
-import com.olxapplication.dtos.AnnouncementDetailsDTO;
-import com.olxapplication.dtos.AnnouncementWebDTO;
-import com.olxapplication.dtos.UserDetailsDTO;
+import com.olxapplication.constants.AnnouncementMessages;
+import com.olxapplication.constants.CategoryMessages;
+import com.olxapplication.constants.UserMessages;
+import com.olxapplication.dtos.*;
+import com.olxapplication.entity.Category;
+import com.olxapplication.entity.User;
 import com.olxapplication.exception.PatternNotMathcedException;
 import com.olxapplication.exception.ResourceNotFoundException;
 import com.olxapplication.mappers.AnnouncementMapper;
@@ -137,21 +139,35 @@ public class AnnouncementService {
         try{
 
             announcementValidator.announcementWebDtoValidator(announcementWebDTO);
-            AnnouncementDetailsDTO ann = AnnouncementDetailsDTO.builder()
-                    .title(announcementWebDTO.getTitle())
-                    .description(announcementWebDTO.getDescription())
-                    .price(announcementWebDTO.getPrice())
-                    .user(UserMapper.toUserDetailsDTO(userRepository.findById(announcementWebDTO.getUser()).get()))
-                    .category(CategoryMapper.toCategoryDetailsDTO(categoryRepository.findById(announcementWebDTO.getCategory()).get()))
-                    .build();
-            Announcement announcement = AnnouncementMapper.toEntity(ann);
-            announcement = announcementRepository.save(announcement);
-            LOGGER.debug("Announcement with id {} was inserted in db", announcement.getId());
-            return announcement.getId();
-
+            Optional<User> user = userRepository.findById(announcementWebDTO.getUser());
+            Optional<Category> category = categoryRepository.findById(announcementWebDTO.getCategory());
+            if(user.isPresent()) {
+                if(category.isPresent()) {
+                    AnnouncementDetailsDTO ann = AnnouncementDetailsDTO.builder()
+                            .title(announcementWebDTO.getTitle())
+                            .description(announcementWebDTO.getDescription())
+                            .price(announcementWebDTO.getPrice())
+                            .user(UserMapper.toUserDetailsDTO(user.get()))
+                            .category(CategoryMapper.toCategoryDetailsDTO(category.get()))
+                            .build();
+                    Announcement announcement = AnnouncementMapper.toEntity(ann);
+                    announcement = announcementRepository.save(announcement);
+                    LOGGER.debug(AnnouncementMessages.ANNOUNCEMENT_INSERTED_SUCCESSFULLY + announcement.getId() +  announcementWebDTO.getUser());
+                    return AnnouncementMessages.ANNOUNCEMENT_INSERTED_SUCCESSFULLY + announcement.getId() + announcementWebDTO.getUser();
+                } else {
+                    LOGGER.error(AnnouncementMessages.ANNOUNCEMENT_NOT_INSERTED + CategoryMessages.CATEGORY_NOT_FOUND + announcementWebDTO.getCategory());
+                    return AnnouncementMessages.ANNOUNCEMENT_NOT_INSERTED + CategoryMessages.CATEGORY_NOT_FOUND  + announcementWebDTO.getCategory();
+                }
+            } else {
+                LOGGER.error(AnnouncementMessages.ANNOUNCEMENT_NOT_INSERTED + UserMessages.USER_NOT_FOUND );
+                return AnnouncementMessages.ANNOUNCEMENT_NOT_INSERTED + UserMessages.USER_NOT_FOUND;
+            }
         } catch (PatternNotMathcedException e){
-            LOGGER.error(e.getMessage());
-            return null;
+            LOGGER.error(AnnouncementMessages.ANNOUNCEMENT_NOT_INSERTED + e.getMessage());
+            return AnnouncementMessages.ANNOUNCEMENT_NOT_INSERTED + e.getMessage();
+        } catch (ResourceNotFoundException e){
+            LOGGER.error(AnnouncementMessages.ANNOUNCEMENT_NOT_INSERTED + e.getMessage());
+            return AnnouncementMessages.ANNOUNCEMENT_NOT_INSERTED + e.getMessage();
         }
 
     }
@@ -166,12 +182,14 @@ public class AnnouncementService {
     public String deleteAnnouncementById(String id) {
         Optional<Announcement> announcementOptional = announcementRepository.findById(id);
         if (!announcementOptional.isPresent()) {
-            LOGGER.error("Announcement with id {} was not found in db", id);
+            LOGGER.error(AnnouncementMessages.ANNOUNCEMENT_NOT_FOUND + id);
+            return AnnouncementMessages.ANNOUNCEMENT_NOT_FOUND + id;
         } else {
             announcementRepository.delete(announcementOptional.get());
-            LOGGER.debug("Announcement with id {} was successfully deleted", id);
+            LOGGER.debug(AnnouncementMessages.ANNOUNCEMENT_DELETED_SUCCESSFULLY + id);
+            return AnnouncementMessages.ANNOUNCEMENT_DELETED_SUCCESSFULLY + id;
         }
-        return announcementOptional.get().getId();
+
     }
 
     /**
@@ -182,11 +200,12 @@ public class AnnouncementService {
      * @return An AnnouncementDTO object representing the updated announcement, or throws an exception if not found.
      * @throws ResourceNotFoundException If no announcement with the provided ID exists.
      */
-    public AnnouncementDTO updateAnnouncementById(String id, AnnouncementDetailsDTO announcementDTO) {
+    public String updateAnnouncementById(String id, AnnouncementDetailsDTO announcementDTO) {
         Optional<Announcement> announcementOptional = announcementRepository.findById(id);
 
         if (!announcementOptional.isPresent()) {
-            LOGGER.error("Announcement with id {} was not found in db", id);
+            LOGGER.error(AnnouncementMessages.ANNOUNCEMENT_NOT_FOUND + id);
+            return AnnouncementMessages.ANNOUNCEMENT_NOT_FOUND + id;
         } else {
             Announcement toBeUpdated = announcementOptional.get();
             toBeUpdated.setTitle(announcementDTO.getTitle());
@@ -195,18 +214,19 @@ public class AnnouncementService {
             toBeUpdated.setUser(UserMapper.toEntity(announcementDTO.getUser()));
             toBeUpdated.setCategory(CategoryMapper.toEntity(announcementDTO.getCategory()));
             announcementRepository.save(toBeUpdated);
-            LOGGER.debug("Announcement with id {} was successfully updated", id);
+            LOGGER.debug(AnnouncementMessages.ANNOUNCEMENT_UPDATED_SUCCESSFULLY + id);
+            return AnnouncementMessages.ANNOUNCEMENT_UPDATED_SUCCESSFULLY + id;
         }
-        return AnnouncementMapper.toAnnouncementDTO(announcementOptional.get());
     }
 
-    public AnnouncementDTO updateAnnouncementById(String id, AnnouncementWebDTO announcementWebDTO) {
+    public String updateAnnouncementById(String id, AnnouncementWebDTO announcementWebDTO) {
         try {
             announcementValidator.announcementWebDtoValidator(announcementWebDTO);
             Optional<Announcement> announcementOptional = announcementRepository.findById(id);
 
             if (!announcementOptional.isPresent()) {
-                LOGGER.error("Announcement with id {} was not found in db", id);
+                LOGGER.error(AnnouncementMessages.ANNOUNCEMENT_NOT_FOUND + id);
+                return AnnouncementMessages.ANNOUNCEMENT_NOT_FOUND + id;
             } else {
                 Announcement toBeUpdated = announcementOptional.get();
                 toBeUpdated.setTitle(announcementWebDTO.getTitle());
@@ -215,12 +235,12 @@ public class AnnouncementService {
                 toBeUpdated.setUser(userRepository.findById(announcementWebDTO.getUser()).get());
                 toBeUpdated.setCategory(categoryRepository.findById(announcementWebDTO.getCategory()).get());
                 announcementRepository.save(toBeUpdated);
-                LOGGER.debug("Announcement with id {} was successfully updated", id);
+                LOGGER.debug(AnnouncementMessages.ANNOUNCEMENT_UPDATED_SUCCESSFULLY + id);
+                return AnnouncementMessages.ANNOUNCEMENT_UPDATED_SUCCESSFULLY + id;
             }
-            return AnnouncementMapper.toAnnouncementDTO(announcementOptional.get());
         } catch (PatternNotMathcedException e){
-            LOGGER.error(e.getMessage());
-            return null;
+            LOGGER.error(AnnouncementMessages.ANNOUNCEMENT_UPDATED_SUCCESSFULLY + e.getMessage());
+            return AnnouncementMessages.ANNOUNCEMENT_UPDATED_SUCCESSFULLY + e.getMessage();
         }
     }
 }

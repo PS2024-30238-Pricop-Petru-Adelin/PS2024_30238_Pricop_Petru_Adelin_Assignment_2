@@ -32,9 +32,9 @@ public class IndexController {
     public ModelAndView redirectBasedOnRole(@ModelAttribute("userId") String userId){
         ModelAndView mav = new ModelAndView();
         if(userService.findUserById(userId).getRole().equals("admin")) {
-            mav.setViewName("redirect:/index/admin");
+            mav.setViewName("redirect:/user/get");
         } else {
-            mav.setViewName("redirect:/index/user/" + userId); // Redirect to a valid endpoint for non-admin users
+            mav.setViewName("redirect:/announcement/getOthers/" + userId); // Redirect to a valid endpoint for non-admin users
         }
         return mav;
     }

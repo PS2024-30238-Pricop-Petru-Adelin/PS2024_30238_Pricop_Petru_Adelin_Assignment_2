@@ -1,5 +1,6 @@
 package com.olxapplication.service;
 
+import com.olxapplication.constants.CategoryMessages;
 import com.olxapplication.dtos.CategoryDTO;
 import com.olxapplication.dtos.CategoryDetailsDTO;
 import com.olxapplication.exception.PatternNotMathcedException;
@@ -67,7 +68,7 @@ public class CategoryService {
     public CategoryDetailsDTO findCategoryById(String id) {
         Optional<Category> categoryOptional = categoryRepository.findById(id);
         if (!categoryOptional.isPresent()) {
-            LOGGER.debug("Category with id {" + id + "} was not found in db");
+            LOGGER.debug(CategoryMessages.CATEGORY_NOT_FOUND + id);
             throw new ResourceNotFoundException(Category.class.getSimpleName() + "with id: " + id);
         }
         return CategoryMapper.toCategoryDetailsDTO(categoryOptional.get());
@@ -84,11 +85,11 @@ public class CategoryService {
             categoryValidators.categoryDtoValidator(categoryDTO);
             Category category = CategoryMapper.toEntity(categoryDTO);
             category = categoryRepository.save(category);
-            LOGGER.debug("Category with id {} was inserted in db", category.getId());
-            return category.getId();
+            LOGGER.debug(CategoryMessages.CATEGORY_INSERTED_SUCCESSFULLY);
+            return CategoryMessages.CATEGORY_INSERTED_SUCCESSFULLY;
         }catch (PatternNotMathcedException e){
-            LOGGER.error(e.getMessage());
-            return null;
+            LOGGER.error(CategoryMessages.CATEGORY_NOT_INSERTED + e.getMessage());
+            return CategoryMessages.CATEGORY_NOT_INSERTED + e.getMessage();
         }
     }
 
@@ -102,7 +103,8 @@ public class CategoryService {
     public String deleteCategoryById(String id) {
         Optional<Category> categoryOptional = categoryRepository.findById(id);
         if (!categoryOptional.isPresent()) {
-            LOGGER.error("Category with id {} was not found in db", id);
+            LOGGER.error(CategoryMessages.CATEGORY_NOT_FOUND + id);
+            return  CategoryMessages.CATEGORY_NOT_FOUND + id;
         } else {
             categoryRepository.delete(categoryOptional.get());
             LOGGER.debug("Category with id {} was successfully deleted", id);
@@ -119,24 +121,25 @@ public class CategoryService {
      * @return A CategoryDetailsDTO object representing the updated category, or throws an exception if not found.
      * @throws ResourceNotFoundException If no category with the provided ID exists.
      */
-    public CategoryDetailsDTO updateCategoryNameById(String id, CategoryDetailsDTO categoryDTO) {
+    public String updateCategoryNameById(String id, CategoryDetailsDTO categoryDTO) {
         try {
             categoryValidators.categoryDetailsDtoValidator(categoryDTO);
             Optional<Category> categoryOptional = categoryRepository.findById(id);
 
             if (!categoryOptional.isPresent()) {
-                LOGGER.error("Category with id {} was not found in db", id);
+                LOGGER.error(CategoryMessages.CATEGORY_NOT_FOUND + id);
+                return CategoryMessages.CATEGORY_NOT_FOUND + CategoryMessages.CATEGORY_NOT_FOUND + id;
             } else {
                 Category toBeUpdated = categoryOptional.get();
                 toBeUpdated.setCategoryName(categoryDTO.getCategoryName());
 //            toBeUpdated.setAnnounces(categoryDTO.getAnnounces());
                 categoryRepository.save(toBeUpdated);
-                LOGGER.debug("Category with id {} was successfully updated", id);
+                LOGGER.debug(CategoryMessages.CATEGORY_UPDATED_SUCCESSFULLY + id);
+                return CategoryMessages.CATEGORY_UPDATED_SUCCESSFULLY + id;
             }
-            return CategoryMapper.toCategoryDetailsDTO(categoryOptional.get());
         }catch (PatternNotMathcedException e){
-            LOGGER.error(e.getMessage());
-            return null;
+            LOGGER.error(CategoryMessages.CATEGORY_NOT_UPDATED + e.getMessage());
+            return CategoryMessages.CATEGORY_NOT_UPDATED + e.getMessage();
         }
     }
 

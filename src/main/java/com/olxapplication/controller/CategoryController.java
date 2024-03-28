@@ -49,9 +49,10 @@ public class CategoryController {
      *         including a CREATED status code.
      */
     @PostMapping("/insert")
-    public ModelAndView insertCategory(@ModelAttribute("category") CategoryDTO categoryDTO) {
+    public ModelAndView insertCategory(@ModelAttribute("category") CategoryDTO categoryDTO, RedirectAttributes redirectAttributes) {
         categoryDTO.setAnnounces(new ArrayList<>());
-        String categoryID = categoryService.insert(categoryDTO);
+        String msg = categoryService.insert(categoryDTO);
+        redirectAttributes.addFlashAttribute("message", msg);
         ModelAndView mav = new ModelAndView("redirect:/category/get");
         return mav;
     }
@@ -90,8 +91,8 @@ public class CategoryController {
      */
     @PostMapping("/delete/{id}")
     public ModelAndView deleteCategory(@PathVariable("id") String categoryId, RedirectAttributes redirectAttributes) {
-        String string = categoryService.deleteCategoryById(categoryId);
-        redirectAttributes.addFlashAttribute("message", "Category (" + string +") deleted successfully");
+        String msg = categoryService.deleteCategoryById(categoryId);
+        redirectAttributes.addFlashAttribute("message", msg);
         ModelAndView mav = new ModelAndView("redirect:/category/get");
         return mav;
     }
@@ -105,8 +106,9 @@ public class CategoryController {
      *         including an OK status code.
      */
     @PostMapping("/update/{id}")
-    public ModelAndView updateCategoryName(@PathVariable("id") String categoryId, @ModelAttribute("category") CategoryDetailsDTO categoryDTO) {
-        CategoryDetailsDTO category = categoryService.updateCategoryNameById(categoryId, categoryDTO);
+    public ModelAndView updateCategoryName(@PathVariable("id") String categoryId, @ModelAttribute("category") CategoryDetailsDTO categoryDTO, RedirectAttributes redirectAttributes) {
+        String msg = categoryService.updateCategoryNameById(categoryId, categoryDTO);
+        redirectAttributes.addFlashAttribute("message", msg);
         ModelAndView mav = new ModelAndView("redirect:/category/get");
         return mav;
     }

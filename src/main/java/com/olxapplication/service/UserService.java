@@ -1,5 +1,7 @@
 package com.olxapplication.service;
 
+import com.olxapplication.constants.CategoryMessages;
+import com.olxapplication.constants.UserMessages;
 import com.olxapplication.dtos.UserDetailsDTO;
 import com.olxapplication.exception.PatternNotMathcedException;
 import com.olxapplication.exception.ResourceNotFoundException;
@@ -50,8 +52,8 @@ public class UserService {
     public UserDetailsDTO findUserById(String id){
         Optional<User> userOptional = userRepository.findById(id);
         if (!userOptional.isPresent()){
-            LOGGER.debug("User with id {" + id + "} was not found in db");
-            throw new ResourceNotFoundException(User.class.getSimpleName() + "with id: " + id);
+            LOGGER.debug(UserMessages.USER_NOT_FOUND);
+            throw new ResourceNotFoundException(UserMessages.USER_NOT_FOUND + id);
         }
         return UserMapper.toUserDetailsDTO(userOptional.get());
     }
@@ -81,11 +83,11 @@ public class UserService {
             userValidators.userDtoValidator(userDTO);
             User user = UserMapper.toEntity(userDTO);
             user = userRepository.save(user);
-            LOGGER.debug("User with id {} was inserted in db", user.getId());
-            return user.getId();
+            LOGGER.debug(UserMessages.USER_INSERTED_SUCCESSFULLY);
+            return UserMessages.USER_INSERTED_SUCCESSFULLY;
         }catch (PatternNotMathcedException e){
-            LOGGER.error(e.getMessage());
-            return null;
+            LOGGER.error(UserMessages.USER_NOT_INSERTED + e.getMessage());
+            return UserMessages.USER_NOT_INSERTED + e.getMessage();
         }
     }
 
@@ -99,13 +101,13 @@ public class UserService {
     public String deleteUserById(String id) {
         Optional<User> userOptional = userRepository.findById(id);
         if (!userOptional.isPresent()) {
-            LOGGER.error("User with id {} was not found in db", id);
+            LOGGER.error(UserMessages.USER_NOT_FOUND + id);
+            return UserMessages.USER_NOT_FOUND + id;
         } else {
             userRepository.delete(userOptional.get());
-            LOGGER.debug("User with id {} was successfully deleted", id);
-
+            LOGGER.debug(UserMessages.USER_DELETED_SUCCESSFULLY);
+            return UserMessages.USER_DELETED_SUCCESSFULLY + id;
         }
-        return userOptional.get().getId();
     }
 
     /**
@@ -116,13 +118,14 @@ public class UserService {
      * @return A UserDetailsDTO object representing the updated user, or throws an exception if not found.
      * @throws ResourceNotFoundException If no user with the provided ID exists.
      */
-    public UserDetailsDTO updateUserById(String id, UserDetailsDTO userDTO) {
+    public String updateUserById(String id, UserDetailsDTO userDTO) {
         try {
             userValidators.userDtoValidator(userDTO);
             Optional<User> userOptional = userRepository.findById(id);
 
             if (!userOptional.isPresent()) {
-                LOGGER.error("User with id {} was not found in db", id);
+                LOGGER.error(UserMessages.USER_NOT_FOUND + id);
+                return UserMessages.USER_NOT_FOUND + id;
             } else {
                 User toBeUpdated = userOptional.get();
                 toBeUpdated.setFirstName(userDTO.getFirstName());
@@ -131,12 +134,12 @@ public class UserService {
                 toBeUpdated.setPassword(userDTO.getPassword());
 //            toBeUpdated.setAnnounces(userDTO.getAnnounces());
                 userRepository.save(toBeUpdated);
-                LOGGER.info("User with id {} was successfully updated", id);
+                LOGGER.info(UserMessages.USER_UPDATED_SUCCESSFULLY + id);
             }
-            return UserMapper.toUserDetailsDTO(userOptional.get());
+            return UserMessages.USER_UPDATED_SUCCESSFULLY + id;
         }catch (PatternNotMathcedException e){
-            LOGGER.error("----> " + e.getMessage() + " <-----");
-            return null;
+            LOGGER.error(UserMessages.USER_NOT_UPDATED + e.getMessage());
+            return UserMessages.USER_NOT_UPDATED + e.getMessage();
         }
     }
 

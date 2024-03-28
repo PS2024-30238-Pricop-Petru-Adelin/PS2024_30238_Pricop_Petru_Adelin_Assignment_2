@@ -95,18 +95,6 @@ public class UserController {
         ModelAndView mav = new ModelAndView("redirect:/user/get");
         return mav;
     }
-//    @PostMapping("/delete/{id}")
-//    public ModelAndView deleteUser(@PathVariable("id") String userId, RedirectAttributes redirectAttributes) {
-//        Optional<UserDetailsDTO> user = Optional.ofNullable(userService.findUserById(userId));
-//        if (user.isPresent()) {
-//            userService.deleteUserById(userId);
-//            redirectAttributes.addFlashAttribute("message", "User(" + user. +") deleted with id successfully");
-//        } else {
-//            redirectAttributes.addFlashAttribute("error", "User not found");
-//        }
-//        ModelAndView mav = new ModelAndView("redirect:/user/get");
-//        return mav;
-//    }
 
 
     /**
@@ -134,8 +122,9 @@ public class UserController {
      *         including an OK status code.
      */
     @PostMapping("/update/{id}")
-    public ModelAndView updateUser(@PathVariable("id") String userId, @ModelAttribute("user") UserDetailsDTO userDTO) {
-        UserDetailsDTO user = userService.updateUserById(userId, userDTO);
+    public ModelAndView updateUser(@PathVariable("id") String userId, @ModelAttribute("user") UserDetailsDTO userDTO, RedirectAttributes redirectAttributes) {
+        String msg = userService.updateUserById(userId, userDTO);
+        redirectAttributes.addFlashAttribute("message", msg);
         ModelAndView mav = new ModelAndView("redirect:/user/get");
         return mav;
     }
