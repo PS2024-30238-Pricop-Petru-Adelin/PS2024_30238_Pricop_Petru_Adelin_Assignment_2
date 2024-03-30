@@ -5,12 +5,13 @@
     <title>LogIn Page</title>
 </head>
 <body>
+<br>
 <label for="userId">Choose a user:</label>
 <form th:action="@{/index/redirectPage}" method="post">
     <select name="userId" id="userId">
         <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.lastName}"></option>
-    </select>
-    <input type="submit" value="Yes, delete this user" />
+    </select><br>
+    <input type="submit" value="Log in" />
 </form>
 </body>
 </html>

@@ -29,48 +29,35 @@ public class UserController {
     private final UserService userService;
 
     /**
-     * Retrieves a list of all registered users.
-     *
-     * @return A response entity containing a list of UserDetailsDTO objects representing all users.
+     * Get all users.
+     * @return ModelAndView containing the list of users.
      */
     @GetMapping("/get")
     public ModelAndView getUsers(){
         List<UserDetailsDTO> users = userService.findUsers();
         ModelAndView mav = new ModelAndView("AdminGetUsers");
         mav.addObject("users", users);
-        //mav.setViewName("/get");
         return mav;
     }
 
-//    @GetMapping("/insert")
-//    public ModelAndView showInsertForm() {
-//        ModelAndView modelAndView = new ModelAndView("insert"); // The name of your HTML file (without the .html extension)
-//        modelAndView.addObject("user", new UserDTO()); // Assuming you have a User class
-//        return modelAndView;
-//    }
     /**
-     * Creates a new user account.
-     *
-     * @param user The user details to be used for account creation.
-     *                The request body should be a valid UserDTO object.
-     * @return A response entity with the created user's ID upon successful creation,
-     *         including a CREATED status code.
+     * Insert a new user.
+     * @param user The user to be inserted.
+     * @param redirectAttributes Redirect attributes.
+     * @return ModelAndView for redirection.
      */
     @PostMapping("/insert")
-    public ModelAndView insertUser(@ModelAttribute("user") UserDetailsDTO user) {
-        String userID = userService.insert(user);
+    public ModelAndView insertUser(@ModelAttribute("user") UserDetailsDTO user, RedirectAttributes redirectAttributes) {
+        String msg = userService.insert(user);
         ModelAndView mav = new ModelAndView("redirect:/user/get");
-//        mav.setViewName("AdminPost");
+        redirectAttributes.addFlashAttribute("message", msg);
         return mav;
     }
 
-
     /**
-     * Retrieves the details of a specific user by their unique identifier.
-     *
-     * @param userId The unique identifier of the user to retrieve.
-     * @return A response entity containing the UserDetailsDTO object for the retrieved user
-     *         upon successful retrieval, including an OK status code.
+     * Get a user by its ID.
+     * @param userId The ID of the user.
+     * @return ResponseEntity containing the user details.
      */
     @GetMapping("/get/{id}")
     public ResponseEntity<UserDetailsDTO> getUser(@PathVariable("id") String userId) {
@@ -78,31 +65,24 @@ public class UserController {
         return new ResponseEntity<>(userDto, HttpStatus.OK);
     }
 
-
-
-
-
     /**
-     * Deletes a user account identified by its unique identifier.
-     *
-     * @param userId The unique identifier of the user account to be deleted.
-     * @return An empty response entity upon successful deletion, including a NO_CONTENT status code.
+     * Delete a user by its ID.
+     * @param userId The ID of the user.
+     * @param redirectAttributes Redirect attributes.
+     * @return ModelAndView for redirection.
      */
     @PostMapping("/delete/{id}")
     public ModelAndView deleteUser(@PathVariable("id") String userId, RedirectAttributes redirectAttributes) {
-        String string = userService.deleteUserById(userId);
-        redirectAttributes.addFlashAttribute("message", "User(" + string +") deleted successfully");
+        String msg = userService.deleteUserById(userId);
+        redirectAttributes.addFlashAttribute("message", msg);
         ModelAndView mav = new ModelAndView("redirect:/user/get");
         return mav;
     }
 
-
     /**
-     * Retrieves the details of a specific user by their name.
-     *
-     * @param name The part of the name of the users to be retrieved.
-     * @return A response entity containing the UserDetailsDTO object list for the retrieved users
-     *         upon successful retrieval, including an OK status code.
+     * Get users by name.
+     * @param name The name of the user.
+     * @return ResponseEntity containing the list of users.
      */
     @GetMapping("/filter/{name}")
     public ResponseEntity<List<UserDetailsDTO>> getUserByName(@PathVariable("name") String name) {
@@ -110,16 +90,12 @@ public class UserController {
         return new ResponseEntity<>(dtos, HttpStatus.OK);
     }
 
-
-
     /**
-     * Updates the details of an existing user account.
-     *
-     * @param userId The unique identifier of the user account to be updated.
-     * @param userDTO The updated user details to be applied.
-     *                The request body should be a valid UserDetailsDTO object.
-     * @return A response entity containing the updated UserDetailsDTO object upon successful update,
-     *         including an OK status code.
+     * Update a user by its ID.
+     * @param userId The ID of the user.
+     * @param userDTO The user details.
+     * @param redirectAttributes Redirect attributes.
+     * @return ModelAndView for redirection.
      */
     @PostMapping("/update/{id}")
     public ModelAndView updateUser(@PathVariable("id") String userId, @ModelAttribute("user") UserDetailsDTO userDTO, RedirectAttributes redirectAttributes) {
@@ -128,6 +104,4 @@ public class UserController {
         ModelAndView mav = new ModelAndView("redirect:/user/get");
         return mav;
     }
-
-
 }

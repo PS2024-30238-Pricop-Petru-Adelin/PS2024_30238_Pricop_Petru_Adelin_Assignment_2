@@ -15,4 +15,6 @@ public class UserMessages {
     public static final String USER_NOT_UPDATED = "The user was not updated; reason: ";
 
     public static final String USER_NOT_FOUND = "The user with the provided id was not found:  ";
+
+    public static final String ADMIN_DELETE = "You can not delete the application administrator!";
 }

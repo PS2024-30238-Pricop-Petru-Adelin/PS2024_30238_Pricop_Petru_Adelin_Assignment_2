@@ -31,9 +31,8 @@ public class UserService {
     private final UserValidators userValidators = new UserValidators();
 
     /**
-     * Retrieves a list of all user details available in the system.
-     *
-     * @return A list of UserDetailsDTO objects representing all users.
+     * Fetches all users from the repository and maps them to UserDetailsDTO objects.
+     * @return a list of UserDetailsDTO objects.
      */
     public List<UserDetailsDTO> findUsers(){
         List<User> userList = userRepository.findAll();
@@ -43,11 +42,10 @@ public class UserService {
     }
 
     /**
-     * Retrieves the details of a specific user identified by their unique String.
-     *
-     * @param id The unique identifier of the user to retrieve.
-     * @return A UserDetailsDTO object representing the requested user, or throws an exception if not found.
-     * @throws ResourceNotFoundException If no user with the provided ID exists.
+     * Fetches a user by ID from the repository and maps it to a UserDetailsDTO object.
+     * @param id the ID of the user to fetch.
+     * @return a UserDetailsDTO object of the fetched user.
+     * @throws ResourceNotFoundException if no user is found with the provided ID.
      */
     public UserDetailsDTO findUserById(String id){
         Optional<User> userOptional = userRepository.findById(id);
@@ -59,11 +57,9 @@ public class UserService {
     }
 
     /**
-     * Retrieves the details of a specific user identified by their name.
-     *
-     * @param str  The part of the name of the user to retrieve.
-     * @param name
-     * @return A UserDetailsDTO object list representing the requested users.
+     * Fetches users by first name or last name from the repository and maps them to UserDetailsDTO objects.
+     * @param str the string to match with first name or last name.
+     * @return a list of UserDetailsDTO objects of the fetched users.
      */
     public List<UserDetailsDTO> findUserFirstNameOrLastName(String str, String name){
         List<User> userList = userRepository.findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(str, str);
@@ -73,10 +69,9 @@ public class UserService {
     }
 
     /**
-     * Creates a new user in the system based on the provided details.
-     *
-     * @param userDTO A UserDetailsDTO object containing the data for the new user.
-     * @return The String of the newly created user.
+     * Inserts a new user into the repository.
+     * @param userDTO the UserDetailsDTO object of the user to insert.
+     * @return a message indicating the result of the operation.
      */
     public String insert(UserDetailsDTO userDTO) {
         try {
@@ -92,11 +87,9 @@ public class UserService {
     }
 
     /**
-     * Deletes a user identified by their unique String.
-     *
-     * @param id The unique identifier of the user to be deleted.
-     * @return The String of the deleted user, or throws an exception if not found.
-     * @throws ResourceNotFoundException If no user with the provided ID exists.
+     * Deletes a user by ID from the repository.
+     * @param id the ID of the user to delete.
+     * @return a message indicating the result of the operation.
      */
     public String deleteUserById(String id) {
         Optional<User> userOptional = userRepository.findById(id);
@@ -104,6 +97,9 @@ public class UserService {
             LOGGER.error(UserMessages.USER_NOT_FOUND + id);
             return UserMessages.USER_NOT_FOUND + id;
         } else {
+            if(userOptional.get().getId().equals("22b95bc0-2123-42d3-8234-69a8dd91c1bf")){
+                return UserMessages.ADMIN_DELETE;
+            }
             userRepository.delete(userOptional.get());
             LOGGER.debug(UserMessages.USER_DELETED_SUCCESSFULLY);
             return UserMessages.USER_DELETED_SUCCESSFULLY + id;
@@ -111,12 +107,10 @@ public class UserService {
     }
 
     /**
-     * Updates the details of an existing user identified by their unique String.
-     *
-     * @param id The unique identifier of the user to be updated.
-     * @param userDTO A UserDetailsDTO object containing the updated user data.
-     * @return A UserDetailsDTO object representing the updated user, or throws an exception if not found.
-     * @throws ResourceNotFoundException If no user with the provided ID exists.
+     * Updates a user by ID in the repository.
+     * @param id the ID of the user to update.
+     * @param userDTO the UserDetailsDTO object containing the updated user data.
+     * @return a message indicating the result of the operation.
      */
     public String updateUserById(String id, UserDetailsDTO userDTO) {
         try {
@@ -132,7 +126,6 @@ public class UserService {
                 toBeUpdated.setLastName(userDTO.getLastName());
                 toBeUpdated.setEmail(userDTO.getEmail());
                 toBeUpdated.setPassword(userDTO.getPassword());
-//            toBeUpdated.setAnnounces(userDTO.getAnnounces());
                 userRepository.save(toBeUpdated);
                 LOGGER.info(UserMessages.USER_UPDATED_SUCCESSFULLY + id);
             }

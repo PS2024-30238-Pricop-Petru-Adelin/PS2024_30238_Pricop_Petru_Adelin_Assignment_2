@@ -1,4 +1,5 @@
 com.olxapplication
+com.olxapplication.constants
 com.olxapplication.controller
 com.olxapplication.dtos
 com.olxapplication.entity
@@ -6,3 +7,4 @@ com.olxapplication.exception
 com.olxapplication.mappers
 com.olxapplication.repository
 com.olxapplication.service
+com.olxapplication.validators

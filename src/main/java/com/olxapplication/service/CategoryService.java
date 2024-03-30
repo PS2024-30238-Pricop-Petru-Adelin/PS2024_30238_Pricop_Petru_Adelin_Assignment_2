@@ -30,9 +30,8 @@ public class CategoryService {
     private final CategoryValidators categoryValidators = new CategoryValidators();
 
     /**
-     * Retrieves a list of all category details available in the system.
-     *
-     * @return A list of CategoryDetailsDTO objects representing all categories.
+     * Finds all categories.
+     * @return a list of CategoryDetailsDTO objects.
      */
     public List<CategoryDetailsDTO> findCategories() {
         List<Category> categoryList = categoryRepository.findAll();
@@ -42,9 +41,9 @@ public class CategoryService {
     }
 
     /**
-     * Retrieves a list of all category details that have matching name available in the system.
-     *
-     * @return A list of CategoryDetailsDTO objects representing all categories with a matching name.
+     * Finds all categories by name.
+     * @param name the name of the categories to find.
+     * @return a list of CategoryDetailsDTO objects.
      */
     public List<CategoryDetailsDTO> findCategoriesByName(String name) {
         List<Category> categoryList = categoryRepository.findCategoriesByCategoryNameContainsIgnoreCase(name);
@@ -53,17 +52,20 @@ public class CategoryService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Finds a category by its name.
+     * @param name the name of the category to find.
+     * @return the CategoryDetailsDTO object of the found category.
+     */
     public CategoryDetailsDTO findCategoryByName(String name) {
         List<Category> categoryList = categoryRepository.findCategoriesByCategoryNameContainsIgnoreCase(name);
         return CategoryMapper.toCategoryDetailsDTO(categoryList.getFirst());
     }
 
     /**
-     * Retrieves the details of a specific category identified by its unique String.
-     *
-     * @param id The unique identifier of the category to retrieve.
-     * @return A CategoryDetailsDTO object representing the requested category, or throws an exception if not found.
-     * @throws ResourceNotFoundException If no category with the provided ID exists.
+     * Finds a category by its id.
+     * @param id the id of the category to find.
+     * @return the CategoryDetailsDTO object of the found category.
      */
     public CategoryDetailsDTO findCategoryById(String id) {
         Optional<Category> categoryOptional = categoryRepository.findById(id);
@@ -75,10 +77,9 @@ public class CategoryService {
     }
 
     /**
-     * Creates a new category in the system based on the provided details.
-     *
-     * @param categoryDTO A CategoryDTO object containing the data for the new category.
-     * @return The String of the newly created category.
+     * Inserts a new category after validating the input.
+     * @param categoryDTO the CategoryDTO object of the category to insert.
+     * @return a string message indicating the result of the operation.
      */
     public String insert(CategoryDTO categoryDTO) {
         try {
@@ -94,11 +95,9 @@ public class CategoryService {
     }
 
     /**
-     * Deletes a category identified by its unique String.
-     *
-     * @param id The unique identifier of the category to be deleted.
-     * @return The String of the deleted category, or throws an exception if not found.
-     * @throws ResourceNotFoundException If no category with the provided ID exists.
+     * Deletes a category by its id.
+     * @param id the id of the category to delete.
+     * @return a string message indicating the result of the operation.
      */
     public String deleteCategoryById(String id) {
         Optional<Category> categoryOptional = categoryRepository.findById(id);
@@ -107,19 +106,17 @@ public class CategoryService {
             return  CategoryMessages.CATEGORY_NOT_FOUND + id;
         } else {
             categoryRepository.delete(categoryOptional.get());
-            LOGGER.debug("Category with id {} was successfully deleted", id);
+            LOGGER.debug(CategoryMessages.CATEGORY_DELETED_SUCCESSFULLY + id);
+            return CategoryMessages.CATEGORY_DELETED_SUCCESSFULLY + id;
 
         }
-        return categoryOptional.get().getId();
     }
 
     /**
-     * Updates the name of an existing category identified by its unique String.
-     *
-     * @param id The unique identifier of the category to be updated.
-     * @param categoryDTO A CategoryDetailsDTO object containing the updated category name.
-     * @return A CategoryDetailsDTO object representing the updated category, or throws an exception if not found.
-     * @throws ResourceNotFoundException If no category with the provided ID exists.
+     * Updates the name of a category by its id after validating the input.
+     * @param id the id of the category to update.
+     * @param categoryDTO the CategoryDetailsDTO object containing the new name of the category.
+     * @return a string message indicating the result of the operation.
      */
     public String updateCategoryNameById(String id, CategoryDetailsDTO categoryDTO) {
         try {
@@ -132,7 +129,6 @@ public class CategoryService {
             } else {
                 Category toBeUpdated = categoryOptional.get();
                 toBeUpdated.setCategoryName(categoryDTO.getCategoryName());
-//            toBeUpdated.setAnnounces(categoryDTO.getAnnounces());
                 categoryRepository.save(toBeUpdated);
                 LOGGER.debug(CategoryMessages.CATEGORY_UPDATED_SUCCESSFULLY + id);
                 return CategoryMessages.CATEGORY_UPDATED_SUCCESSFULLY + id;

@@ -28,9 +28,8 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     /**
-     * Retrieves a list of all available categories.
-     *
-     * @return A response entity containing a list of CategoryDetailsDTO objects representing all categories.
+     * Get all categories.
+     * @return ModelAndView containing the list of categories.
      */
     @GetMapping("/get")
     public ModelAndView getCategorys(){
@@ -41,12 +40,10 @@ public class CategoryController {
     }
 
     /**
-     * Creates a new category.
-     *
-     * @param categoryDTO The category details to be used for creation.
-     *                        The request body should be a valid CategoryDTO object.
-     * @return A response entity with the created category's ID upon successful creation,
-     *         including a CREATED status code.
+     * Insert a new category.
+     * @param categoryDTO The category to be inserted.
+     * @param redirectAttributes Redirect attributes.
+     * @return ModelAndView for redirection.
      */
     @PostMapping("/insert")
     public ModelAndView insertCategory(@ModelAttribute("category") CategoryDTO categoryDTO, RedirectAttributes redirectAttributes) {
@@ -58,11 +55,9 @@ public class CategoryController {
     }
 
     /**
-     * Retrieves a specific category by its unique identifier.
-     *
-     * @param categoryId The unique identifier of the category to retrieve.
-     * @return A response entity containing the CategoryDetailsDTO object for the retrieved category
-     *         upon successful retrieval, including an OK status code.
+     * Get a category by its ID.
+     * @param categoryId The ID of the category.
+     * @return ResponseEntity containing the category details.
      */
     @GetMapping("/get/{id}")
     public ResponseEntity<CategoryDetailsDTO> getCategory(@PathVariable("id") String categoryId) {
@@ -71,11 +66,9 @@ public class CategoryController {
     }
 
     /**
-     * Retrieves a specific category by its name.
-     *
-     * @param name The substring of the name of the categories to be retrieved.
-     * @return A response entity containing the CategoryDetailsDTO object list for the retrieved categories
-     *         upon successful retrieval, including an OK status code.
+     * Get categories by name.
+     * @param name The name of the category.
+     * @return ResponseEntity containing the list of categories.
      */
     @GetMapping("/byName/{name}")
     public ResponseEntity<List<CategoryDetailsDTO>> getCategoryByName(@PathVariable("name") String name) {
@@ -84,10 +77,10 @@ public class CategoryController {
     }
 
     /**
-     * Deletes a category identified by its unique identifier.
-     *
-     * @param categoryId The unique identifier of the category to be deleted.
-     * @return An empty response entity upon successful deletion, including a NO_CONTENT status code.
+     * Delete a category by its ID.
+     * @param categoryId The ID of the category.
+     * @param redirectAttributes Redirect attributes.
+     * @return ModelAndView for redirection.
      */
     @PostMapping("/delete/{id}")
     public ModelAndView deleteCategory(@PathVariable("id") String categoryId, RedirectAttributes redirectAttributes) {
@@ -98,12 +91,11 @@ public class CategoryController {
     }
 
     /**
-     * Updates an existing category name with the provided details(the new name).
-     *
-     * @param categoryId The unique identifier of the category to be updated.
-     * @param categoryDTO The category details containing the updated information.
-     * @return A response entity containing the updated CategoryDetailsDTO object upon successful update,
-     *         including an OK status code.
+     * Update a category name by its ID.
+     * @param categoryId The ID of the category.
+     * @param categoryDTO The category details.
+     * @param redirectAttributes Redirect attributes.
+     * @return ModelAndView for redirection.
      */
     @PostMapping("/update/{id}")
     public ModelAndView updateCategoryName(@PathVariable("id") String categoryId, @ModelAttribute("category") CategoryDetailsDTO categoryDTO, RedirectAttributes redirectAttributes) {

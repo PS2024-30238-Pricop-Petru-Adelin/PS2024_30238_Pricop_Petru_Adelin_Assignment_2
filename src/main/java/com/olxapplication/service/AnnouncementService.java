@@ -39,9 +39,8 @@ public class AnnouncementService {
     private final CategoryRepository categoryRepository;
 
     /**
-     * Retrieves a list of all announcement details available in the system.
-     *
-     * @return A list of AnnouncementDetailsDTO objects representing all announcements.
+     * Finds all announcements.
+     * @return a list of AnnouncementDetailsDTO objects.
      */
     public List<AnnouncementDetailsDTO> findAnnounces(){
         List<Announcement> announcementList = announcementRepository.findAll();
@@ -50,6 +49,11 @@ public class AnnouncementService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Finds all announcements excluding those made by a specific user.
+     * @param id the id of the user whose announcements are to be excluded.
+     * @return a list of AnnouncementDetailsDTO objects.
+     */
     public List<AnnouncementDetailsDTO> findOtherAnnounces(String id){
         List<Announcement> announcementList = announcementRepository.findAll();
         for(int i = announcementList.size()-1; i >= 0; i--){
@@ -64,11 +68,9 @@ public class AnnouncementService {
     }
 
     /**
-     * Retrieves the details of a specific announcement identified by its unique String.
-     *
-     * @param id The unique identifier of the announcement to retrieve.
-     * @return An AnnouncementDetailsDTO object representing the requested announcement, or throws an exception if not found.
-     * @throws ResourceNotFoundException If no announcement with the provided ID exists.
+     * Finds an announcement by its id.
+     * @param id the id of the announcement to find.
+     * @return the AnnouncementDetailsDTO object of the found announcement.
      */
     public AnnouncementDetailsDTO findAnnouncementById(String id){
         Optional<Announcement> announcementOptional = announcementRepository.findById(id);
@@ -80,10 +82,9 @@ public class AnnouncementService {
     }
 
     /**
-     * Retrieves the details of a specific announcement identified by its category id.
-     *
-     * @param category_id The id of the category of the announcement to retrieve.
-     * @return An AnnouncementDetailsDTO object list the announcement with corresponding category id.
+     * Finds all announcements in a specific category.
+     * @param category_id the id of the category.
+     * @return a list of AnnouncementDetailsDTO objects.
      */
     public List<AnnouncementDetailsDTO> findAnnouncementByCategoryId(String category_id){
         List<Announcement> announces = announcementRepository.findAnnouncementsByCategory_Id(category_id);
@@ -94,10 +95,9 @@ public class AnnouncementService {
     }
 
     /**
-     * Retrieves the details of a specific announcement identified by its user id.
-     *
-     * @param user_id The id of the user of the announcement to retrieve.
-     * @return An AnnouncementDetailsDTO object list the announcement with corresponding user id.
+     * Finds all announcements made by a specific user.
+     * @param user_id the id of the user.
+     * @return a list of AnnouncementDetailsDTO objects.
      */
     public List<AnnouncementDetailsDTO> findAnnouncementByUserId(String user_id){
         List<Announcement> announces = announcementRepository.findAnnouncementsByUser_Id(user_id);
@@ -108,10 +108,9 @@ public class AnnouncementService {
     }
 
     /**
-     * Retrieves the details of a specific announcement identified by a part of its title.
-     *
-     * @param title The title of the user of the announcement to retrieve.
-     * @return An AnnouncementDetailsDTO object list the announcement with corresponding title.
+     * Finds all announcements with a title containing a specific string.
+     * @param title the string to search for in announcement titles.
+     * @return a list of AnnouncementDetailsDTO objects.
      */
     public List<AnnouncementDetailsDTO> findAnnouncementByTitle(String title){
         List<Announcement> announces = announcementRepository.findAnnouncementsByTitleContainsIgnoreCase(title);
@@ -121,12 +120,10 @@ public class AnnouncementService {
                 .collect(Collectors.toList());
     }
 
-
     /**
-     * Creates a new announcement in the system based on the provided details.
-     *
-     * @param announcementDTO An AnnouncementDetailsDTO object containing the data for the new announcement.
-     * @return The String of the newly created announcement.
+     * Inserts a new announcement.
+     * @param announcementDTO the AnnouncementDetailsDTO object of the announcement to insert.
+     * @return the id of the inserted announcement.
      */
     public String insert(AnnouncementDetailsDTO announcementDTO) {
         Announcement announcement = AnnouncementMapper.toEntity(announcementDTO);
@@ -135,9 +132,13 @@ public class AnnouncementService {
         return announcement.getId();
     }
 
+    /**
+     * Inserts a new announcement after validating the input and checking the existence of the user and category.
+     * @param announcementWebDTO the AnnouncementWebDTO object of the announcement to insert.
+     * @return a string message indicating the result of the operation.
+     */
     public String insert(AnnouncementWebDTO announcementWebDTO) {
         try{
-
             announcementValidator.announcementWebDtoValidator(announcementWebDTO);
             Optional<User> user = userRepository.findById(announcementWebDTO.getUser());
             Optional<Category> category = categoryRepository.findById(announcementWebDTO.getCategory());
@@ -169,15 +170,12 @@ public class AnnouncementService {
             LOGGER.error(AnnouncementMessages.ANNOUNCEMENT_NOT_INSERTED + e.getMessage());
             return AnnouncementMessages.ANNOUNCEMENT_NOT_INSERTED + e.getMessage();
         }
-
     }
 
     /**
-     * Deletes an announcement identified by its unique String.
-     *
-     * @param id The unique identifier of the announcement to be deleted.
-     * @return The String of the deleted announcement, or throws an exception if not found.
-     * @throws ResourceNotFoundException If no announcement with the provided ID exists.
+     * Deletes an announcement by its id.
+     * @param id the id of the announcement to delete.
+     * @return a string message indicating the result of the operation.
      */
     public String deleteAnnouncementById(String id) {
         Optional<Announcement> announcementOptional = announcementRepository.findById(id);
@@ -189,20 +187,16 @@ public class AnnouncementService {
             LOGGER.debug(AnnouncementMessages.ANNOUNCEMENT_DELETED_SUCCESSFULLY + id);
             return AnnouncementMessages.ANNOUNCEMENT_DELETED_SUCCESSFULLY + id;
         }
-
     }
 
     /**
-     * Updates the details of an existing announcement identified by its unique String.
-     *
-     * @param id The unique identifier of the announcement to be updated.
-     * @param announcementDTO An AnnouncementDetailsDTO object containing the updated announcement data.
-     * @return An AnnouncementDTO object representing the updated announcement, or throws an exception if not found.
-     * @throws ResourceNotFoundException If no announcement with the provided ID exists.
+     * Updates an announcement by its id with the provided details.
+     * @param id the id of the announcement to update.
+     * @param announcementDTO the AnnouncementDetailsDTO object containing the new details of the announcement.
+     * @return a string message indicating the result of the operation.
      */
     public String updateAnnouncementById(String id, AnnouncementDetailsDTO announcementDTO) {
         Optional<Announcement> announcementOptional = announcementRepository.findById(id);
-
         if (!announcementOptional.isPresent()) {
             LOGGER.error(AnnouncementMessages.ANNOUNCEMENT_NOT_FOUND + id);
             return AnnouncementMessages.ANNOUNCEMENT_NOT_FOUND + id;
@@ -219,6 +213,12 @@ public class AnnouncementService {
         }
     }
 
+    /**
+     * Updates an announcement by its id with the provided details after validating the input.
+     * @param id the id of the announcement to update.
+     * @param announcementWebDTO the AnnouncementWebDTO object containing the new details of the announcement.
+     * @return a string message indicating the result of the operation.
+     */
     public String updateAnnouncementById(String id, AnnouncementWebDTO announcementWebDTO) {
         try {
             announcementValidator.announcementWebDtoValidator(announcementWebDTO);

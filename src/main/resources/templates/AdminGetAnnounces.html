@@ -10,7 +10,7 @@
         }
         body {
             font-family: "Britannic Bold";
-            background-image: url('https://th.bing.com/th/id/R.84d189329245b0db97f707f2d1916fe1?rik=8nda9RzPnhimCA&riu=http%3a%2f%2fclipart-library.com%2fimages%2fLcdjMKEgi.jpg&ehk=aL%2f1%2fKAfUEf3rSv4XgjXcxUFeUvsshVMOXwtF5sFcMk%3d&risl=&pid=ImgRaw&r=0');
+            background-image: url('https://wallpapercave.com/wp/wp4565867.png');
             background-repeat: no-repeat;
             background-attachment: fixed;
             opacity: 0.8;
@@ -228,6 +228,11 @@
         .form-row form {
             flex: 30; /* Allow forms to take up equal space */
         }
+        p{
+            margin-left: 2.5%;
+            color: #bb7a2a;
+            background: white;
+        }
     </style>
 </head>
 <body>
@@ -271,7 +276,7 @@
             <input type="text" id="description" name="description" required><br>
 
             <label for="price">Price:    </label>
-            <input type="number" id="price" name="price" required><br>
+            <input type="number" step="any" id="price" name="price" required><br>
 
             <label for="user">User:</label>
             <input type="text" id="user" name="user" required><br>
@@ -328,7 +333,7 @@
                         <label for="description">Description:</label>
                         <input type="text" th:value="${announcement.description}" name="description" required><br>
                         <label for="price">Price:</label>
-                        <input type="number" th:value="${announcement.price}" name="price" required><br>
+                        <input type="number" step="any" th:value="${announcement.price}" name="price" required><br>
                         <label for="user">User id:</label>
                         <input type="text" th:value="${announcement.user.getId()}" name="user" readonly required><br>
                         <label for="category">Category name:</label>
@@ -358,12 +363,10 @@
         modal.style.display = "block";
     }
 
-    // When the announcement clicks on <span> (x), close the modal
     span.onclick = function() {
         modal.style.display = "none";
     }
 
-    // When the announcement clicks anywhere outside of the modal, close it
     window.onclick = function(event) {
         if (event.target == modal) {
             modal.style.display = "none";

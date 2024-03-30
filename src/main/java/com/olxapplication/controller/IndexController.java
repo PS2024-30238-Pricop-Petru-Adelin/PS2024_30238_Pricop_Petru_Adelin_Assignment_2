@@ -11,6 +11,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
+
+/**
+ * Controller for handling requests to the index page.
+ */
 @Controller
 @CrossOrigin
 @RequestMapping(value = "/index")
@@ -20,6 +24,11 @@ import java.util.List;
 public class IndexController {
     private final UserService userService;
 
+
+    /**
+     * Handles GET requests to the HomePage -- The future log in page.
+     * @return ModelAndView object with a list of users for log in.
+     */
     @GetMapping("/HomePage")
     public ModelAndView logIn(){
         List<UserDetailsDTO> users = userService.findUsers();
@@ -28,6 +37,11 @@ public class IndexController {
         return mav;
     }
 
+    /**
+     * Handles POST requests to redirect the user based on their role.
+     * @param userId The ID of the user.
+     * @return ModelAndView object with the view name set based on the user's role.
+     */
     @PostMapping("/redirectPage")
     public ModelAndView redirectBasedOnRole(@ModelAttribute("userId") String userId){
         ModelAndView mav = new ModelAndView();
@@ -39,12 +53,11 @@ public class IndexController {
         return mav;
     }
 
-    @GetMapping("/admin")
-    public ModelAndView adminChoose(){
-        ModelAndView mav = new ModelAndView("AdminChooseAction");
-        return mav;
-    }
-
+    /**
+     * Handles POST requests to redirect the admin to user management page.
+     * @param newLink The new link to redirect to(link to user management page send from frontend).
+     * @return ModelAndView object with the view name set to the new link.
+     */
     @PostMapping("/admin")
     public ModelAndView adminRedirect(@ModelAttribute("newLink") String newLink){
         System.out.println("-"+newLink+"-");
@@ -52,12 +65,12 @@ public class IndexController {
         return mav;
     }
 
-    @GetMapping("/user/{id}")
-    public ModelAndView userChoose(@PathVariable("id") String id){
-        ModelAndView mav = new ModelAndView("UserChooseAction");
-        return mav;
-    }
-
+    /**
+     * Handles POST requests to redirect the user to the listed announces.
+     * @param id The ID of the user.
+     * @param newLink The new link to redirect to(see announces page).
+     * @return ModelAndView object with the view name set to the new link.
+     */
     @PostMapping("/user/{id}")
     public ModelAndView userRedirect(@PathVariable("id") String id, @ModelAttribute("newLink") String newLink){
         System.out.println("-"+newLink+"-");
