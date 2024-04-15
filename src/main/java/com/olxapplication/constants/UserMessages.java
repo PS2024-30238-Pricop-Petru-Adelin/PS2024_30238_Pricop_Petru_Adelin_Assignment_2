@@ -17,4 +17,8 @@ public class UserMessages {
     public static final String USER_NOT_FOUND = "The user with the provided id was not found:  ";
 
     public static final String ADMIN_DELETE = "You can not delete the application administrator!";
+
+
+    public static final String INVALID_PASSWORD = "The password inserted is INVALID";
+    public static final String INVALID_EMAIL = "The email inserted is INVALID";
 }

@@ -5,6 +5,7 @@ import com.olxapplication.constants.CategoryMessages;
 import com.olxapplication.constants.UserMessages;
 import com.olxapplication.dtos.*;
 import com.olxapplication.entity.Category;
+import com.olxapplication.entity.Favourite;
 import com.olxapplication.entity.User;
 import com.olxapplication.exception.PatternNotMathcedException;
 import com.olxapplication.exception.ResourceNotFoundException;
@@ -14,6 +15,7 @@ import com.olxapplication.mappers.CategoryMapper;
 import com.olxapplication.mappers.UserMapper;
 import com.olxapplication.repository.AnnouncementRepository;
 import com.olxapplication.repository.CategoryRepository;
+import com.olxapplication.repository.FavouriteRepository;
 import com.olxapplication.repository.UserRepository;
 import com.olxapplication.validators.AnnouncementValidator;
 import lombok.AllArgsConstructor;
@@ -21,6 +23,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.text.DecimalFormat;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -37,6 +42,10 @@ public class AnnouncementService {
     private final AnnouncementValidator announcementValidator = new AnnouncementValidator();
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
+
+
+    private static final DecimalFormat decimalFormat = new DecimalFormat("0.00");
+    private final FavouriteRepository favouriteRepository;
 
     /**
      * Finds all announcements.
@@ -83,11 +92,18 @@ public class AnnouncementService {
 
     /**
      * Finds all announcements in a specific category.
-     * @param category_id the id of the category.
+     * @param categoryName the id of the category.
      * @return a list of AnnouncementDetailsDTO objects.
      */
-    public List<AnnouncementDetailsDTO> findAnnouncementByCategoryId(String category_id){
-        List<Announcement> announces = announcementRepository.findAnnouncementsByCategory_Id(category_id);
+    public List<AnnouncementDetailsDTO> findAnnouncementByCategoryNameAndNotUser(String categoryName, String userId){
+
+        List<Category> categoryList = categoryRepository.findCategoriesByCategoryNameContainsIgnoreCase(categoryName);
+
+        List<Announcement> announces = new ArrayList<>();
+        for(Category c : categoryList){
+            List<Announcement> part = announcementRepository.findAnnouncementsByCategoryAndUser_IdNot(c, userId);
+            announces.addAll(part);
+        }
 
         return announces.stream()
                 .map(AnnouncementMapper::toAnnouncementDetailsDTO)
@@ -127,6 +143,7 @@ public class AnnouncementService {
      */
     public String insert(AnnouncementDetailsDTO announcementDTO) {
         Announcement announcement = AnnouncementMapper.toEntity(announcementDTO);
+        announcement.setNewPrice(announcement.getPrice()*(1-(announcement.getDiscount()/100.0)));
         announcement = announcementRepository.save(announcement);
         LOGGER.debug("Announcement with id {} was inserted in db", announcement.getId());
         return announcement.getId();
@@ -150,6 +167,10 @@ public class AnnouncementService {
                             .price(announcementWebDTO.getPrice())
                             .user(UserMapper.toUserDetailsDTO(user.get()))
                             .category(CategoryMapper.toCategoryDetailsDTO(category.get()))
+                            .date(LocalDateTime.now())
+                            .discount(announcementWebDTO.getDiscount())
+                            .newPrice(Double.valueOf(decimalFormat.format(announcementWebDTO.getPrice()*(1-(announcementWebDTO.getDiscount()/100.0)))))
+                            .imageURL(announcementWebDTO.getImageURL())
                             .build();
                     Announcement announcement = AnnouncementMapper.toEntity(ann);
                     announcement = announcementRepository.save(announcement);
@@ -163,10 +184,7 @@ public class AnnouncementService {
                 LOGGER.error(AnnouncementMessages.ANNOUNCEMENT_NOT_INSERTED + UserMessages.USER_NOT_FOUND );
                 return AnnouncementMessages.ANNOUNCEMENT_NOT_INSERTED + UserMessages.USER_NOT_FOUND;
             }
-        } catch (PatternNotMathcedException e){
-            LOGGER.error(AnnouncementMessages.ANNOUNCEMENT_NOT_INSERTED + e.getMessage());
-            return AnnouncementMessages.ANNOUNCEMENT_NOT_INSERTED + e.getMessage();
-        } catch (ResourceNotFoundException e){
+        } catch (PatternNotMathcedException | ResourceNotFoundException e){
             LOGGER.error(AnnouncementMessages.ANNOUNCEMENT_NOT_INSERTED + e.getMessage());
             return AnnouncementMessages.ANNOUNCEMENT_NOT_INSERTED + e.getMessage();
         }
@@ -179,10 +197,18 @@ public class AnnouncementService {
      */
     public String deleteAnnouncementById(String id) {
         Optional<Announcement> announcementOptional = announcementRepository.findById(id);
-        if (!announcementOptional.isPresent()) {
+        if (announcementOptional.isEmpty()) {
             LOGGER.error(AnnouncementMessages.ANNOUNCEMENT_NOT_FOUND + id);
             return AnnouncementMessages.ANNOUNCEMENT_NOT_FOUND + id;
         } else {
+            List<Favourite> favouriteList = (List<Favourite>) favouriteRepository.findAll();
+            for (Favourite favourite : favouriteList) {
+                if (favourite.getFavouriteAnnouncements().contains(announcementOptional.get())) {
+                    favourite.getFavouriteAnnouncements().remove(announcementOptional.get());
+                    favouriteRepository.save(favourite);
+                }
+            }
+
             announcementRepository.delete(announcementOptional.get());
             LOGGER.debug(AnnouncementMessages.ANNOUNCEMENT_DELETED_SUCCESSFULLY + id);
             return AnnouncementMessages.ANNOUNCEMENT_DELETED_SUCCESSFULLY + id;
@@ -197,7 +223,7 @@ public class AnnouncementService {
      */
     public String updateAnnouncementById(String id, AnnouncementDetailsDTO announcementDTO) {
         Optional<Announcement> announcementOptional = announcementRepository.findById(id);
-        if (!announcementOptional.isPresent()) {
+        if (announcementOptional.isEmpty()) {
             LOGGER.error(AnnouncementMessages.ANNOUNCEMENT_NOT_FOUND + id);
             return AnnouncementMessages.ANNOUNCEMENT_NOT_FOUND + id;
         } else {
@@ -207,6 +233,9 @@ public class AnnouncementService {
             toBeUpdated.setPrice(announcementDTO.getPrice());
             toBeUpdated.setUser(UserMapper.toEntity(announcementDTO.getUser()));
             toBeUpdated.setCategory(CategoryMapper.toEntity(announcementDTO.getCategory()));
+            toBeUpdated.setDate(LocalDateTime.now());
+            toBeUpdated.setDiscount(announcementDTO.getDiscount());
+            toBeUpdated.setNewPrice(Double.valueOf(decimalFormat.format(announcementDTO.getPrice()*(1-(announcementDTO.getDiscount()/100.0)))));
             announcementRepository.save(toBeUpdated);
             LOGGER.debug(AnnouncementMessages.ANNOUNCEMENT_UPDATED_SUCCESSFULLY + id);
             return AnnouncementMessages.ANNOUNCEMENT_UPDATED_SUCCESSFULLY + id;
@@ -234,13 +263,17 @@ public class AnnouncementService {
                 toBeUpdated.setPrice(announcementWebDTO.getPrice());
                 toBeUpdated.setUser(userRepository.findById(announcementWebDTO.getUser()).get());
                 toBeUpdated.setCategory(categoryRepository.findById(announcementWebDTO.getCategory()).get());
+                toBeUpdated.setDate(LocalDateTime.now());
+                toBeUpdated.setDiscount(announcementWebDTO.getDiscount());
+                toBeUpdated.setNewPrice(Double.valueOf(decimalFormat.format(announcementWebDTO.getPrice()*(1-(announcementWebDTO.getDiscount()/100.0)))));
+                toBeUpdated.setImageURL(announcementWebDTO.getImageURL());
                 announcementRepository.save(toBeUpdated);
                 LOGGER.debug(AnnouncementMessages.ANNOUNCEMENT_UPDATED_SUCCESSFULLY + id);
                 return AnnouncementMessages.ANNOUNCEMENT_UPDATED_SUCCESSFULLY + id;
             }
         } catch (PatternNotMathcedException e){
-            LOGGER.error(AnnouncementMessages.ANNOUNCEMENT_UPDATED_SUCCESSFULLY + e.getMessage());
-            return AnnouncementMessages.ANNOUNCEMENT_UPDATED_SUCCESSFULLY + e.getMessage();
+            LOGGER.error(AnnouncementMessages.ANNOUNCEMENT_NOT_UPDATED + e.getMessage());
+            return AnnouncementMessages.ANNOUNCEMENT_NOT_UPDATED + e.getMessage();
         }
     }
 }

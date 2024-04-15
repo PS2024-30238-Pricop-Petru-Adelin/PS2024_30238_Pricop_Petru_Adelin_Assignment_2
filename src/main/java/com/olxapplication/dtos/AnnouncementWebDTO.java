@@ -14,4 +14,7 @@ public class AnnouncementWebDTO {
     private Double price;
     private String user;
     private String category;
+    private Double discount;
+    private Double newPrice;
+    private String imageURL;
 }

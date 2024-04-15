@@ -64,5 +64,13 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Announcement> announces;
 
+    @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
+    private List<Message> sentMessages;
 
+    @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
+    private List<Message> receivedMessages;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "favourite_id")
+    private Favourite favouriteList;
 }

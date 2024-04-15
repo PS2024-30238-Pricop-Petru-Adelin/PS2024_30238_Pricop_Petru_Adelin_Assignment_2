@@ -23,6 +23,10 @@ public class AnnouncementMapper {
                 .price(announcement.getPrice())
                 .category(announcement.getCategory())
                 .user(announcement.getUser())
+                .date(announcement.getDate())
+                .discount(announcement.getDiscount())
+                .newPrice(announcement.getNewPrice())
+                .imageURL(announcement.getImageURL())
                 .build();
     }
 
@@ -41,6 +45,10 @@ public class AnnouncementMapper {
                 .price(announcement.getPrice())
                 .category(CategoryMapper.toCategoryDetailsDTO(announcement.getCategory()))
                 .user(UserMapper.toUserDetailsDTO(announcement.getUser()))
+                .date(announcement.getDate())
+                .discount(announcement.getDiscount())
+                .newPrice(announcement.getNewPrice())
+                .imageURL(announcement.getImageURL())
                 .build();
     }
 
@@ -59,6 +67,10 @@ public class AnnouncementMapper {
                 .price(announcementDTO.getPrice())
                 .category(announcementDTO.getCategory())
                 .user(announcementDTO.getUser())
+                .date(announcementDTO.getDate())
+                .discount(announcementDTO.getDiscount())
+                .newPrice(announcementDTO.getNewPrice())
+                .imageURL(announcementDTO.getImageURL())
                 .build();
     }
 
@@ -77,6 +89,10 @@ public class AnnouncementMapper {
                 .price(announcementDTO.getPrice())
                 .category(CategoryMapper.toEntity(announcementDTO.getCategory()))
                 .user(UserMapper.toEntity(announcementDTO.getUser()))
+                .date(announcementDTO.getDate())
+                .discount(announcementDTO.getDiscount())
+                .newPrice(announcementDTO.getNewPrice())
+                .imageURL(announcementDTO.getImageURL())
                 .build();
     }
 }

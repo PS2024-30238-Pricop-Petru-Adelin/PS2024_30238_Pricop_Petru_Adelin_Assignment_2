@@ -1,10 +1,7 @@
 package com.olxapplication.validators;
 
 import com.olxapplication.constants.AnnouncementMessages;
-import com.olxapplication.constants.UserMessages;
-import com.olxapplication.dtos.AnnouncementDetailsDTO;
 import com.olxapplication.dtos.AnnouncementWebDTO;
-import com.olxapplication.dtos.UserDetailsDTO;
 import com.olxapplication.exception.PatternNotMathcedException;
 import lombok.*;
 
@@ -49,6 +46,28 @@ public class AnnouncementValidator {
         }
     }
 
+    public boolean discountValidator(Double discount) throws PatternNotMathcedException{
+
+        if(discount >= 0 && discount <= 100){
+
+            return true;
+        } else {
+            throw new PatternNotMathcedException(AnnouncementMessages.DISCOUNT_PATTERN_NOT_MATCHED);
+        }
+    }
+
+    public boolean imageURLValidator(String url) throws PatternNotMathcedException{
+        Pattern pattern = Pattern.compile("^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]$");
+        Matcher matcher = pattern.matcher(url);
+
+        if(matcher.find()){
+            matcher.reset();
+            return matcher.find();
+        } else {
+            throw new PatternNotMathcedException(AnnouncementMessages.IMAGE_URL_NOT_MATCHED);
+        }
+    }
+
     public boolean idValidator(String id) throws PatternNotMathcedException{
         Pattern pattern = Pattern.compile("^[-a-zA-Z0-9]{5,250}$");
         Matcher matcher = pattern.matcher(id);
@@ -63,8 +82,10 @@ public class AnnouncementValidator {
 
 
     public boolean announcementWebDtoValidator(AnnouncementWebDTO announcementWebDTO) throws PatternNotMathcedException{
-        if(titleValidator(announcementWebDTO.getTitle())&&descriptionValidator(announcementWebDTO.getDescription())&&
-                priceValidator(announcementWebDTO.getPrice())&&idValidator(announcementWebDTO.getUser())&&idValidator(announcementWebDTO.getCategory())) {
+        if(titleValidator(announcementWebDTO.getTitle())&&descriptionValidator(announcementWebDTO.getDescription())
+                && discountValidator(announcementWebDTO.getDiscount()) && priceValidator(announcementWebDTO.getPrice())
+                &&idValidator(announcementWebDTO.getUser())&&idValidator(announcementWebDTO.getCategory())
+                &&imageURLValidator(announcementWebDTO.getImageURL()) ){
             return true;
         }else{
             return false;

@@ -1,7 +1,6 @@
 package com.olxapplication.dtos;
 
-import com.olxapplication.entity.Announcement;
-import com.olxapplication.entity.RoleType;
+import com.olxapplication.entity.Message;
 import lombok.*;
 
 import java.util.List;
@@ -23,4 +22,6 @@ public class UserDetailsDTO {
     private String password;
     private String role;
     private List<String> announces;
+    private List<Message> sentMessages;
+    private List<Message> receivedMessages;
 }

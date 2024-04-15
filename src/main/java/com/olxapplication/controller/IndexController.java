@@ -2,14 +2,17 @@ package com.olxapplication.controller;
 
 import com.olxapplication.dtos.UserDetailsDTO;
 import com.olxapplication.service.UserService;
+import com.olxapplication.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -39,16 +42,25 @@ public class IndexController {
 
     /**
      * Handles POST requests to redirect the user based on their role.
-     * @param userId The ID of the user.
+     * @param email The email of the user.
+     * @param password The password of the user.
      * @return ModelAndView object with the view name set based on the user's role.
      */
     @PostMapping("/redirectPage")
-    public ModelAndView redirectBasedOnRole(@ModelAttribute("userId") String userId){
+    public ModelAndView redirectBasedOnRole(@ModelAttribute("userEmail") String email, @ModelAttribute("userPassword") String password, RedirectAttributes redirectAttributes, RedirectAttributes redirectAttributesNume){
         ModelAndView mav = new ModelAndView();
-        if(userService.findUserById(userId).getRole().equals("admin")) {
+
+        if(userService.checkUser(email, password).equals("admin")) {
             mav.setViewName("redirect:/user/get");
         } else {
-            mav.setViewName("redirect:/announcement/getOthers/" + userId); // Redirect to a valid endpoint for non-admin users
+            if(userService.checkUser(email, password).equals("user")) {
+                Optional<User> user = userService.findUserByEmail(email);
+                redirectAttributesNume.addFlashAttribute("userMessage", "Hello, " + user.get().getFirstName() + " " + user.get().getLastName());
+                mav.setViewName("redirect:/announcement/getOthers/" + user.get().getId());
+            } else {
+                redirectAttributes.addFlashAttribute("message", userService.checkUser(email, password));
+                mav.setViewName("redirect:/index/HomePage");
+            }
         }
         return mav;
     }

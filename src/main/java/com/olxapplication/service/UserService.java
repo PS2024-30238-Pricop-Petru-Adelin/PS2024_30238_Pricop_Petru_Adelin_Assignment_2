@@ -1,12 +1,14 @@
 package com.olxapplication.service;
 
-import com.olxapplication.constants.CategoryMessages;
 import com.olxapplication.constants.UserMessages;
 import com.olxapplication.dtos.UserDetailsDTO;
+import com.olxapplication.entity.Announcement;
+import com.olxapplication.entity.Favourite;
 import com.olxapplication.exception.PatternNotMathcedException;
 import com.olxapplication.exception.ResourceNotFoundException;
 import com.olxapplication.mappers.UserMapper;
 import com.olxapplication.entity.User;
+import com.olxapplication.repository.FavouriteRepository;
 import com.olxapplication.repository.UserRepository;
 import com.olxapplication.validators.UserValidators;
 import org.slf4j.LoggerFactory;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,6 +31,7 @@ import java.util.stream.Collectors;
 public class UserService {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
     private final UserRepository userRepository;
+    private final FavouriteRepository favouriteRepository;
     private final UserValidators userValidators = new UserValidators();
 
     /**
@@ -49,12 +53,22 @@ public class UserService {
      */
     public UserDetailsDTO findUserById(String id){
         Optional<User> userOptional = userRepository.findById(id);
-        if (!userOptional.isPresent()){
+        if (userOptional.isEmpty()){
             LOGGER.debug(UserMessages.USER_NOT_FOUND);
             throw new ResourceNotFoundException(UserMessages.USER_NOT_FOUND + id);
         }
         return UserMapper.toUserDetailsDTO(userOptional.get());
     }
+
+    public User findById(String id){
+        Optional<User> userOptional = userRepository.findById(id);
+        if (userOptional.isEmpty()){
+            LOGGER.debug(UserMessages.USER_NOT_FOUND);
+            throw new ResourceNotFoundException(UserMessages.USER_NOT_FOUND + id);
+        }
+        return userOptional.get();
+    }
+
 
     /**
      * Fetches users by first name or last name from the repository and maps them to UserDetailsDTO objects.
@@ -77,6 +91,10 @@ public class UserService {
         try {
             userValidators.userDtoValidator(userDTO);
             User user = UserMapper.toEntity(userDTO);
+            Favourite favourite = new Favourite(null, user, new ArrayList<>(), 0.0);
+            user = userRepository.save(user);
+            favourite = favouriteRepository.save(favourite);
+            user.setFavouriteList(favourite);
             user = userRepository.save(user);
             LOGGER.debug(UserMessages.USER_INSERTED_SUCCESSFULLY);
             return UserMessages.USER_INSERTED_SUCCESSFULLY;
@@ -93,13 +111,14 @@ public class UserService {
      */
     public String deleteUserById(String id) {
         Optional<User> userOptional = userRepository.findById(id);
-        if (!userOptional.isPresent()) {
+        if (userOptional.isEmpty()) {
             LOGGER.error(UserMessages.USER_NOT_FOUND + id);
             return UserMessages.USER_NOT_FOUND + id;
         } else {
             if(userOptional.get().getId().equals("22b95bc0-2123-42d3-8234-69a8dd91c1bf")){
                 return UserMessages.ADMIN_DELETE;
             }
+
             userRepository.delete(userOptional.get());
             LOGGER.debug(UserMessages.USER_DELETED_SUCCESSFULLY);
             return UserMessages.USER_DELETED_SUCCESSFULLY + id;
@@ -117,7 +136,7 @@ public class UserService {
             userValidators.userDtoValidator(userDTO);
             Optional<User> userOptional = userRepository.findById(id);
 
-            if (!userOptional.isPresent()) {
+            if (userOptional.isEmpty()) {
                 LOGGER.error(UserMessages.USER_NOT_FOUND + id);
                 return UserMessages.USER_NOT_FOUND + id;
             } else {
@@ -136,5 +155,23 @@ public class UserService {
         }
     }
 
+    public String checkUser(String email, String password){
+        Optional<User> userOptional = userRepository.findByEmailIgnoreCase(email);
+        if (userOptional.isEmpty()){
+            LOGGER.error(UserMessages.INVALID_EMAIL);
+            return UserMessages.INVALID_EMAIL;
+        } else {
+            if(userOptional.get().getPassword().equals(password)){
+                return userOptional.get().getRole();
+            } else {
+                LOGGER.error(UserMessages.INVALID_PASSWORD);
+                return UserMessages.INVALID_PASSWORD;
+            }
+        }
+    }
+
+    public Optional<User> findUserByEmail(String email){
+        return userRepository.findByEmailIgnoreCase(email);
+    }
 
 }

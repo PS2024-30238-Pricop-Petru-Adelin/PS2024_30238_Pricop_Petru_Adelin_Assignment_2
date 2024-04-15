@@ -1,13 +1,9 @@
 package com.olxapplication.controller;
 
-import com.olxapplication.dtos.AnnouncementDTO;
 import com.olxapplication.dtos.AnnouncementDetailsDTO;
 import com.olxapplication.dtos.AnnouncementWebDTO;
-import com.olxapplication.mappers.CategoryMapper;
-import com.olxapplication.mappers.UserMapper;
 import com.olxapplication.service.AnnouncementService;
-import com.olxapplication.service.CategoryService;
-import com.olxapplication.service.UserService;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,7 +15,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -39,10 +34,6 @@ import java.util.List;
 @Slf4j
 public class AnnouncementController {
     private final AnnouncementService announcementService;
-    private final CategoryController categoryController;
-    private final UserController userController;
-    private final UserService userService;
-    private final CategoryService categoryService;
 
     /**
      * Retrieves all announcements.
@@ -56,16 +47,7 @@ public class AnnouncementController {
         return mav;
     }
 
-    /**
-     * Retrieves all announcements by category ID.
-     * @param category_id The ID of the category.
-     * @return ResponseEntity containing a list of announcements and HTTP status.
-     */
-    @GetMapping("/byCategory/{category_id}")
-    public ResponseEntity<List<AnnouncementDetailsDTO>> getAnnouncesByCategoryId(@PathVariable("category_id") String category_id){
-        List<AnnouncementDetailsDTO> dtos = announcementService.findAnnouncementByCategoryId(category_id);
-        return new ResponseEntity<>(dtos, HttpStatus.OK);
-    }
+
 
     /**
      * Retrieves all announcements by user ID.
@@ -143,14 +125,25 @@ public class AnnouncementController {
         return mav;
     }
 
+//    /**
+//     * Retrieves all announcements by category ID.
+//     * @param category_id The ID of the category.
+//     * @return ResponseEntity containing a list of announcements and HTTP status.
+//     */
+//    @GetMapping("/getMine/byCategory//{category_id}")
+//    public ModelAndView getAnnouncesByCategoryName(@PathVariable("category_id") String category_id){
+//        List<AnnouncementDetailsDTO> dtos = announcementService.findAnnouncementByCategoryId(category_id);
+//        return new ResponseEntity<>(dtos, HttpStatus.OK);
+//    }
+
     /**
      * Retrieves all announcements except those by a specific user.
      * @param userId The ID of the user.
      * @return ModelAndView containing the other users' announcements.
      */
     @GetMapping("/getOthers/{id}")
-    public ModelAndView getOtherAnnouncements(@PathVariable("id") String userId) {
-        List<AnnouncementDetailsDTO> dtos = announcementService.findOtherAnnounces(userId);
+    public ModelAndView getOtherAnnouncements(@PathVariable("id") String userId, @ModelAttribute("categoryName") String categoryName) {
+        List<AnnouncementDetailsDTO> dtos = announcementService.findAnnouncementByCategoryNameAndNotUser(categoryName, userId);
         ModelAndView mav = new ModelAndView("UserGetOtherAnnounces");
         mav.addObject("announces", dtos);
         return mav;

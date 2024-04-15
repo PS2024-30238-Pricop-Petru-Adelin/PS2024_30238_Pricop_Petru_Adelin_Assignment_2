@@ -5,6 +5,7 @@
     <title>My announces</title>
     <style>
         h1{text-align: center;
+            text-decoration: underline;
         }
         h2{text-align: center;
         }
@@ -15,7 +16,7 @@
         }
         body {
             font-family: "Britannic Bold";
-            background-image: url('https://wallpapercave.com/wp/wp4565867.png');
+            background-image: url('https://th.bing.com/th/id/R.75c7864105801544a5628a9772394dd1?rik=W%2btcWTJd6SnCfw&riu=http%3a%2f%2fwww.pixelstalk.net%2fwp-content%2fuploads%2f2016%2f05%2fBlack-Abstract-HD-Wallpaper.jpg&ehk=PTbVfW5weijRZMES0idE3Sl2gQQmZ78G13ImYOchIG8%3d&risl=&pid=ImgRaw&r=0');
             background-repeat: no-repeat;
             background-attachment: fixed;
             opacity: 0.8;
@@ -126,12 +127,14 @@
 
         /* The Modal (background) */
         .modalInsert {
-            display: none; /* Hidden by default */
+            display: flex; /* Hidden by default */
             position: fixed; /* Stay in place */
             z-index: 1; /* Sit on top */
-            padding-top: 100px; /* Location of the box */
+            padding-top: 40px; /* Location of the box */
+            padding-right: 10%;
             left: 0;
             top: 0;
+            right: 0;
             width: 100%; /* Full width */
             height: 100%; /* Full height */
             overflow: auto; /* Enable scroll if needed */
@@ -140,13 +143,14 @@
         }
 
         .modalUpdate {
-            display: none; /* Hidden by default */
+            display: flex; /* Hidden by default */
             position: fixed; /* Stay in place */
             z-index: 1; /* Sit on top */
-            padding-top: 100px; /* Location of the box */
+            padding-top: 20px; /* Location of the box */
             left: 0;
             top: 0;
-            width: 100%; /* Full width */
+            right: 0;
+            width: 120%; /* Full width */
             height: 100%; /* Full height */
             overflow: auto; /* Enable scroll if needed */
             background-color: rgb(0,0,0); /* Fallback color */
@@ -233,22 +237,83 @@
         .form-row form {
             flex: 30; /* Allow forms to take up equal space */
         }
+
+        .form-row1 {
+            margin-left: 2.5%;
+            height: 60px;
+            width: 95%;
+            display: flex; /* Use flexbox to align items */
+            gap: 5%; /* Add some spacing between form elements */
+        }
+
+        .form-row1 form {
+            flex: 30; /* Allow forms to take up equal space */
+        }
+        .announce-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+        .announce-card {
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px 0 hsla(0, 0%, 0%, 0.2);
+            margin: 20px;
+            padding: 20px;
+            width: calc(80% - 40px); /* Adjust the width here */
+            box-sizing: border-box;
+            display: flex;
+        }
+        .announce-card img {
+            width: 300px; /* Adjust the image width here */
+            height: 300px; /* Adjust the image height here */
+            object-fit: cover;
+            margin-right: 20px;
+
+        }
+        .announce-card div {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: calc(100% - 220px); /* Adjust the div width here */
+        }
+        .announce-card div p {
+            display: flex;
+            justify-content: space-between;
+            line-height: 0.7; /* Adjust the line spacing here */
+            margin-bottom: 1px; /* Adjust the space between lines here */
+        }
+        .announce-card h2 {
+            color: #6c757d;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .announce-card p strong {
+            color: #343a40;
+        }
     </style>
 </head>
 <body>
-<div class="form-row">
+<div class="form-row1">
+    <form th:action="@{/index/user/} + ${id}" method="post">
+        <input id="newLink1" name="newLink" th:value="@{redirect:/announcement/getOthers/} + ${id}" type="hidden">
+        <input type="submit" value="Ckeck newest Announces"/>
+    </form>
+    <form th:action="@{/index/user/} + ${id}" method="post">
+        <input class="newLink" name="newLink" th:value="@{redirect:/favourite/get/} + ${id}" type="hidden">
+        <input type="submit" value="Favourites"/>
+    </form>
+    <form th:action="@{/message/messages/} + ${id}" method="get">
+        <input id="sent" name="newLink" th:value="@{redirect:/index/HomePage}" type="hidden">
+        <input type="submit" value="Messages"/>
+    </form>
     <form th:action="@{/index/user/} + ${id}" method="post">
         <input id="logOut" name="newLink" th:value="@{redirect:/index/HomePage}" type="hidden">
         <input type="submit" value="Log Out"/>
     </form>
 </div>
-<h1>My announces</h1>
-<div class="form-row">
-    <form th:action="@{/index/user/} + ${id}" method="post">
-        <input id="newLink1" name="newLink" th:value="@{redirect:/announcement/getOthers/} + ${id}" type="hidden">
-        <input type="submit" value="<< Ckeck newest Announces"/>
-    </form>
-</div>
+<h1 style="color: #a5defb">My announces</h1>
+
 <br>
 
 <!--<form th:action="@{/announcement/insert}" method="get">-->
@@ -256,14 +321,17 @@
 <!--    <span>-->
 <!--</form> <br>-->
 <button id="insertBtn" class = "button" style="vertical-align:middle" ><span>Register new announcement</span></button><br>
-<div id="modalInsert" class="modalInsert">
+<div id="modalInsert" class="modalInsert" style="display: none">
 
     <!-- Modal content -->
-    <div class="modalInsert-content">
+    <div class="modalInsert-content" >
         <h2 class="modal-title" >Insert new announcement
             <span class="close1">&times;</span>
         </h2>
         <form class="formField" th:action="@{/announcement/insertMine/} + ${id}" method="post" >
+            <label><strong>User: </strong></label>
+            <label th:text="${id}" style="line-height: 1.7"></label><br>
+
             <label for="title">Title:</label>
             <input type="text" id="title" name="title" required><br>
 
@@ -273,8 +341,14 @@
             <label for="price">Price:    </label>
             <input type="number" step="any" id="price" name="price" required><br>
 
-            <label for="user">User:</label>
-            <input type="text" id="user" name="user" th:value="${id}" required readonly><br>
+            <label for="discount">Discount:    </label>
+            <input type="number" step="any" id="discount" name="discount" required><br>
+
+            <label for="imageURL">Image URL:</label>
+            <input type="text"  id="imageURL" name="imageURL" required><br>
+
+<!--            <label for="user">User:</label>-->
+            <input type="text" id="user" name="user" th:value="${id}" required readonly hidden="hidden">
 
             <label for="category">Category:</label>
             <input type="text" id="category" name="category" required><br>
@@ -285,34 +359,29 @@
 
 </div>
 <br>
-<table id="myTable">
-    <tr>
-        <th></th>
-        <th>Id</th>
-        <th>Title</th>
-        <th>Description</th>
-        <th>Price</th>
-        <th>User</th>
-        <th>Category</th>
-        <th>Actions</th>
-    </tr>
-    <tr th:each="announcement : ${announces}">
-        <td></td>
-        <td th:text="${announcement.id}"></td>
-        <td th:text="${announcement.title}"></td>
-        <td th:text="${announcement.description}"></td>
-        <td th:text="${announcement.price}"></td>
-        <td th:text="${announcement.user.getLastName()}"></td>
-        <td th:text="${announcement.category.getCategoryName()}"></td>
-        <td>
+<div class="announce-container" th:each="announcement : ${announces}">
+    <div class="announce-card">
+        <img th:src="${announcement.imageURL}" alt="Announcement Image"> <!-- Add your image URL here -->
+        <div>
+            <h2 th:text="${announcement.title}"></h2>
+            <p><strong>ID:</strong> <span th:text="${announcement.id}"></span></p>
+            <p><strong>Description:</strong> <span th:text="${announcement.description}"></span></p>
+            <p><strong>Price:</strong> <span th:text="${announcement.price}"></span></p>
+            <p><strong>Discount:</strong> <span th:text="${announcement.discount}"></span></p>
+            <p><strong>New Price:</strong> <span th:text="${announcement.newPrice}"></span></p>
+            <p><strong>User:</strong> <span th:text="${announcement.user.getFirstName() + ' ' + announcement.user.getLastName()}"></span></p>
+            <p><strong>Category:</strong> <span th:text="${announcement.category.getCategoryName()}"></span></p>
+            <p><strong>Last Update:</strong> <span th:text="${announcement.date}"></span></p>
+            <!-- Add your form and other elements here -->
+            <br>
 
             <form th:action="@{/announcement/deleteMine/} + ${id} +@{/} +${announcement.id}" method="post">
                 <input type="hidden" name="_method" value="delete" />
-                <input type="submit" value="Delete" onclick="return confirm('Are you sure you want to delete this item?');" class="delete-button" readonly/>
+                <input type="submit" value="Delete" onclick="return confirm('Are you sure you want to delete this item?');" class="delete-button" readonly style="height: 80%; color: white; background-color: #ff3c3c"/>
             </form>
 
             <button class="updateBtn"  style="vertical-align:middle" ><span>Update</span></button>
-            <div class="modalUpdate" >
+            <div class="modalUpdate" style="display: none; width : 100%">
 
                 <!-- Modal content -->
                 <div class="modalInsert-content">
@@ -321,25 +390,46 @@
                     </h2>
                     <form class="formField" th:action="@{/announcement/updateMine/} + ${announcement.id}" method="post">
                         <input type="hidden" name="_method" value="put" />
-                        <label >Id:</label>
-                        <input type="text" th:value="${announcement.id}" name="id" readonly disabled><br>
+
+                        <label><strong>ID: </strong></label>
+                        <label th:text="${announcement.id}" style="line-height: 1.7"></label><br>
+
+                        <label><strong>User: </strong></label>
+                        <label th:text="${announcement.user.getFirstName() + announcement.user.getLastName() }" style="line-height: 1.7"></label><br>
+
+                        <label><strong>Category: </strong></label>
+                        <label th:text="${announcement.category.getCategoryName()}" style="line-height: 1.7"></label><br>
+
+                        <input type="text" th:value="${announcement.id}" name="id" readonly disabled hidden="hidden">
+
                         <label for="title">Title:</label>
                         <input type="text" th:value="${announcement.title}" name="title" required><br>
+
                         <label for="description">Description:</label>
                         <input type="text" th:value="${announcement.description}" name="description" required><br>
+
                         <label for="price">Price:</label>
                         <input type="number" step="any" th:value="${announcement.price}" name="price" required><br>
-                        <label for="user">User id:</label>
-                        <input type="text" th:value="${announcement.user.getId()}" name="user" required readonly><br>
-                        <label for="category">Category name:</label>
-                        <input type="text" th:value="${announcement.category.getId()}" name="category" required readonly><br>
-                        <input type="submit" value="Register">
+
+                        <label for="discount">Discount:</label>
+                        <input type="number" step="any" th:value="${announcement.discount}" class="discount" name="discount" required><br>
+
+                        <label for="imageURL">Image URL:</label>
+                        <input type="text"  th:value="${announcement.imageURL}" class="imageURL" name="imageURL" required><br>
+
+                        <!--                        <label for="user">User id:</label>-->
+                        <input type="text" th:value="${announcement.user.getId()}" name="user" readonly required hidden="hidden">
+
+                        <!--                        <label for="category">Category:</label>-->
+                        <input type="text" th:value="${announcement.category.getId()}" name="category" readonly required hidden="hidden">
+
+                        <input type="submit" value="Update">
                     </form>
                 </div>
             </div>
-        </td>
-    </tr>
-</table>
+        </div>
+    </div>
+</div>
 <script>
 
     var modal = document.getElementById("modalInsert");

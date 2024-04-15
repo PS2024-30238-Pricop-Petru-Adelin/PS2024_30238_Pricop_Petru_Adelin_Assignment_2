@@ -2,10 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:text-align="http://www.w3.org/1999/xhtml">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Users List</title>
+    <title>Corespondents</title>
     <style>
         h1{text-align: center;
-            text-decoration: underline;
         }
         h2{text-align: center;
         }
@@ -40,10 +39,7 @@
             font-family: 'Courier New', monospace
         }
         tr:nth-child(even) {
-            background-color: #7fefab;
-        }
-        tr:nth-child(odd) {
-            background-color: #9ae2f1;
+            background-color: #f7f7f7;
         }
         tr:hover {
             background-color: #ddd;
@@ -241,56 +237,13 @@
     </style>
 </head>
 <body>
+
+<h1 style="color: #a5defb">Corespondents</h1>
 <div class="form-row">
-    <form th:action="@{/index/admin}" method="post">
-        <input id="logOut" name="newLink" th:value="@{redirect:/index/HomePage}" type="hidden">
-        <input type="submit" value="Log Out"/>
+    <form th:action="@{/index/user/} + ${id}" method="post">
+        <input id="logOut" name="newLink" th:value="@{redirect:/announcement/getOthers/} + ${id}" type="hidden">
+        <input type="submit" value="<< Back to announces "/>
     </form>
-</div>
-<h1 style="color: #a5defb">Registered users</h1>
-<div class="form-row">
-    <form action="/index/admin" method="post">
-        <input id="newLink1" name="newLink" value="redirect:/announcement/get" type="hidden">
-        <input type="submit" value="<< Manage Announces"/>
-    </form>
-
-    <form action="/index/admin" method="post">
-        <input id="newLink2" name="newLink" value="redirect:/category/get" type="hidden">
-        <input type="submit" value="Manage Categories >>"/>
-    </form>
-</div>
-
-<br>
-
-<button id="insertBtn" class = "button" style="vertical-align:middle" ><span>Register new user</span></button><br>
-<div id="modalInsert" class="modalInsert">
-
-    <div class="modalInsert-content">
-        <h2 class="modal-title" >Insert new user
-            <span class="close1">&times;</span>
-        </h2>
-        <form class="formField" th:action="@{/user/insert}" method="post" >
-            <label for="firstName">First Name:</label>
-            <input type="text" id="firstName" name="firstName" required><br>
-
-            <label for="lastName">Last Name:</label>
-            <input type="text" id="lastName" name="lastName" required><br>
-
-            <label for="email">Email:    </label>
-            <input type="email" id="email" name="email" required><br>
-
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required><br>
-            <br>
-            <label for="role">Choose a role for the new user:</label>
-            <select name="role" id="role">
-                <option value="user">User</option>
-                <option value="admin">Admin</option>
-            </select><br><br>
-            <input type="submit" value="Register">
-        </form>
-    </div>
-
 </div>
 <br>
 <table id="myTable">
@@ -299,9 +252,6 @@
         <th>Id</th>
         <th>First Name</th>
         <th>Last Name</th>
-        <th>Email</th>
-        <th>Password</th>
-        <th>Role</th>
         <th>Actions</th>
     </tr>
     <tr th:each="user : ${users}">
@@ -309,42 +259,38 @@
         <td th:text="${user.id}"></td>
         <td th:text="${user.firstName}"></td>
         <td th:text="${user.lastName}"></td>
-        <td th:text="${user.email}"></td>
-        <td th:text="${user.password}"></td>
-        <td th:text="${user.role}"></td>
         <td>
 
-            <form th:action="@{/user/delete/} + ${user.id}" method="post">
-                <input type="hidden" name="_method" value="delete" />
-                <input type="submit" value="Delete" onclick="return confirm('Are you sure you want to delete this item?');" class="delete-button" readonly/>
+            <form th:action="@{/message/chat/}+ ${id} + @{/} + ${user.id}" method="get">
+                <input type="submit" value="Check messages"  class="delete-button" readonly/>
             </form>
 
-            <button class="updateBtn"  style="vertical-align:middle" ><span>Update</span></button>
-            <div class="modalUpdate" >
+<!--            <button class="updateBtn"  style="vertical-align:middle" ><span>Update</span></button>-->
+<!--            <div class="modalUpdate" >-->
 
-                <!-- Modal content -->
-                <div class="modalInsert-content">
-                    <h2 class="modal-title" >Update user
-                        <span class="close">&times;</span>
-                    </h2>
-                    <form class="formField" th:action="@{/user/update/} + ${user.id}" method="post">
-                        <input type="hidden" name="_method" value="put" />
-                        <label >Id:</label>
-                        <input type="text" th:value="${user.id}" name="id" readonly ><br>
-                        <label for="firstName">First Name:</label>
-                        <input type="text" th:value="${user.firstName}" name="firstName" required><br>
-                        <label for="lastName">Last Name:</label>
-                        <input type="text" th:value="${user.lastName}" name="lastName" required><br>
-                        <label for="email">Email:</label>
-                        <input type="email" th:value="${user.email}" name="email" required><br>
-                        <label for="password">Password:</label>
-                        <input type="password" th:value="${user.password}" name="password" required><br>
-                        <label for="role">Role:</label>
-                        <input type="text" th:value="${user.role}" name="role" readonly required><br>
-                        <input type="submit" value="Update">
-                    </form>
-                </div>
-            </div>
+<!--                &lt;!&ndash; Modal content &ndash;&gt;-->
+<!--                <div class="modalInsert-content">-->
+<!--                    <h2 class="modal-title" >Update user-->
+<!--                        <span class="close">&times;</span>-->
+<!--                    </h2>-->
+<!--                    <form class="formField" th:action="@{/user/update/} + ${user.id}" method="post">-->
+<!--                        <input type="hidden" name="_method" value="put" />-->
+<!--                        <label >Id:</label>-->
+<!--                        <input type="text" th:value="${user.id}" name="id" readonly ><br>-->
+<!--                        <label for="firstName">First Name:</label>-->
+<!--                        <input type="text" th:value="${user.firstName}" name="firstName" required><br>-->
+<!--                        <label for="lastName">Last Name:</label>-->
+<!--                        <input type="text" th:value="${user.lastName}" name="lastName" required><br>-->
+<!--                        <label for="email">Email:</label>-->
+<!--                        <input type="email" th:value="${user.email}" name="email" required><br>-->
+<!--                        <label for="password">Password:</label>-->
+<!--                        <input type="password" th:value="${user.password}" name="password" required><br>-->
+<!--                        <label for="role">Role:</label>-->
+<!--                        <input type="text" th:value="${user.role}" name="role" readonly required><br>-->
+<!--                        <input type="submit" value="Update">-->
+<!--                    </form>-->
+<!--                </div>-->
+<!--            </div>-->
         </td>
     </tr>
 </table>

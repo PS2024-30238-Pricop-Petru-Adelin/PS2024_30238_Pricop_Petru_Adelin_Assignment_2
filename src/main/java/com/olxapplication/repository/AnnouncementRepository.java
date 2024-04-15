@@ -1,6 +1,5 @@
 package com.olxapplication.repository;
 
-import com.olxapplication.dtos.AnnouncementDetailsDTO;
 import com.olxapplication.entity.Announcement;
 import com.olxapplication.entity.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,7 +11,7 @@ import java.util.List;
  * It offers basic CRUD (Create, Read, Update, Delete) operations for Announcement entities identified by their unique Strings.
  */
 public interface AnnouncementRepository extends JpaRepository<Announcement, String> {
-    List<Announcement> findAnnouncementsByCategory_Id(String category_id);
+    List<Announcement> findAnnouncementsByCategoryAndUser_IdNot(Category category, String userId);
     List<Announcement> findAnnouncementsByUser_Id(String category_id);
     List<Announcement> findAnnouncementsByTitleContainsIgnoreCase(String title);
 

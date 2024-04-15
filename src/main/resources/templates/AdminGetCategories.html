@@ -5,6 +5,7 @@
     <title>Categories List</title>
     <style>
         h1{text-align: center;
+            text-decoration: underline;
         }
         p{
             margin-left: 2.5%;
@@ -15,7 +16,7 @@
         }
         body {
             font-family: "Britannic Bold";
-            background-image: url('https://wallpapercave.com/wp/wp4565867.png');
+            background-image: url('https://th.bing.com/th/id/R.75c7864105801544a5628a9772394dd1?rik=W%2btcWTJd6SnCfw&riu=http%3a%2f%2fwww.pixelstalk.net%2fwp-content%2fuploads%2f2016%2f05%2fBlack-Abstract-HD-Wallpaper.jpg&ehk=PTbVfW5weijRZMES0idE3Sl2gQQmZ78G13ImYOchIG8%3d&risl=&pid=ImgRaw&r=0');
             background-repeat: no-repeat;
             background-attachment: fixed;
             opacity: 0.8;
@@ -39,7 +40,10 @@
             font-family: 'Courier New', monospace
         }
         tr:nth-child(even) {
-            background-color: #f7f7f7;
+            background-color: #7fefab;
+        }
+        tr:nth-child(odd) {
+            background-color: #9ae2f1;
         }
         tr:hover {
             background-color: #ddd;
@@ -257,7 +261,7 @@
         <input type="submit" value="Log Out"/>
     </form>
 </div>
-<h1>Registered categories</h1>
+<h1 style="color: #a5defb">Registered categories</h1>
 <div class="form-row">
     <form action="/index/admin" method="post">
         <input id="newLink1" name="newLink" value="redirect:/announcement/get" type="hidden">
@@ -325,7 +329,7 @@
                         <input type="text" th:value="${category.id}" name="id" readonly disabled><br>
                         <label for="categoryName">Name:</label>
                         <input type="text" th:value="${category.categoryName}" name="categoryName" required><br>
-                        <input type="submit" value="Register">
+                        <input type="submit" value="Update">
                     </form>
                 </div>
             </div>

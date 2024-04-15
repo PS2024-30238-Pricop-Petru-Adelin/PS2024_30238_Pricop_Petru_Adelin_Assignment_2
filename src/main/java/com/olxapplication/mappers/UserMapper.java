@@ -2,6 +2,7 @@ package com.olxapplication.mappers;
 
 import com.olxapplication.dtos.UserDetailsDTO;
 import com.olxapplication.entity.Announcement;
+import com.olxapplication.entity.Message;
 import com.olxapplication.entity.User;
 import com.olxapplication.dtos.UserDTO;
 
@@ -31,6 +32,8 @@ public class UserMapper {
                 .password(user.getPassword())
                 .role(user.getRole())
                 .announces(user.getAnnounces().stream().toList())
+                .sentMessages(user.getReceivedMessages())
+                .receivedMessages(user.getReceivedMessages())
                 .build();
     }
 
@@ -42,7 +45,7 @@ public class UserMapper {
      * @return A new UserDetailsDTO object containing concise user information and announcement Strings.
      */
     public static UserDetailsDTO toUserDetailsDTO(User user) {
-        List<String> StringList =user.getAnnounces().stream()
+        List<String> stringList =user.getAnnounces().stream()
                 .map(Announcement::getId)
                 .collect(Collectors.toList());
 
@@ -53,7 +56,9 @@ public class UserMapper {
                 .email(user.getEmail())
                 .password(user.getPassword())
                 .role(user.getRole())
-                .announces(StringList)
+                .announces(stringList)
+                .sentMessages(user.getReceivedMessages())
+                .receivedMessages(user.getReceivedMessages())
                 .build();
     }
 
@@ -72,6 +77,8 @@ public class UserMapper {
                 .password(userDTO.getPassword())
                 .role(userDTO.getRole())
                 .announces(userDTO.getAnnounces().stream().collect(Collectors.toList()))
+                .sentMessages(userDTO.getSentMessages().stream().collect(Collectors.toList()))
+                .receivedMessages(userDTO.getReceivedMessages().stream().collect(Collectors.toList()))
                 .build();
     }
 
@@ -91,6 +98,8 @@ public class UserMapper {
                 .password(userDTO.getPassword())
                 .role(userDTO.getRole())
                 .announces((new ArrayList<Announcement>()).stream().collect(Collectors.toList()))
+                .sentMessages((new ArrayList<Message>()).stream().collect(Collectors.toList()))
+                .receivedMessages((new ArrayList<Message>()).stream().collect(Collectors.toList()))
                 .build();
     }
 
