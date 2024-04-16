@@ -203,20 +203,16 @@
 </head>
 <body>
 <div class="form-row">
-    <form th:action="@{/index/user/} + ${id}" method="post">
-        <input id="newLink" name="newLink" th:value="@{redirect:/announcement/getMine/} + ${id}" type="hidden">
+    <form th:action="@{/announcement/getMine/} + ${id}" method="get">
         <input type="submit" value="Manage My Announces" />
     </form>
-    <form th:action="@{/index/user/} + ${id}" method="post">
-        <input class="newLink" name="newLink" th:value="@{redirect:/favourite/get/} + ${id}" type="hidden">
+    <form th:action="@{/favourite/get/} + ${id}" method="get">
         <input type="submit" value="Favourites"/>
     </form>
     <form th:action="@{/message/messages/} + ${id}" method="get">
-        <input id="sent" name="newLink" th:value="@{redirect:/index/HomePage}" type="hidden">
         <input type="submit" value="Messages"/>
     </form>
-    <form th:action="@{/index/user/} + ${id}" method="post">
-        <input id="logOut" name="newLink" th:value="@{redirect:/index/HomePage}" type="hidden">
+    <form th:action="@{/index/HomePage}" method="get">
         <input type="submit" value="Log Out"/>
     </form>
 </div>
@@ -297,10 +293,47 @@
         }
     }
 
-    var table = document.getElementById("myTable");
-    for (var i = 1; i < table.rows.length; i++) {
-        table.rows[i].cells[0].innerHTML = i;
-    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var path = window.location.pathname; // Get the current URL's path
+        var id = path.split('/').pop();
+        var id1 = id.split('?').at(0);
+
+        var previousUrl = document.referrer; // Get the previous URL
+
+
+
+
+        var urlPattern1 = new RegExp('^http:\\/\\/localhost:8080\\/announcement\\/getOthers\\/' + id + '\\?categoryName=[^\\/]*$');
+        var urlPattern = new RegExp('^http:\\/\\/localhost:8080\\/message\\/chat\\/' + id + '\\/[-0-9A-Za-z]*\\??$');
+
+
+        var urlToCompare1 = 'http://localhost:8080/announcement/getOthers/' + id;
+        var urlToCompare2 = 'http://localhost:8080/announcement/getMine/' + id + '?';
+        var urlToCompare3 = 'http://localhost:8080/favourite/get/' + id ;
+        var urlToCompare4 = 'http://localhost:8080/favourite/get/' + id + '?';
+        var urlToCompare5 = 'http://localhost:8080/message/messages/' + id + '?';
+        var urlToCompare6 = 'http://localhost:8080/announcement/getOthers/' + id + '?';
+        var urlToCompare7 = 'http://localhost:8080/index/HomePage';
+        var urlToCompare8 = 'http://localhost:8080/index/HomePage?';
+        var urlToCompare9 = 'http://localhost:8080/announcement/getMine/' + id ;
+
+
+        console.log('current path: ', path);
+        console.log('previous path: ', previousUrl);
+        console.log('id: ', id);
+        console.log('pattern: ', urlPattern1);
+        console.log('pattern response: ', urlPattern1.test(previousUrl));
+
+        if(!urlPattern.test(previousUrl) && previousUrl !== urlToCompare1
+            && previousUrl !== urlToCompare2 && previousUrl !== urlToCompare3
+            && previousUrl !== urlToCompare4 && previousUrl !== urlToCompare5
+            && !urlPattern.test(previousUrl) && previousUrl !== urlToCompare6
+            && previousUrl !== urlToCompare7 && previousUrl !== urlToCompare8
+            && previousUrl !== urlToCompare9 && !urlPattern1.test(previousUrl)){
+            window.location.href = 'http://localhost:8080/index/HomePage';
+        }
+    });
 
 </script>
 <p th:text="${message}"></p>

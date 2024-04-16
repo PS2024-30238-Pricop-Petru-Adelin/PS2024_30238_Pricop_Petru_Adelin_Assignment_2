@@ -49,7 +49,7 @@ public class IndexController {
     @PostMapping("/redirectPage")
     public ModelAndView redirectBasedOnRole(@ModelAttribute("userEmail") String email, @ModelAttribute("userPassword") String password, RedirectAttributes redirectAttributes, RedirectAttributes redirectAttributesNume){
         ModelAndView mav = new ModelAndView();
-
+        System.out.println("a ajuns in redirectBasedOnRole");
         if(userService.checkUser(email, password).equals("admin")) {
             mav.setViewName("redirect:/user/get");
         } else {

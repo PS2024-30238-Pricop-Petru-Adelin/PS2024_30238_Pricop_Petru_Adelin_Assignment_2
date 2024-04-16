@@ -186,21 +186,24 @@
 
 
 <script>
-    var modal = document.getElementById("modalMsg");
-    var btn = document.getElementById("sendMsg");
-    var span = document.getElementsByClassName("close")[0];
 
-    btn.onclick = function() {
-        modal.style.display = "block";
-    }
-    span.onclick = function() {
-        modal.style.display = "none";
-    }
-    window.onclick = function(event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var path = window.location.pathname; // Get the current URL's path
+        var id = path.split('/').at(3);
+
+        var previousUrl = document.referrer; // Get the previous URL
+
+        var urlToCompare1 = 'http://localhost:8080/message/messages/' + id + '?';
+        var urlToCompare2 = 'http://localhost:8080/announcement/getOthers/' + id ;
+        var urlToCompare3 = 'http://localhost:8080/announcement/getMine/' + id ;
+        var urlToCompare4 = 'http://localhost:8080/announcement/getMine/' + id + '?';
+
+        if(previousUrl !== urlToCompare1 && previousUrl !== urlToCompare2
+        && previousUrl !== urlToCompare3 && previousUrl !== urlToCompare4 ){
+            window.location.href = 'http://localhost:8080/index/HomePage';
         }
-    }
+    });
 </script>
 <p th:text="${message}"></p>
 </body>

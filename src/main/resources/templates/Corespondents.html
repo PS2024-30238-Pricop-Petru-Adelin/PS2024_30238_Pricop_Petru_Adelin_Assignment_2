@@ -296,48 +296,7 @@
 </table>
 <script>
 
-    var modal = document.getElementById("modalInsert");
-    // Get the button that opens the modal
-    var btn = document.getElementById("insertBtn");
-    // Get the <span> element that closes the modal
-    var span = document.getElementsByClassName("close1")[0];
-    // var span1 = document.getElementsByClassName("close")[1];
 
-    var btns = document.getElementsByClassName("updateBtn");
-    var modals = document.getElementsByClassName("modalUpdate");
-    var spans = document.getElementsByClassName("close");
-
-    // When the user clicks the button, open the modal
-    btn.onclick = function() {
-        modal.style.display = "block";
-    }
-
-    // When the user clicks on <span> (x), close the modal
-    span.onclick = function() {
-        modal.style.display = "none";
-    }
-
-    // When the user clicks anywhere outside of the modal, close it
-    window.onclick = function(event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
-    }
-
-
-    for(let i = 0; i < btns.length; i++){
-        btns[i].onclick = function() {
-            modals[i].style.display = "block";
-        }
-        spans[i].onclick = function() {
-            modals[i].style.display = "none";
-        }
-        window.onclick = function(event) {
-            if (event.target == modals[i]) {
-                modals[i].style.display = "none";
-            }
-        }
-    }
 
 
     var table = document.getElementById("myTable");
@@ -345,6 +304,24 @@
     {
         table.rows[i].cells[0].innerHTML = i;
     }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var path = window.location.pathname; // Get the current URL's path
+        var id = path.split('/').pop();
+
+        var previousUrl = document.referrer; // Get the previous URL
+
+        var urlPattern1 = new RegExp('^http:\\/\\/localhost:8080\\/announcement\\/getOthers\\/' + id + '\\?categoryName=[^\\/]*$');
+
+        var urlToCompare1 = 'http://localhost:8080/announcement/getOthers/' + id;
+        var urlToCompare2 = 'http://localhost:8080/announcement/getMine/' + id;
+        var urlToCompare3 = 'http://localhost:8080/announcement/getMine/' + id + '?';
+
+        if(previousUrl !== urlToCompare1 && previousUrl !== urlToCompare2
+            && previousUrl !== urlToCompare3 && !urlPattern1.test(previousUrl)){
+            window.location.href = 'http://localhost:8080/index/HomePage';
+        }
+    });
 
 </script>
 <p th:text="${message}"></p>

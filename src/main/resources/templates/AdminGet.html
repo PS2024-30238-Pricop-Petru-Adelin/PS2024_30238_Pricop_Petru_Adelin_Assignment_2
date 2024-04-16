@@ -172,11 +172,22 @@
     </tr>
 </table>
 <script>
-    var table = document.getElementById("myTable");
-    for(var i = 1; i < table.rows.length; i++)
-    {
-        table.rows[i].cells[0].innerHTML = i;
-    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var path = window.location.pathname; // Get the current URL's path
+        var id = path.split('/').pop();
+
+        var previousUrl = document.referrer; // Get the previous URL
+        var urlToCompare1 = 'http://localhost:8080/index/redirect';
+        var urlToCompare2 = 'http://localhost:8080/announcement/get';
+        var urlToCompare3 = 'http://localhost:8080/category/get';
+
+
+        if(previousUrl !== urlToCompare1 && previousUrl !== urlToCompare2
+            && previousUrl !== urlToCompare3) {
+            window.location.href = 'http://localhost:8080/index/HomePage';
+        }
+    });
 </script>
 <p th:text="${message}"></p>
 </body>
