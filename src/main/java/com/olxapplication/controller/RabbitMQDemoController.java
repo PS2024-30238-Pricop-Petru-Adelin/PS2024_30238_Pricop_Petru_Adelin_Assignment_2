@@ -19,7 +19,7 @@ public class RabbitMQDemoController {
         rabbitMQSender.send(new Mail(userDetailsDTO.getEmail(),
                 "USER UPDATE",
                 "Your user details have been updated successfully: " + userDetailsDTO.getFirstName() + " " + userDetailsDTO.getLastName()).toString());
-        //System.out.println("Message sent to the RabbitMQ Queue Successfully");
+        System.out.println("Message sent to the RabbitMQ Queue Successfully");
         ModelAndView mav = new ModelAndView("redirect:/user/get");
         return mav;
     }
@@ -27,8 +27,8 @@ public class RabbitMQDemoController {
     public ModelAndView producerInsert(@ModelAttribute("message") UserDetailsDTO userDetailsDTO) {
         rabbitMQSender.send(new Mail(userDetailsDTO.getEmail(),
                 "Successfull registration",
-                "You are now part of our comunity, " + userDetailsDTO.getFirstName() + " " + userDetailsDTO.getLastName()) + "!\uD83E\uDD73\uD83E\uDD73");
-      //  System.out.println("Message sent to the RabbitMQ Queue Successfully");
+                "You are now part of our comunity, " + userDetailsDTO.getFirstName() + " " + userDetailsDTO.getLastName()).toString());
+        System.out.println("Message sent to the RabbitMQ Queue Successfully");
         ModelAndView mav = new ModelAndView("redirect:/user/get");
         return mav;
     }
