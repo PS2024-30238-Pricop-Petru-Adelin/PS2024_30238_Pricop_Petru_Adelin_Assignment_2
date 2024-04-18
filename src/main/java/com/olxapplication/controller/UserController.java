@@ -49,7 +49,9 @@ public class UserController {
     @PostMapping("/insert")
     public ModelAndView insertUser(@ModelAttribute("user") UserDetailsDTO user, RedirectAttributes redirectAttributes) {
         String msg = userService.insert(user);
-        ModelAndView mav = new ModelAndView("redirect:/user/get");
+        ModelAndView mav = new ModelAndView("Intermediate");
+        mav.addObject("user", user);
+//        ModelAndView mav = new ModelAndView("redirect:/user/get");
         redirectAttributes.addFlashAttribute("message", msg);
         return mav;
     }
@@ -101,7 +103,9 @@ public class UserController {
     public ModelAndView updateUser(@PathVariable("id") String userId, @ModelAttribute("user") UserDetailsDTO userDTO, RedirectAttributes redirectAttributes) {
         String msg = userService.updateUserById(userId, userDTO);
         redirectAttributes.addFlashAttribute("message", msg);
-        ModelAndView mav = new ModelAndView("redirect:/user/get");
+        ModelAndView mav = new ModelAndView("Intermediate");
+        mav.addObject("user", userDTO);
+//        ModelAndView mav = new ModelAndView("redirect:/user/get");
         return mav;
     }
 }
