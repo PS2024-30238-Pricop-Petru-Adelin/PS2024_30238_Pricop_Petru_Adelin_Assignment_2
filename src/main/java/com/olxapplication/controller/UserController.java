@@ -109,3 +109,34 @@ public class UserController {
         return mav;
     }
 }
+
+//@PostMapping("/update/{id}")
+//public ModelAndView updateUser(@PathVariable("id") String userId, @ModelAttribute("user") UserDetailsDTO userDTO, RedirectAttributes redirectAttributes, String token) {
+//    String msg = userService.updateUserById(userId, userDTO);
+//    redirectAttributes.addFlashAttribute("message", msg);
+//
+//    // Setarea HttpHeaders
+//    HttpHeaders headers = new HttpHeaders();
+//    headers.setBearerAuth(token);
+//    headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+//
+//    // Crearea NotificationRequestDto
+//    NotificationRequestDto notificationRequestDto = new NotificationRequestDto();
+//    // Setarea campurilor necesare pentru notificationRequestDto
+//    // ...
+//
+//    // Crearea HttpEntity
+//    HttpEntity<NotificationRequestDto> entity = new HttpEntity<>(notificationRequestDto, headers);
+//
+//    // Trimiterea mesajului în coadă
+//    rabbitSender.send("yourExchange", "yourRoutingKey", userDTO);
+//
+//    // Crearea RestTemplate si trimiterea request-ului
+//    RestTemplate restTemplate = new RestTemplate();
+//    ResponseEntity<MessageDto> response = restTemplate.exchange(URL, HttpMethod.POST, entity, MessageDto.class);
+//    MessageDto messageDto = response.getBody();
+//
+//    ModelAndView mav = new ModelAndView("Intermediate");
+//    mav.addObject("user", userDTO);
+//    return mav;
+//}

@@ -1,12 +1,13 @@
-package com.olxapplication.service;
+package com.olxapplication.config;
 
+import com.olxapplication.dtos.UserDetailsDTO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.Queue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.olxapplication.entity.User;
+
 @Service
 public class RabbitMQSender {
     @Autowired
@@ -19,4 +20,9 @@ public class RabbitMQSender {
         rabbitTemplate.convertAndSend(queue.getName(), string);
         logger.info("Sending Message to the Queue : " + string.toString());
     }
+
+//    public void send(UserDetailsDTO userDto) {
+//        rabbitTemplate.convertAndSend(exchange, routingKey, userDto);
+//        logger.info("Sending UserDto to the Queue : " + userDto.toString());
+//    }
 }

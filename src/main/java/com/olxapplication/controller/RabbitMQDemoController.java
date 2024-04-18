@@ -1,10 +1,8 @@
 package com.olxapplication.controller;
 
-import com.olxapplication.constants.UserMessages;
 import com.olxapplication.dtos.UserDetailsDTO;
 import com.olxapplication.entity.Mail;
-import com.olxapplication.entity.User;
-import com.olxapplication.service.RabbitMQSender;
+import com.olxapplication.config.RabbitMQSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;

@@ -1,4 +1,4 @@
-package com.olxapplication;
+package com.olxapplication.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.LogManager;
