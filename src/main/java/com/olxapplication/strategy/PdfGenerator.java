@@ -3,7 +3,6 @@ package com.olxapplication.strategy;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
-import com.olxapplication.config.RabbitMQConfig;
 import com.olxapplication.constants.ReportMessages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,17 +27,13 @@ public class PdfGenerator implements FileGeneratorStrategy{
             title.setAlignment(Element.ALIGN_CENTER);
             document.add(title);
 
-            // Add a blank line
             document.add(new Paragraph(" "));
 
-            // Create a table with two columns
             PdfPTable table = new PdfPTable(2);
 
-            // Add the header
             table.addCell("Year-Month");
             table.addCell("Number of posted announces");
 
-            // Add the data
             for (Map.Entry<YearMonth, Integer> entry : map.entrySet()) {
                 table.addCell(entry.getKey().toString());
                 table.addCell(entry.getValue().toString());

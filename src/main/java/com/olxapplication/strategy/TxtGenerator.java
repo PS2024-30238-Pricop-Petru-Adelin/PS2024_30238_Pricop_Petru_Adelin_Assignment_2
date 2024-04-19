@@ -21,10 +21,8 @@ public class TxtGenerator implements FileGeneratorStrategy{
         try {
             PrintWriter writer = new PrintWriter(new FileWriter(file));
 
-            // Write the header
             writer.println("Year-Month\tNumber of posted announces");
 
-            // Write the data
             for (Map.Entry<YearMonth, Integer> entry : map.entrySet()) {
                 writer.println(entry.getKey().toString() + "\t\t" + entry.getValue().toString());
             }

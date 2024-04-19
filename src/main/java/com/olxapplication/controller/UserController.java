@@ -1,18 +1,20 @@
 package com.olxapplication.controller;
 
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import com.olxapplication.dtos.UserDTO;
-import com.olxapplication.dtos.UserDetailsDTO;
+import com.olxapplication.config.RabbitMQSender;
+import com.olxapplication.dtos.*;
 import com.olxapplication.service.UserService;
 import lombok.*;
 import org.hibernate.annotations.Fetch;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -26,6 +28,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Getter
 @AllArgsConstructor
 public class UserController {
+    private static final String URL = "http://localhost:8081/microservice/receiver";
+    private final RestTemplate restTemplate = new RestTemplate();
+    @Autowired
+    private final RabbitMQSender rabbitMQSender;
+
     private final UserService userService;
 
     /**
@@ -46,15 +53,15 @@ public class UserController {
      * @param redirectAttributes Redirect attributes.
      * @return ModelAndView for redirection.
      */
-    @PostMapping("/insert")
-    public ModelAndView insertUser(@ModelAttribute("user") UserDetailsDTO user, RedirectAttributes redirectAttributes) {
-        String msg = userService.insert(user);
-        ModelAndView mav = new ModelAndView("Intermediate");
-        mav.addObject("user", user);
-//        ModelAndView mav = new ModelAndView("redirect:/user/get");
-        redirectAttributes.addFlashAttribute("message", msg);
-        return mav;
-    }
+//    @PostMapping("/insert")
+//    public ModelAndView insertUser(@ModelAttribute("user") UserDetailsDTO user, RedirectAttributes redirectAttributes) {
+//        String msg = userService.insert(user);
+//        ModelAndView mav = new ModelAndView("Intermediate");
+//        mav.addObject("user", user);
+////        ModelAndView mav = new ModelAndView("redirect:/user/get");
+//        redirectAttributes.addFlashAttribute("message", msg);
+//        return mav;
+//    }
 
     /**
      * Get a user by its ID.
@@ -92,51 +99,74 @@ public class UserController {
         return new ResponseEntity<>(dtos, HttpStatus.OK);
     }
 
-    /**
-     * Update a user by its ID.
-     * @param userId The ID of the user.
-     * @param userDTO The user details.
-     * @param redirectAttributes Redirect attributes.
-     * @return ModelAndView for redirection.
-     */
-    @PostMapping("/update/{id}")
-    public ModelAndView updateUser(@PathVariable("id") String userId, @ModelAttribute("user") UserDetailsDTO userDTO, RedirectAttributes redirectAttributes) {
-        String msg = userService.updateUserById(userId, userDTO);
+//    /**
+//     * Update a user by its ID.
+//     * @param userId The ID of the user.
+//     * @param userDTO The user details.
+//     * @param redirectAttributes Redirect attributes.
+//     * @return ModelAndView for redirection.
+//     */
+//    @PostMapping("/update/{id}")
+//    public ModelAndView updateUser(@PathVariable("id") String userId, @ModelAttribute("user") UserDetailsDTO userDTO, RedirectAttributes redirectAttributes) {
+//        String msg = userService.updateUserById(userId, userDTO);
+//        redirectAttributes.addFlashAttribute("message", msg);
+//        ModelAndView mav = new ModelAndView("Intermediate");
+//        mav.addObject("user", userDTO);
+////        ModelAndView mav = new ModelAndView("redirect:/user/get");
+//        return mav;
+//    }
+
+    @PostMapping("/insert")
+    public ModelAndView insertUser(@ModelAttribute("user") UserDetailsDTO userDetailsDTO, RedirectAttributes redirectAttributes) {
+        String msg = userService.insert(userDetailsDTO);
+
+        // Crearea unui nou UserDto și trimiterea acestuia în coadă
+        UserMailDTO userDto = new UserMailDTO(userDetailsDTO.getId(), userDetailsDTO.getFirstName(), userDetailsDTO.getLastName(), userDetailsDTO.getEmail());
+        rabbitMQSender.send(userDto);
+
+        // Crearea HttpHeaders și setarea token-ului
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        headers.setBearerAuth(userDto.getId() + userDto.getEmail()); // presupunem că token-ul este disponibil
+
+        // Crearea NotificationRequestDto și HttpEntity
+        NotificationRequestDto notificationRequestDto = new NotificationRequestDto(userDto.getId(), userDto.getFirstName() + " " + userDto.getLastName(), userDto.getEmail(), "insert"); // completați cu datele necesare
+        HttpEntity<NotificationRequestDto> entity = new HttpEntity<>(notificationRequestDto, headers);
+
+        // Apelarea metodei restTemplate.exchange
+        ResponseMessageDto response = restTemplate.exchange(URL, HttpMethod.POST, entity, ResponseMessageDto.class).getBody();
+        System.out.println("!!!!!!!!------------>" + response + "<------------!!!!!!!!");
+
+        ModelAndView mav = new ModelAndView("redirect:/user/get");
         redirectAttributes.addFlashAttribute("message", msg);
-        ModelAndView mav = new ModelAndView("Intermediate");
-        mav.addObject("user", userDTO);
-//        ModelAndView mav = new ModelAndView("redirect:/user/get");
         return mav;
     }
+
+    @PostMapping("/update/{id}")
+    public ModelAndView updateUser(@PathVariable("id") String userId, @ModelAttribute("user") UserDetailsDTO userDetailsDTO, RedirectAttributes redirectAttributes) {
+        String msg = userService.updateUserById(userId, userDetailsDTO);
+
+        // Crearea unui nou UserDto și trimiterea acestuia în coadă
+        UserMailDTO userDTO = new UserMailDTO(userDetailsDTO.getId(), userDetailsDTO.getFirstName(), userDetailsDTO.getLastName(), userDetailsDTO.getEmail());
+        rabbitMQSender.send(userDTO);
+
+        // Crearea HttpHeaders și setarea token-ului
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        headers.setBearerAuth(userDTO.getId() + userDTO.getEmail()); // presupunem că token-ul este disponibil
+
+        // Crearea NotificationRequestDto și HttpEntity
+        NotificationRequestDto notificationRequestDto = new NotificationRequestDto(userDTO.getId(), userDTO.getFirstName() + " " + userDTO.getLastName(), userDTO.getEmail(), "update"); // completați cu datele necesare
+        HttpEntity<NotificationRequestDto> entity = new HttpEntity<>(notificationRequestDto, headers);
+
+        // Apelarea metodei restTemplate.exchange
+        ResponseMessageDto response = restTemplate.exchange(URL, HttpMethod.POST, entity, ResponseMessageDto.class).getBody();
+        System.out.println("!!!!!!!!------------>" + response + "<------------!!!!!!!!");
+        ModelAndView mav = new ModelAndView("redirect:/user/get");
+        redirectAttributes.addFlashAttribute("message", msg);
+        return mav;
+    }
+
+
 }
 
-//@PostMapping("/update/{id}")
-//public ModelAndView updateUser(@PathVariable("id") String userId, @ModelAttribute("user") UserDetailsDTO userDTO, RedirectAttributes redirectAttributes, String token) {
-//    String msg = userService.updateUserById(userId, userDTO);
-//    redirectAttributes.addFlashAttribute("message", msg);
-//
-//    // Setarea HttpHeaders
-//    HttpHeaders headers = new HttpHeaders();
-//    headers.setBearerAuth(token);
-//    headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-//
-//    // Crearea NotificationRequestDto
-//    NotificationRequestDto notificationRequestDto = new NotificationRequestDto();
-//    // Setarea campurilor necesare pentru notificationRequestDto
-//    // ...
-//
-//    // Crearea HttpEntity
-//    HttpEntity<NotificationRequestDto> entity = new HttpEntity<>(notificationRequestDto, headers);
-//
-//    // Trimiterea mesajului în coadă
-//    rabbitSender.send("yourExchange", "yourRoutingKey", userDTO);
-//
-//    // Crearea RestTemplate si trimiterea request-ului
-//    RestTemplate restTemplate = new RestTemplate();
-//    ResponseEntity<MessageDto> response = restTemplate.exchange(URL, HttpMethod.POST, entity, MessageDto.class);
-//    MessageDto messageDto = response.getBody();
-//
-//    ModelAndView mav = new ModelAndView("Intermediate");
-//    mav.addObject("user", userDTO);
-//    return mav;
-//}
