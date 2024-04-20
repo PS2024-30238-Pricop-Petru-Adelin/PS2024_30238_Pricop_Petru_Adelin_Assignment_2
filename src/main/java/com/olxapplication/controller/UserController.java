@@ -121,7 +121,11 @@ public class UserController {
         String msg = userService.insert(userDetailsDTO);
 
         // Crearea unui nou UserDto și trimiterea acestuia în coadă
-        UserMailDTO userDto = new UserMailDTO(userDetailsDTO.getId(), userDetailsDTO.getFirstName(), userDetailsDTO.getLastName(), userDetailsDTO.getEmail());
+        UserMailDTO userDto = new UserMailDTO(userDetailsDTO.getId()
+                , userDetailsDTO.getFirstName()
+                , userDetailsDTO.getLastName()
+                , userDetailsDTO.getEmail()
+                , "insert");
         rabbitMQSender.send(userDto);
 
         // Crearea HttpHeaders și setarea token-ului
@@ -147,7 +151,11 @@ public class UserController {
         String msg = userService.updateUserById(userId, userDetailsDTO);
 
         // Crearea unui nou UserDto și trimiterea acestuia în coadă
-        UserMailDTO userDTO = new UserMailDTO(userDetailsDTO.getId(), userDetailsDTO.getFirstName(), userDetailsDTO.getLastName(), userDetailsDTO.getEmail());
+        UserMailDTO userDTO = new UserMailDTO(userDetailsDTO.getId()
+                , userDetailsDTO.getFirstName()
+                , userDetailsDTO.getLastName()
+                , userDetailsDTO.getEmail()
+                , "update");
         rabbitMQSender.send(userDTO);
 
         // Crearea HttpHeaders și setarea token-ului

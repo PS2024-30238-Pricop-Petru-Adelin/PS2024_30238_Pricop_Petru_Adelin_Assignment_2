@@ -16,4 +16,16 @@ public class UserMailDTO {
     private String firstName;
     private String lastName;
     private String email;
+    private String action;
+
+    @Override
+    public String toString() {
+        return "UserMailDTO{" +
+                "id='" + id + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", action='" + action + '\'' +
+                '}';
+    }
 }
