@@ -63,7 +63,7 @@
 <br><br>
 <h1>Welcome to OLX</h1>
 <div class="container">
-    <form action="/index/redirectPage" method="post">
+    <form th:action="@{/index/redirectPage}" method="post">
         <label for="userEmail"><b>Email</b></label>
         <input type="text" placeholder="Enter Email" id="userEmail" name="userEmail" required autocomplete="email" >
 

@@ -90,6 +90,10 @@ public class UserService {
     public String insert(UserDetailsDTO userDTO) {
         try {
             userValidators.userDtoValidator(userDTO);
+            if(userRepository.existsByEmailIgnoreCase(userDTO.getEmail())){
+                LOGGER.error(UserMessages.USER_NOT_INSERTED + UserMessages.EMAIL_ALREADY_EXISTS);
+                return UserMessages.USER_NOT_INSERTED + UserMessages.EMAIL_ALREADY_EXISTS;
+            }
             User user = UserMapper.toEntity(userDTO);
             Favourite favourite = new Favourite(null, user, new ArrayList<>(), 0.0);
             user = userRepository.save(user);

@@ -194,13 +194,16 @@
 
         var previousUrl = document.referrer; // Get the previous URL
 
+        var urlPattern = new RegExp('^http:\\/\\/localhost:8080\\/message\\/chat\\/' + id + '\\/[-0-9A-Za-z]*\\??$');
+
         var urlToCompare1 = 'http://localhost:8080/message/messages/' + id + '?';
         var urlToCompare2 = 'http://localhost:8080/announcement/getOthers/' + id ;
         var urlToCompare3 = 'http://localhost:8080/announcement/getMine/' + id ;
         var urlToCompare4 = 'http://localhost:8080/announcement/getMine/' + id + '?';
 
         if(previousUrl !== urlToCompare1 && previousUrl !== urlToCompare2
-        && previousUrl !== urlToCompare3 && previousUrl !== urlToCompare4 ){
+        && previousUrl !== urlToCompare3 && previousUrl !== urlToCompare4
+        && !urlPattern.test(previousUrl)){
             window.location.href = 'http://localhost:8080/index/HomePage';
         }
     });

@@ -242,20 +242,20 @@
 </head>
 <body>
 <div class="form-row">
-    <form th:action="@{/index/admin}" method="post">
-        <input id="logOut" name="newLink" th:value="@{redirect:/index/HomePage}" type="hidden">
+    <form th:action="@{/index/HomePage}" method="get">
+<!--        <input id="logOut" name="newLink" th:value="@{redirect:/index/HomePage}" type="hidden">-->
         <input type="submit" value="Log Out"/>
     </form>
 </div>
 <h1 style="color: #a5defb">Registered users</h1>
 <div class="form-row">
-    <form action="/index/admin" method="post">
-        <input id="newLink1" name="newLink" value="redirect:/announcement/get" type="hidden">
+    <form th:action="@{/announcement/get}" method="get">
+<!--        <input id="newLink1" name="newLink" value="redirect:/announcement/get" type="hidden">-->
         <input type="submit" value="<< Manage Announces"/>
     </form>
 
-    <form action="/index/admin" method="post">
-        <input id="newLink2" name="newLink" value="redirect:/category/get" type="hidden">
+    <form th:action="@{/category/get}" method="get">
+<!--        <input id="newLink2" name="newLink" value="redirect:/category/get" type="hidden">-->
         <input type="submit" value="Manage Categories >>"/>
     </form>
 </div>
@@ -409,9 +409,16 @@
         var urlToCompare5 = 'http://localhost:8080/user/insert';
         var urlToCompare6 = 'http://localhost:8080/rabbitmq/sender';
 
+        var urlToCompare7 = 'http://localhost:8080/announcement/get?';
+        var urlToCompare8 = 'http://localhost:8080/category/get?';
+        var urlToCompare9 = 'http://localhost:8080/index/HomePage?';
+        var urlToCompare10 = 'http://localhost:8080/user/get?';
+
         if(previousUrl !== urlToCompare1 && previousUrl !== urlToCompare2
             && previousUrl !== urlToCompare3 && previousUrl !== urlToCompare4
             && previousUrl !== urlToCompare5 && previousUrl !== urlToCompare6
+            && previousUrl !== urlToCompare7 && previousUrl !== urlToCompare8
+            && previousUrl !== urlToCompare9 && previousUrl !== urlToCompare10
             && !urlPattern1.test(previousUrl)){
             window.location.href = 'http://localhost:8080/index/HomePage';
         }

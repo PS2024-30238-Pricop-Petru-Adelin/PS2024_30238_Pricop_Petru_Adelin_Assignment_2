@@ -233,20 +233,20 @@
 </head>
 <body>
 <div class="form-row">
-    <form th:action="@{/index/admin}" method="post">
-        <input id="logOut" name="newLink" th:value="@{redirect:/index/HomePage}" type="hidden">
+    <form th:action="@{/index/HomePage}" method="get">
+<!--        <input id="logOut" name="newLink" th:value="@{redirect:/index/HomePage}" type="hidden">-->
         <input type="submit" value="Log Out"/>
     </form>
 </div>
 <h1 style="color: #a5defb">Registered announces</h1>
 <div class="form-row">
-    <form action="/index/admin" method="post">
-        <input id="newLink1" name="newLink" value="redirect:/user/get" type="hidden">
+    <form th:action="@{/user/get}" method="get">
+<!--        <input id="newLink1" name="newLink" value="redirect:/user/get" type="hidden">-->
         <input type="submit" value="<< Manage Users"/>
     </form>
 
-    <form action="/index/admin" method="post">
-        <input id="newLink2" name="newLink" value="redirect:/category/get" type="hidden">
+    <form th:action="@{/category/get}" method="get">
+<!--        <input id="newLink2" name="newLink" value="redirect:/category/get" type="hidden">-->
         <input type="submit" value="Manage Categories >>"/>
     </form>
 </div>
@@ -428,11 +428,18 @@
         var urlToCompare3 = 'http://localhost:8080/index/HomePage';
 
         var urlToCompare4 = 'http://localhost:8080/user/get';
-        var urlToCompare5 = 'http://localhost:8080/report/generate';
+        var urlToCompare5 = 'http://localhost:8080/announcement/get?';
+        var urlToCompare6 = 'http://localhost:8080/category/get?';
+        var urlToCompare7 = 'http://localhost:8080/index/HomePage?';
+
+        var urlToCompare8 = 'http://localhost:8080/user/get?';
+        var urlToCompare9 = 'http://localhost:8080/report/generate';
 
         if(previousUrl !== urlToCompare1 && previousUrl !== urlToCompare2
             && previousUrl !== urlToCompare3 && previousUrl !== urlToCompare4
-            && previousUrl !== urlToCompare5){
+            && previousUrl !== urlToCompare5 && previousUrl !== urlToCompare6
+            && previousUrl !== urlToCompare7 && previousUrl !== urlToCompare8
+            && previousUrl !== urlToCompare9){
             window.location.href = 'http://localhost:8080/index/HomePage';
         }
     });

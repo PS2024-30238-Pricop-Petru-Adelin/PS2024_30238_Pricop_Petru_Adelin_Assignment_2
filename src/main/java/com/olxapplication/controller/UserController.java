@@ -126,7 +126,7 @@ public class UserController {
                 , userDetailsDTO.getLastName()
                 , userDetailsDTO.getEmail()
                 , "insert");
-        rabbitMQSender.send(userDto);
+//        rabbitMQSender.send(userDto);
 
         // Crearea HttpHeaders și setarea token-ului
         HttpHeaders headers = new HttpHeaders();
@@ -158,18 +158,18 @@ public class UserController {
                 , "update");
         rabbitMQSender.send(userDTO);
 
-        // Crearea HttpHeaders și setarea token-ului
-        HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-        headers.setBearerAuth(userDTO.getId() + userDTO.getEmail()); // presupunem că token-ul este disponibil
-
-        // Crearea NotificationRequestDto și HttpEntity
-        NotificationRequestDto notificationRequestDto = new NotificationRequestDto(userDTO.getId(), userDTO.getFirstName() + " " + userDTO.getLastName(), userDTO.getEmail(), "update"); // completați cu datele necesare
-        HttpEntity<NotificationRequestDto> entity = new HttpEntity<>(notificationRequestDto, headers);
-
-        // Apelarea metodei restTemplate.exchange
-        ResponseMessageDto response = restTemplate.exchange(URL, HttpMethod.POST, entity, ResponseMessageDto.class).getBody();
-        System.out.println("!!!!!!!!------------>" + response + "<------------!!!!!!!!");
+//        // Crearea HttpHeaders și setarea token-ului
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+//        headers.setBearerAuth(userDTO.getId() + userDTO.getEmail()); // presupunem că token-ul este disponibil
+//
+//        // Crearea NotificationRequestDto și HttpEntity
+//        NotificationRequestDto notificationRequestDto = new NotificationRequestDto(userDTO.getId(), userDTO.getFirstName() + " " + userDTO.getLastName(), userDTO.getEmail(), "update"); // completați cu datele necesare
+//        HttpEntity<NotificationRequestDto> entity = new HttpEntity<>(notificationRequestDto, headers);
+//
+//        // Apelarea metodei restTemplate.exchange
+//        ResponseMessageDto response = restTemplate.exchange(URL, HttpMethod.POST, entity, ResponseMessageDto.class).getBody();
+//        System.out.println("!!!!!!!!------------>" + response + "<------------!!!!!!!!");
         ModelAndView mav = new ModelAndView("redirect:/user/get");
         redirectAttributes.addFlashAttribute("message", msg);
         return mav;
