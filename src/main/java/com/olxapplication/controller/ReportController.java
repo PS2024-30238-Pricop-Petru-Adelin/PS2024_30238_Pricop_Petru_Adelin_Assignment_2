@@ -18,6 +18,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+/**
+ * This controller class provides API endpoints for generating reports within the application.
+ */
 @Controller
 @CrossOrigin
 @RequestMapping(value = "/report")
@@ -33,6 +36,12 @@ public class ReportController {
     @Autowired
     private ReportService reportService;
 
+    /**
+     * Generate a report based on the chosen file format.
+     * @param strategy The format of the report file.
+     * @param redirectAttributes Redirect attributes( the response message to be displayed ).
+     * @return ModelAndView redirecting to "/announcement/get".
+     * */
     @GetMapping("/generate")
     public ModelAndView generateReport(@ModelAttribute("strategy") String strategy, RedirectAttributes redirectAttributes){
         ModelAndView modelAndView = new ModelAndView("redirect:/announcement/get");

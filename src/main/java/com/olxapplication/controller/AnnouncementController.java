@@ -21,8 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.List;
 
 /**
- * Controller for handling requests related to announcements.
- * This controller is cross-origin enabled and all its requests are prefixed with "/announcement".
+ * This controller class provides API endpoints for managing announcements within the application.
  */
 @Controller
 @CrossOrigin
@@ -49,32 +48,32 @@ public class AnnouncementController {
 
 
 
-    /**
-     * Retrieves all announcements by user ID.
-     * @param user_id The ID of the user.
-     * @return ResponseEntity containing a list of announcements and HTTP status.
-     */
-    @GetMapping("/byUser/{user_id}")
-    public ResponseEntity<List<AnnouncementDetailsDTO>> getAnnouncesByUserId(@PathVariable("user_id") String user_id){
-        List<AnnouncementDetailsDTO> dtos = announcementService.findAnnouncementByUserId(user_id);
-        return new ResponseEntity<>(dtos, HttpStatus.OK);
-    }
+//    /**
+//     * Retrieves all announcements by user ID.
+//     * @param user_id The ID of the user.
+//     * @return ResponseEntity containing a list of announcements and HTTP status.
+//     */
+//    @GetMapping("/byUser/{user_id}")
+//    public ResponseEntity<List<AnnouncementDetailsDTO>> getAnnouncesByUserId(@PathVariable("user_id") String user_id){
+//        List<AnnouncementDetailsDTO> dtos = announcementService.findAnnouncementByUserId(user_id);
+//        return new ResponseEntity<>(dtos, HttpStatus.OK);
+//    }
 
-    /**
-     * Retrieves all announcements by title.
-     * @param title The title of the announcement.
-     * @return ResponseEntity containing a list of announcements and HTTP status.
-     */
-    @GetMapping("/byTitle/{title}")
-    public ResponseEntity<List<AnnouncementDetailsDTO>> getAnnouncesByTitle(@PathVariable("title") String title){
-        List<AnnouncementDetailsDTO> dtos = announcementService.findAnnouncementByTitle(title);
-        return new ResponseEntity<>(dtos, HttpStatus.OK);
-    }
+//    /**
+//     * Retrieves all announcements by title.
+//     * @param title The title of the announcement.
+//     * @return ResponseEntity containing a list of announcements and HTTP status.
+//     */
+//    @GetMapping("/byTitle/{title}")
+//    public ResponseEntity<List<AnnouncementDetailsDTO>> getAnnouncesByTitle(@PathVariable("title") String title){
+//        List<AnnouncementDetailsDTO> dtos = announcementService.findAnnouncementByTitle(title);
+//        return new ResponseEntity<>(dtos, HttpStatus.OK);
+//    }
 
     /**
      * Inserts a new announcement.
      * @param announcementDTO The announcement to be inserted.
-     * @param redirectAttributes Redirect attributes.
+     * @param redirectAttributes Redirect attributes( the response message to be displayed ).
      * @return ModelAndView redirecting to "/announcement/get".
      */
     @PostMapping("/insert")
@@ -90,7 +89,7 @@ public class AnnouncementController {
      * Inserts a new announcement by a specific user.
      * @param id The ID of the user.
      * @param announcementDTO The announcement to be inserted.
-     * @param redirectAttributes Redirect attributes.
+     * @param redirectAttributes Redirect attributes( the response message to be displayed ).
      * @return ModelAndView redirecting to "/announcement/getMine/{id}".
      */
     @PostMapping("/insertMine/{id}")
@@ -101,16 +100,16 @@ public class AnnouncementController {
         return mav;
     }
 
-    /**
-     * Retrieves a specific announcement by ID.
-     * @param announcementId The ID of the announcement.
-     * @return ResponseEntity containing the announcement details and HTTP status.
-     */
-    @GetMapping("/get/{id}")
-    public ResponseEntity<AnnouncementDetailsDTO> getAnnouncement(@PathVariable("id") String announcementId) {
-        AnnouncementDetailsDTO announcementDetailsDTO = announcementService.findAnnouncementById(announcementId);
-        return new ResponseEntity<>(announcementDetailsDTO, HttpStatus.OK);
-    }
+//    /**
+//     * Retrieves a specific announcement by ID.
+//     * @param announcementId The ID of the announcement.
+//     * @return ResponseEntity containing the announcement details and HTTP status.
+//     */
+//    @GetMapping("/get/{id}")
+//    public ResponseEntity<AnnouncementDetailsDTO> getAnnouncement(@PathVariable("id") String announcementId) {
+//        AnnouncementDetailsDTO announcementDetailsDTO = announcementService.findAnnouncementById(announcementId);
+//        return new ResponseEntity<>(announcementDetailsDTO, HttpStatus.OK);
+//    }
 
     /**
      * Retrieves all announcements by a specific user.
@@ -139,6 +138,7 @@ public class AnnouncementController {
     /**
      * Retrieves all announcements except those by a specific user.
      * @param userId The ID of the user.
+     * @param categoryName The string that match category names to filter the announcements by their category .
      * @return ModelAndView containing the other users' announcements.
      */
     @GetMapping("/getOthers/{id}")
@@ -151,6 +151,12 @@ public class AnnouncementController {
         return mav;
     }
 
+    /**
+     * Displays the announcements that are not posted by the user with the specified ID, ordered descending by their newPrice.
+     * @param userId The ID of the user.
+     * @param categoryName The string that match category names to filter the announcements by their category .
+     * @return ModelAndView "UserGetOtherAnnounces".
+     */
     @GetMapping("/getOthers/0/{id}")
     public ModelAndView getOtherAnnouncementsAsc(@PathVariable("id") String userId, @ModelAttribute("categoryName") String categoryName) {
         List<AnnouncementDetailsDTO> dtos = announcementService.findAnnouncementByCategoryNameAndNotUser(categoryName, userId);
@@ -159,6 +165,12 @@ public class AnnouncementController {
         return mav;
     }
 
+    /**
+     * Displays the announcements that are not posted by the user with the specified ID, ordered ascending by their newPrice.
+     * @param userId The ID of the user.
+     * @param categoryName The string that match category names to filter the announcements by their category .
+     * @return ModelAndView "UserGetOtherAnnounces".
+     */
     @GetMapping("/getOthers/1/{id}")
     public ModelAndView getOtherAnnouncementsDesc(@PathVariable("id") String userId, @ModelAttribute("categoryName") String categoryName) {
         List<AnnouncementDetailsDTO> dtos = announcementService.findAnnouncementByCategoryNameAndNotUser(categoryName, userId);
@@ -172,7 +184,7 @@ public class AnnouncementController {
     /**
      * Deletes a specific announcement by ID.
      * @param announcementId The ID of the announcement.
-     * @param redirectAttributes Redirect attributes.
+     * @param redirectAttributes Redirect attributes( the response message to be displayed ).
      * @return ModelAndView redirecting to "/announcement/get".
      */
     @PostMapping("/delete/{id}")
@@ -187,7 +199,7 @@ public class AnnouncementController {
      * Deletes a specific announcement by ID for a specific user.
      * @param announcementId The ID of the announcement.
      * @param userId The ID of the user.
-     * @param redirectAttributes Redirect attributes.
+     * @param redirectAttributes Redirect attributes( the response message to be displayed ).
      * @return ModelAndView redirecting to "/announcement/getMine/{userId}".
      */
     @PostMapping("/deleteMine/{idUser}/{id}")
@@ -203,7 +215,7 @@ public class AnnouncementController {
      * Updates a specific announcement by ID.
      * @param announcementId The ID of the announcement.
      * @param announcementDTO The updated announcement details.
-     * @param redirectAttributes Redirect attributes.
+     * @param redirectAttributes Redirect attributes( the response message to be displayed ).
      * @return ModelAndView redirecting to "/announcement/get".
      */
     @PostMapping("/update/{id}")
@@ -218,7 +230,7 @@ public class AnnouncementController {
      * Updates a specific announcement by ID for a specific user.
      * @param announcementId The ID of the announcement.
      * @param announcementDTO The updated announcement details.
-     * @param redirectAttributes Redirect attributes.
+     * @param redirectAttributes Redirect attributes( the response message to be displayed ).
      * @return ModelAndView redirecting to "/announcement/getMine/{announcementDTO.getUser()}".
      */
     @PostMapping("/updateMine/{id}")

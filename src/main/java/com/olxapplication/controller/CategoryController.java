@@ -43,7 +43,7 @@ public class CategoryController {
      * Insert a new category.
      * @param categoryDTO The category to be inserted.
      * @param redirectAttributes Redirect attributes.
-     * @return ModelAndView for redirection.
+     * @return ModelAndView redirecting to "/category/get".
      */
     @PostMapping("/insert")
     public ModelAndView insertCategory(@ModelAttribute("category") CategoryDTO categoryDTO, RedirectAttributes redirectAttributes) {
@@ -54,33 +54,33 @@ public class CategoryController {
         return mav;
     }
 
-    /**
-     * Get a category by its ID.
-     * @param categoryId The ID of the category.
-     * @return ResponseEntity containing the category details.
-     */
-    @GetMapping("/get/{id}")
-    public ResponseEntity<CategoryDetailsDTO> getCategory(@PathVariable("id") String categoryId) {
-        CategoryDetailsDTO categoryDto = categoryService.findCategoryById(categoryId);
-        return new ResponseEntity<>(categoryDto, HttpStatus.OK);
-    }
+//    /**
+//     * Get a category by its ID.
+//     * @param categoryId The ID of the category.
+//     * @return ResponseEntity containing the category details.
+//     */
+//    @GetMapping("/get/{id}")
+//    public ResponseEntity<CategoryDetailsDTO> getCategory(@PathVariable("id") String categoryId) {
+//        CategoryDetailsDTO categoryDto = categoryService.findCategoryById(categoryId);
+//        return new ResponseEntity<>(categoryDto, HttpStatus.OK);
+//    }
 
-    /**
-     * Get categories by name.
-     * @param name The name of the category.
-     * @return ResponseEntity containing the list of categories.
-     */
-    @GetMapping("/byName/{name}")
-    public ResponseEntity<List<CategoryDetailsDTO>> getCategoryByName(@PathVariable("name") String name) {
-        List<CategoryDetailsDTO> categoryDto = categoryService.findCategoriesByName(name);
-        return new ResponseEntity<>(categoryDto, HttpStatus.OK);
-    }
+//    /**
+//     * Get categories by name.
+//     * @param name The name of the category.
+//     * @return ResponseEntity containing the list of categories.
+//     */
+//    @GetMapping("/byName/{name}")
+//    public ResponseEntity<List<CategoryDetailsDTO>> getCategoryByName(@PathVariable("name") String name) {
+//        List<CategoryDetailsDTO> categoryDto = categoryService.findCategoriesByName(name);
+//        return new ResponseEntity<>(categoryDto, HttpStatus.OK);
+//    }
 
     /**
      * Delete a category by its ID.
      * @param categoryId The ID of the category.
-     * @param redirectAttributes Redirect attributes.
-     * @return ModelAndView for redirection.
+     * @param redirectAttributes Redirect attributes( the response message to be displayed ).
+     * @return ModelAndView redirecting to "/category/get".
      */
     @PostMapping("/delete/{id}")
     public ModelAndView deleteCategory(@PathVariable("id") String categoryId, RedirectAttributes redirectAttributes) {
@@ -94,8 +94,8 @@ public class CategoryController {
      * Update a category name by its ID.
      * @param categoryId The ID of the category.
      * @param categoryDTO The category details.
-     * @param redirectAttributes Redirect attributes.
-     * @return ModelAndView for redirection.
+     * @param redirectAttributes Redirect attributes( the response message to be displayed ).
+     * @return ModelAndView redirecting to "/category/get".
      */
     @PostMapping("/update/{id}")
     public ModelAndView updateCategoryName(@PathVariable("id") String categoryId, @ModelAttribute("category") CategoryDetailsDTO categoryDTO, RedirectAttributes redirectAttributes) {

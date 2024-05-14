@@ -18,6 +18,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
+/**
+ * This controller class provides API endpoints for managing messages within the application.
+ */
 @Controller
 @CrossOrigin
 @RequestMapping(value = "/message")
@@ -29,31 +32,45 @@ import java.util.List;
 public class MessageController {
     private final MessageService messageService;
 
-    @GetMapping("/sent/{id}")
-    public ModelAndView getSentMessages(@PathVariable("id") String id){
-        List<Message> messages = messageService.findSent(id);
-        ModelAndView mav = new ModelAndView("redirect:/announcement/getMine" + id);
-        mav.addObject("msgs", messages);
-        return mav;
-    }
+//    /**
+//     * Retrieve all announcements that are sent by the user with specified id.
+//     * @param id The ID of the user.
+//     * @return ModelAndView "/favourite/get/{id}".
+//     */
+//    @GetMapping("/sent/{id}")
+//    public ModelAndView getSentMessages(@PathVariable("id") String id){
+//        List<Message> messages = messageService.findSent(id);
+//        ModelAndView mav = new ModelAndView("redirect:/announcement/getMine/" + id);
+//        mav.addObject("msgs", messages);
+//        return mav;
+//    }
+//
+//    @GetMapping("/received/{id}")
+//    public ModelAndView getReceivedMessages(@PathVariable("id") String id){
+//        List<Message> messages = messageService.findReceived(id);
+//        ModelAndView mav = new ModelAndView("redirect:/announcement/getMine/" + id);
+//        mav.addObject("msgs", messages);
+//        return mav;
 
-    @GetMapping("/received/{id}")
-    public ModelAndView getReceivedMessages(@PathVariable("id") String id){
-        List<Message> messages = messageService.findReceived(id);
-        ModelAndView mav = new ModelAndView("redirect:/announcement/getMine/" + id);
-        mav.addObject("msgs", messages);
-        return mav;
-    }
-
+    /**
+     * Send a message from sender to receiver.
+     * @param messageWebDTO The message DTO containing the sender, the receiver and the actual message.
+     * @param redirectAttributes Redirect attributes( the response message to be displayed ).
+     * @return ModelAndView redirecting to the chat between the two users.
+     * */
     @PostMapping("/send")
     public ModelAndView sendMessage(@ModelAttribute("msg") MessageWebDTO messageWebDTO, RedirectAttributes redirectAttributes) {
-
         String msg = messageService.insert(messageWebDTO);
         ModelAndView mav = new ModelAndView("redirect:/message/chat/" + messageWebDTO.getSender() + "/" + messageWebDTO.getReceiver());
         redirectAttributes.addFlashAttribute("message", msg);
         return mav;
     }
 
+    /**
+     * Displays the correspondents of the user with the specified id.
+     * @param id The id of the user.
+     * @return ModelAndView "Corespondents".
+     * */
     @GetMapping("/messages/{id}")
     public ModelAndView getCorespondents(@PathVariable("id") String id){
         List<User> users = messageService.findCorespondents(id);
@@ -62,6 +79,12 @@ public class MessageController {
         return mav;
     }
 
+    /**
+     * Displays the chat between a user and its specified correspondent.
+     * @param id The id of the user.
+     * @param corespondentId The id of the correspondent.
+     * @return ModelAndView "ChatNou".
+     * */
     @GetMapping("/chat/{id}/{corespondentId}")
     public ModelAndView getChat(@PathVariable("id") String id, @PathVariable("corespondentId") String corespondentId){
         List<Message> messages = messageService.findChat(id, corespondentId);

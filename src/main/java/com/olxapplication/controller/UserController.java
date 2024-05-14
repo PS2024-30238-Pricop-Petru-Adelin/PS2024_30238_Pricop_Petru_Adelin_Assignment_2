@@ -37,7 +37,7 @@ public class UserController {
 
     /**
      * Get all users.
-     * @return ModelAndView containing the list of users.
+     * @return ModelAndView "AdminGetUsers".
      */
     @GetMapping("/get")
     public ModelAndView getUsers(){
@@ -47,12 +47,12 @@ public class UserController {
         return mav;
     }
 
-    /**
-     * Insert a new user.
-     * @param user The user to be inserted.
-     * @param redirectAttributes Redirect attributes.
-     * @return ModelAndView for redirection.
-     */
+//    /**
+//     * Insert a new user.
+//     * @param user The user to be inserted.
+//     * @param redirectAttributes Redirect attributes.
+//     * @return ModelAndView for redirection.
+//     */
 //    @PostMapping("/insert")
 //    public ModelAndView insertUser(@ModelAttribute("user") UserDetailsDTO user, RedirectAttributes redirectAttributes) {
 //        String msg = userService.insert(user);
@@ -63,21 +63,21 @@ public class UserController {
 //        return mav;
 //    }
 
-    /**
-     * Get a user by its ID.
-     * @param userId The ID of the user.
-     * @return ResponseEntity containing the user details.
-     */
-    @GetMapping("/get/{id}")
-    public ResponseEntity<UserDetailsDTO> getUser(@PathVariable("id") String userId) {
-        UserDetailsDTO userDto = userService.findUserById(userId);
-        return new ResponseEntity<>(userDto, HttpStatus.OK);
-    }
+//    /**
+//     * Get a user by its ID.
+//     * @param userId The ID of the user.
+//     * @return ResponseEntity containing the user details.
+//     */
+//    @GetMapping("/get/{id}")
+//    public ResponseEntity<UserDetailsDTO> getUser(@PathVariable("id") String userId) {
+//        UserDetailsDTO userDto = userService.findUserById(userId);
+//        return new ResponseEntity<>(userDto, HttpStatus.OK);
+//    }
 
     /**
      * Delete a user by its ID.
      * @param userId The ID of the user.
-     * @param redirectAttributes Redirect attributes.
+     * @param redirectAttributes Redirect attributes( the response message to be displayed ).
      * @return ModelAndView for redirection.
      */
     @PostMapping("/delete/{id}")
@@ -88,16 +88,16 @@ public class UserController {
         return mav;
     }
 
-    /**
-     * Get users by name.
-     * @param name The name of the user.
-     * @return ResponseEntity containing the list of users.
-     */
-    @GetMapping("/filter/{name}")
-    public ResponseEntity<List<UserDetailsDTO>> getUserByName(@PathVariable("name") String name) {
-        List<UserDetailsDTO> dtos = userService.findUserFirstNameOrLastName(name, name);
-        return new ResponseEntity<>(dtos, HttpStatus.OK);
-    }
+//    /**
+//     * Get users by name.
+//     * @param name The name of the user.
+//     * @return ResponseEntity containing the list of users.
+//     */
+//    @GetMapping("/filter/{name}")
+//    public ResponseEntity<List<UserDetailsDTO>> getUserByName(@PathVariable("name") String name) {
+//        List<UserDetailsDTO> dtos = userService.findUserFirstNameOrLastName(name, name);
+//        return new ResponseEntity<>(dtos, HttpStatus.OK);
+//    }
 
 //    /**
 //     * Update a user by its ID.
@@ -116,17 +116,22 @@ public class UserController {
 //        return mav;
 //    }
 
+    /**
+     * Insert a new user and synchronously sends an email to its address.
+     * @param userDetailsDTO The user to be inserted.
+     * @param redirectAttributes Redirect attributes( the response message to be displayed ).
+     * @return ModelAndView redirecting to "/user/get".
+     * */
     @PostMapping("/insert")
     public ModelAndView insertUser(@ModelAttribute("user") UserDetailsDTO userDetailsDTO, RedirectAttributes redirectAttributes) {
         String msg = userService.insert(userDetailsDTO);
 
-        // Crearea unui nou UserDto și trimiterea acestuia în coadă
+        // Crearea unui nou UserDto
         UserMailDTO userDto = new UserMailDTO(userDetailsDTO.getId()
                 , userDetailsDTO.getFirstName()
                 , userDetailsDTO.getLastName()
                 , userDetailsDTO.getEmail()
                 , "insert", "");
-//        rabbitMQSender.send(userDto);
 
         // Crearea HttpHeaders și setarea token-ului
         HttpHeaders headers = new HttpHeaders();
@@ -146,6 +151,13 @@ public class UserController {
         return mav;
     }
 
+    /**
+     * Update the user with the specified id and asynchronously sends an email to its address.
+     * @param userId the id of the user.
+     * @param userDetailsDTO The user with the updated values.
+     * @param redirectAttributes Redirect attributes( the response message to be displayed ).
+     * @return ModelAndView redirecting to "/user/get".
+     * */
     @PostMapping("/update/{id}")
     public ModelAndView updateUser(@PathVariable("id") String userId, @ModelAttribute("user") UserDetailsDTO userDetailsDTO, RedirectAttributes redirectAttributes) {
         String msg = userService.updateUserById(userId, userDetailsDTO);
@@ -159,18 +171,6 @@ public class UserController {
                 ,"");
         rabbitMQSender.send(userDTO);
 
-//        // Crearea HttpHeaders și setarea token-ului
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-//        headers.setBearerAuth(userDTO.getId() + userDTO.getEmail()); // presupunem că token-ul este disponibil
-//
-//        // Crearea NotificationRequestDto și HttpEntity
-//        NotificationRequestDto notificationRequestDto = new NotificationRequestDto(userDTO.getId(), userDTO.getFirstName() + " " + userDTO.getLastName(), userDTO.getEmail(), "update"); // completați cu datele necesare
-//        HttpEntity<NotificationRequestDto> entity = new HttpEntity<>(notificationRequestDto, headers);
-//
-//        // Apelarea metodei restTemplate.exchange
-//        ResponseMessageDto response = restTemplate.exchange(URL, HttpMethod.POST, entity, ResponseMessageDto.class).getBody();
-//        System.out.println("!!!!!!!!------------>" + response + "<------------!!!!!!!!");
         ModelAndView mav = new ModelAndView("redirect:/user/get");
         redirectAttributes.addFlashAttribute("message", msg);
         return mav;

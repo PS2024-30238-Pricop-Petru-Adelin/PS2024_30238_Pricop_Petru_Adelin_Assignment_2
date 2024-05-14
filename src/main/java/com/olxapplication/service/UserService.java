@@ -45,45 +45,45 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
+//    /**
+//     * Fetches a user by ID from the repository and maps it to a UserDetailsDTO object.
+//     * @param id the ID of the user to fetch.
+//     * @return a UserDetailsDTO object of the fetched user.
+//     * @throws ResourceNotFoundException if no user is found with the provided ID.
+//     */
+//    public UserDetailsDTO findUserById(String id){
+//        Optional<User> userOptional = userRepository.findById(id);
+//        if (userOptional.isEmpty()){
+//            LOGGER.debug(UserMessages.USER_NOT_FOUND);
+//            throw new ResourceNotFoundException(UserMessages.USER_NOT_FOUND + id);
+//        }
+//        return UserMapper.toUserDetailsDTO(userOptional.get());
+//    }
+//
+//    public User findById(String id){
+//        Optional<User> userOptional = userRepository.findById(id);
+//        if (userOptional.isEmpty()){
+//            LOGGER.debug(UserMessages.USER_NOT_FOUND);
+//            throw new ResourceNotFoundException(UserMessages.USER_NOT_FOUND + id);
+//        }
+//        return userOptional.get();
+//    }
+
+
+//    /**
+//     * Fetches users by first name or last name from the repository and maps them to UserDetailsDTO objects.
+//     * @param str the string to match with first name or last name.
+//     * @return a list of UserDetailsDTO objects of the fetched users.
+//     */
+//    public List<UserDetailsDTO> findUserFirstNameOrLastName(String str, String name){
+//        List<User> userList = userRepository.findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(str, str);
+//        return userList.stream()
+//                .map(UserMapper::toUserDetailsDTO)
+//                .collect(Collectors.toList());
+//    }
+
     /**
-     * Fetches a user by ID from the repository and maps it to a UserDetailsDTO object.
-     * @param id the ID of the user to fetch.
-     * @return a UserDetailsDTO object of the fetched user.
-     * @throws ResourceNotFoundException if no user is found with the provided ID.
-     */
-    public UserDetailsDTO findUserById(String id){
-        Optional<User> userOptional = userRepository.findById(id);
-        if (userOptional.isEmpty()){
-            LOGGER.debug(UserMessages.USER_NOT_FOUND);
-            throw new ResourceNotFoundException(UserMessages.USER_NOT_FOUND + id);
-        }
-        return UserMapper.toUserDetailsDTO(userOptional.get());
-    }
-
-    public User findById(String id){
-        Optional<User> userOptional = userRepository.findById(id);
-        if (userOptional.isEmpty()){
-            LOGGER.debug(UserMessages.USER_NOT_FOUND);
-            throw new ResourceNotFoundException(UserMessages.USER_NOT_FOUND + id);
-        }
-        return userOptional.get();
-    }
-
-
-    /**
-     * Fetches users by first name or last name from the repository and maps them to UserDetailsDTO objects.
-     * @param str the string to match with first name or last name.
-     * @return a list of UserDetailsDTO objects of the fetched users.
-     */
-    public List<UserDetailsDTO> findUserFirstNameOrLastName(String str, String name){
-        List<User> userList = userRepository.findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(str, str);
-        return userList.stream()
-                .map(UserMapper::toUserDetailsDTO)
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * Inserts a new user into the repository.
+     * Inserts a new user into the repository after validating the inputs.
      * @param userDTO the UserDetailsDTO object of the user to insert.
      * @return a message indicating the result of the operation.
      */
@@ -130,7 +130,7 @@ public class UserService {
     }
 
     /**
-     * Updates a user by ID in the repository.
+     * Updates a user by ID in the repository after validating the input.
      * @param id the ID of the user to update.
      * @param userDTO the UserDetailsDTO object containing the updated user data.
      * @return a message indicating the result of the operation.
@@ -159,6 +159,12 @@ public class UserService {
         }
     }
 
+    /**
+     * Checks if there exist a user with the specified email and if the password match.
+     * @param email the email of the user.
+     * @param password the password inserted.
+     * @return a message indicating the result of the operation or the user role.
+     */
     public String checkUser(String email, String password){
         Optional<User> userOptional = userRepository.findByEmailIgnoreCase(email);
         if (userOptional.isEmpty()){
@@ -174,6 +180,11 @@ public class UserService {
         }
     }
 
+    /**
+     * Return the user with the specified email
+     * @param email the ID of the user to update.
+     * @return the user if exists or null.
+     */
     public Optional<User> findUserByEmail(String email){
         return userRepository.findByEmailIgnoreCase(email);
     }

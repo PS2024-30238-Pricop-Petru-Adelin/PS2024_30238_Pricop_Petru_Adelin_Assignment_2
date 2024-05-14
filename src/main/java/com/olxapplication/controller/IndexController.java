@@ -29,8 +29,8 @@ public class IndexController {
 
 
     /**
-     * Handles GET requests to the HomePage -- The future log in page.
-     * @return ModelAndView object with a list of users for log in.
+     * Handles GET requests to the HomePage -- The login page.
+     * @return ModelAndView "HomePage".
      */
     @GetMapping("/HomePage")
     public ModelAndView logIn(){
@@ -41,10 +41,11 @@ public class IndexController {
     }
 
     /**
-     * Handles POST requests to redirect the user based on their role.
+     * Redirect the user based on their role.
      * @param email The email of the user.
      * @param password The password of the user.
-     * @return ModelAndView object with the view name set based on the user's role.
+     * @param redirectAttributes Redirect attributes( the response message to be displayed ).
+     * @return ModelAndView redirects to a specific url.
      */
     @PostMapping("/redirectPage")
     public ModelAndView redirectBasedOnRole(@ModelAttribute("userEmail") String email, @ModelAttribute("userPassword") String password, RedirectAttributes redirectAttributes, RedirectAttributes redirectAttributesNume){
@@ -66,26 +67,24 @@ public class IndexController {
     }
 
     /**
-     * Handles POST requests to redirect the admin to user management page.
-     * @param newLink The new link to redirect to(link to user management page send from frontend).
+     * Redirect the admin to another page.
+     * @param newLink The new link to redirect to.
      * @return ModelAndView object with the view name set to the new link.
      */
     @PostMapping("/admin")
     public ModelAndView adminRedirect(@ModelAttribute("newLink") String newLink){
-        System.out.println("-"+newLink+"-");
         ModelAndView mav = new ModelAndView(newLink);
         return mav;
     }
 
     /**
-     * Handles POST requests to redirect the user to the listed announces.
+     * Redirect the user to another page.
      * @param id The ID of the user.
-     * @param newLink The new link to redirect to(see announces page).
+     * @param newLink The new link to redirect to.
      * @return ModelAndView object with the view name set to the new link.
      */
     @PostMapping("/user/{id}")
     public ModelAndView userRedirect(@PathVariable("id") String id, @ModelAttribute("newLink") String newLink){
-        System.out.println("-"+newLink+"-");
         ModelAndView mav = new ModelAndView(newLink);
         return mav;
     }

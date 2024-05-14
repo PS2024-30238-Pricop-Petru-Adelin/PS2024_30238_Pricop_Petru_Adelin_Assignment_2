@@ -1,15 +1,11 @@
 package com.olxapplication.service;
 
-import com.olxapplication.constants.AnnouncementMessages;
 import com.olxapplication.constants.MessageMessages;
-import com.olxapplication.constants.UserMessages;
 import com.olxapplication.dtos.MessageWebDTO;
-import com.olxapplication.dtos.UserDetailsDTO;
 import com.olxapplication.entity.Message;
 import com.olxapplication.entity.User;
 import com.olxapplication.exception.PatternNotMathcedException;
 import com.olxapplication.exception.ResourceNotFoundException;
-import com.olxapplication.mappers.UserMapper;
 import com.olxapplication.repository.MessageRepository;
 import com.olxapplication.repository.UserRepository;
 import com.olxapplication.validators.MessageValidator;
@@ -17,12 +13,13 @@ import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
+/**
+ * Service class for managing messages in the OLX application.
+ */
 @Service
 @AllArgsConstructor
 public class MessageService {
@@ -31,10 +28,15 @@ public class MessageService {
     private final UserRepository userRepository;
     private final MessageValidator messageValidator = new MessageValidator();
 
-    public List<Message> findMessages(){
-        return messageRepository.findAll();
-    }
+//    public List<Message> findMessages(){
+//        return messageRepository.findAll();
+//    }
 
+    /**
+     * Inserts a new message into the repository after validating the input.
+     * @param messageWebDTO The object containing message details.
+     * @return A success message if the message is sent, otherwise an error message.
+     */
     public String insert(MessageWebDTO messageWebDTO){
         try {
             messageValidator.messageValidator(messageWebDTO);
@@ -54,14 +56,19 @@ public class MessageService {
         }
     }
 
-    public List<Message> findSent(String id){
-        return messageRepository.findBySenderId(id);
-    }
+//    public List<Message> findSent(String id){
+//        return messageRepository.findBySenderId(id);
+//    }
+//
+//    public List<Message> findReceived(String id){
+//        return messageRepository.findByReceiverId(id);
+//    }
 
-    public List<Message> findReceived(String id){
-        return messageRepository.findByReceiverId(id);
-    }
-
+    /**
+     * Finds all correspondents for a specific user.
+     * @param id The ID of the user.
+     * @return A list of users who have corresponded with the specified user.
+     */
     public List<User> findCorespondents(String id){
         List<User> users = new java.util.ArrayList<>(messageRepository.findAll().stream().map(Message::getSender).toList());
         users.addAll(messageRepository.findAll().stream().map(Message::getReceiver).toList());
@@ -74,6 +81,12 @@ public class MessageService {
         return distinctUsers;
     }
 
+    /**
+     * Finds the chat between two users.
+     * @param sender The ID of the sender.
+     * @param receiver The ID of the receiver.
+     * @return A sorted list of messages forming the chat history between the two users.
+     */
     public List<Message> findChat(String sender, String receiver){
         List<Message> messages = messageRepository.findBySenderIdAndReceiverId(sender, receiver);
         messages.addAll(messageRepository.findBySenderIdAndReceiverId(receiver, sender));

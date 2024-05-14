@@ -26,10 +26,6 @@ public class RabbitMQSender {
     private String routingKey;
 
     private static Logger logger = LogManager.getLogger(RabbitMQSender.class.toString());
-//    public void send(String string) {
-//        rabbitTemplate.convertAndSend(queue.getName(), string);
-//        logger.info("Sending Message to the Queue : " + string.toString());
-//    }
 
     public void send(UserMailDTO userDto) {
         rabbitTemplate.convertAndSend(exchange, routingKey, userDto);

@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 
 /**
  * This service layer class provides business logic operations for managing announcements within the application.
- * It interacts with the AnnouncementRepository to perform CRUD operations and leverages mappers for DTO conversions.
+ * It interacts with the AnnouncementRepository, AnnouncementValidator, UserRepository and CategoryRepository.
  */
 @Service
 @AllArgsConstructor
@@ -92,7 +92,8 @@ public class AnnouncementService {
     }
 
     /**
-     * Finds all announcements in a specific category.
+     * Finds all announcements in a category with the specified substring in name.
+     * @param userId the id of the user that request.
      * @param categoryName the id of the category.
      * @return a list of AnnouncementDetailsDTO objects.
      */
@@ -125,18 +126,18 @@ public class AnnouncementService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Finds all announcements with a title containing a specific string.
-     * @param title the string to search for in announcement titles.
-     * @return a list of AnnouncementDetailsDTO objects.
-     */
-    public List<AnnouncementDetailsDTO> findAnnouncementByTitle(String title){
-        List<Announcement> announces = announcementRepository.findAnnouncementsByTitleContainsIgnoreCase(title);
-
-        return announces.stream()
-                .map(AnnouncementMapper::toAnnouncementDetailsDTO)
-                .collect(Collectors.toList());
-    }
+//    /**
+//     * Finds all announcements with a title containing a specific string.
+//     * @param title the string to search for in announcement titles.
+//     * @return a list of AnnouncementDetailsDTO objects.
+//     */
+//    public List<AnnouncementDetailsDTO> findAnnouncementByTitle(String title){
+//        List<Announcement> announces = announcementRepository.findAnnouncementsByTitleContainsIgnoreCase(title);
+//
+//        return announces.stream()
+//                .map(AnnouncementMapper::toAnnouncementDetailsDTO)
+//                .collect(Collectors.toList());
+//    }
 
     /**
      * Inserts a new announcement.
@@ -217,32 +218,32 @@ public class AnnouncementService {
         }
     }
 
-    /**
-     * Updates an announcement by its id with the provided details.
-     * @param id the id of the announcement to update.
-     * @param announcementDTO the AnnouncementDetailsDTO object containing the new details of the announcement.
-     * @return a string message indicating the result of the operation.
-     */
-    public String updateAnnouncementById(String id, AnnouncementDetailsDTO announcementDTO) {
-        Optional<Announcement> announcementOptional = announcementRepository.findById(id);
-        if (announcementOptional.isEmpty()) {
-            LOGGER.error(AnnouncementMessages.ANNOUNCEMENT_NOT_FOUND + id);
-            return AnnouncementMessages.ANNOUNCEMENT_NOT_FOUND + id;
-        } else {
-            Announcement toBeUpdated = announcementOptional.get();
-            toBeUpdated.setTitle(announcementDTO.getTitle());
-            toBeUpdated.setDescription(announcementDTO.getDescription());
-            toBeUpdated.setPrice(announcementDTO.getPrice());
-            toBeUpdated.setUser(UserMapper.toEntity(announcementDTO.getUser()));
-            toBeUpdated.setCategory(CategoryMapper.toEntity(announcementDTO.getCategory()));
-            toBeUpdated.setDate(LocalDateTime.now());
-            toBeUpdated.setDiscount(announcementDTO.getDiscount());
-            toBeUpdated.setNewPrice(Double.valueOf(decimalFormat.format(announcementDTO.getPrice()*(1-(announcementDTO.getDiscount()/100.0)))));
-            announcementRepository.save(toBeUpdated);
-            LOGGER.debug(AnnouncementMessages.ANNOUNCEMENT_UPDATED_SUCCESSFULLY + id);
-            return AnnouncementMessages.ANNOUNCEMENT_UPDATED_SUCCESSFULLY + id;
-        }
-    }
+//    /**
+//     * Updates an announcement by its id with the provided details.
+//     * @param id the id of the announcement to update.
+//     * @param announcementDTO the AnnouncementDetailsDTO object containing the new details of the announcement.
+//     * @return a string message indicating the result of the operation.
+//     */
+//    public String updateAnnouncementById(String id, AnnouncementDetailsDTO announcementDTO) {
+//        Optional<Announcement> announcementOptional = announcementRepository.findById(id);
+//        if (announcementOptional.isEmpty()) {
+//            LOGGER.error(AnnouncementMessages.ANNOUNCEMENT_NOT_FOUND + id);
+//            return AnnouncementMessages.ANNOUNCEMENT_NOT_FOUND + id;
+//        } else {
+//            Announcement toBeUpdated = announcementOptional.get();
+//            toBeUpdated.setTitle(announcementDTO.getTitle());
+//            toBeUpdated.setDescription(announcementDTO.getDescription());
+//            toBeUpdated.setPrice(announcementDTO.getPrice());
+//            toBeUpdated.setUser(UserMapper.toEntity(announcementDTO.getUser()));
+//            toBeUpdated.setCategory(CategoryMapper.toEntity(announcementDTO.getCategory()));
+//            toBeUpdated.setDate(LocalDateTime.now());
+//            toBeUpdated.setDiscount(announcementDTO.getDiscount());
+//            toBeUpdated.setNewPrice(Double.valueOf(decimalFormat.format(announcementDTO.getPrice()*(1-(announcementDTO.getDiscount()/100.0)))));
+//            announcementRepository.save(toBeUpdated);
+//            LOGGER.debug(AnnouncementMessages.ANNOUNCEMENT_UPDATED_SUCCESSFULLY + id);
+//            return AnnouncementMessages.ANNOUNCEMENT_UPDATED_SUCCESSFULLY + id;
+//        }
+//    }
 
     /**
      * Updates an announcement by its id with the provided details after validating the input.
