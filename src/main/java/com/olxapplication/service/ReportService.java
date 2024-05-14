@@ -2,7 +2,9 @@ package com.olxapplication.service;
 
 import com.olxapplication.constants.ReportMessages;
 import com.olxapplication.entity.Announcement;
+import com.olxapplication.entity.User;
 import com.olxapplication.repository.AnnouncementRepository;
+import com.olxapplication.repository.UserRepository;
 import com.olxapplication.strategy.Context;
 import com.olxapplication.strategy.CsvGenerator;
 import com.olxapplication.strategy.PdfGenerator;
@@ -21,12 +23,19 @@ import java.util.*;
 public class ReportService {
     private static final Logger LOGGER = LoggerFactory.getLogger(ReportService.class);
     private final AnnouncementRepository announcementRepository;
+    private final UserRepository userRepository;
 
     public List<Announcement> getTimeSortedAnnounces(){
         List<Announcement> announcements = announcementRepository.findAll();
         announcements.sort(Comparator.comparing(Announcement::getDate));
 
         return announcements;
+    }
+
+    public User getAdmin(){
+        User admin = userRepository.findByRole("admin");
+
+        return admin;
     }
 
     public Map<YearMonth, Integer> getData(List<Announcement> announcements){

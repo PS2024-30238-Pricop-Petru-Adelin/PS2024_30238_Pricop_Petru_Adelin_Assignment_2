@@ -125,7 +125,7 @@ public class UserController {
                 , userDetailsDTO.getFirstName()
                 , userDetailsDTO.getLastName()
                 , userDetailsDTO.getEmail()
-                , "insert");
+                , "insert", "");
 //        rabbitMQSender.send(userDto);
 
         // Crearea HttpHeaders și setarea token-ului
@@ -155,7 +155,8 @@ public class UserController {
                 , userDetailsDTO.getFirstName()
                 , userDetailsDTO.getLastName()
                 , userDetailsDTO.getEmail()
-                , "update");
+                , "update"
+                ,"");
         rabbitMQSender.send(userDTO);
 
 //        // Crearea HttpHeaders și setarea token-ului

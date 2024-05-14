@@ -144,10 +144,30 @@ public class AnnouncementController {
     @GetMapping("/getOthers/{id}")
     public ModelAndView getOtherAnnouncements(@PathVariable("id") String userId, @ModelAttribute("categoryName") String categoryName) {
         List<AnnouncementDetailsDTO> dtos = announcementService.findAnnouncementByCategoryNameAndNotUser(categoryName, userId);
+        List<AnnouncementDetailsDTO> reversedDtos = dtos.reversed();
+        ModelAndView mav = new ModelAndView("UserGetOtherAnnounces");
+        mav.addObject("announces", dtos);
+        mav.addObject("reversed", reversedDtos);
+        return mav;
+    }
+
+    @GetMapping("/getOthers/0/{id}")
+    public ModelAndView getOtherAnnouncementsAsc(@PathVariable("id") String userId, @ModelAttribute("categoryName") String categoryName) {
+        List<AnnouncementDetailsDTO> dtos = announcementService.findAnnouncementByCategoryNameAndNotUser(categoryName, userId);
         ModelAndView mav = new ModelAndView("UserGetOtherAnnounces");
         mav.addObject("announces", dtos);
         return mav;
     }
+
+    @GetMapping("/getOthers/1/{id}")
+    public ModelAndView getOtherAnnouncementsDesc(@PathVariable("id") String userId, @ModelAttribute("categoryName") String categoryName) {
+        List<AnnouncementDetailsDTO> dtos = announcementService.findAnnouncementByCategoryNameAndNotUser(categoryName, userId);
+        List<AnnouncementDetailsDTO> reversedDtos = dtos.reversed();
+        ModelAndView mav = new ModelAndView("UserGetOtherAnnounces");
+        mav.addObject("announces", reversedDtos);
+        return mav;
+    }
+
 
     /**
      * Deletes a specific announcement by ID.

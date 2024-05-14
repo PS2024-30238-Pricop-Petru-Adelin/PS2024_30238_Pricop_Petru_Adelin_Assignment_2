@@ -17,6 +17,7 @@ public class UserMailDTO {
     private String lastName;
     private String email;
     private String action;
+    private String filePath;
 
     @Override
     public String toString() {

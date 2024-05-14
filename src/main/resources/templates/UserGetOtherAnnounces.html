@@ -227,7 +227,21 @@
     <input type="text" id="categoryName" name="categoryName" style="height: 15%; width: 30%" ><br>
 
     <input type="submit" value="Filter" style="width: 20%">
+
 </form>
+
+<div class="form-row" style="width: 70%; gap: 1%; margin-left: 11%; text-align: center;">
+    <h2 style="color: white; margin-bottom: 20px;">Sort by price:</h2>
+
+    <form th:action="@{/announcement/getOthers/0/} + ${id}" method="get" style="display: inline-block; margin-right: 10px;">
+        <input type="submit" value="&uarr;" style="width: 50px; height: 30px; font-size: 20px; color: white; background-color: #4CAF50; border: none; cursor: pointer;" />
+    </form>
+
+    <form th:action="@{/announcement/getOthers/1/} + ${id}" method="get" style="display: inline-block;">
+        <input type="submit" value="&darr;" style="width: 50px; height: 30px; font-size: 20px; color: white; background-color: #f44336; border: none; cursor: pointer;" />
+    </form>
+</div>
+
 
 <div class="announce-container" th:each="announcement : ${announces}">
     <div class="announce-card">
@@ -275,6 +289,20 @@
     </div>
 </div>
 <script>
+
+    var k = localStorage.getItem('k') ? parseInt(localStorage.getItem('k')) : 1;
+    var sortedList = k>0 ? [[${announces}]] : [[${reversed}]]
+    function setAscending() {
+        k = 1;
+        localStorage.setItem('k', k); // Store 'k' in localStorage
+    }
+
+    function setDescending() {
+        k = -1;
+        localStorage.setItem('k', k); // Store 'k' in localStorage
+    }
+    console.log("k= ", k);
+
     var modal = document.getElementsByClassName("modalMsg");
     var btn = document.getElementsByClassName("button");
     var span = document.getElementsByClassName("close");
@@ -303,6 +331,7 @@
 
         var urlPattern1 = new RegExp('^http:\\/\\/localhost:8080\\/announcement\\/getOthers\\/' + id + '\\?categoryName=[^\\/]*$');
         var urlPattern = new RegExp('^http:\\/\\/localhost:8080\\/message\\/chat\\/' + id + '\\/[-0-9A-Za-z]*\\??$');
+        var urlPattern2 = new RegExp('^http:\\/\\/localhost:8080\\/announcement\\/getOthers\\/' + id + ';jsessionid=[^\\/]*$');
 
         var urlToCompare1 = 'http://localhost:8080/announcement/getOthers/' + id;
         var urlToCompare2 = 'http://localhost:8080/announcement/getMine/' + id + '?';
@@ -313,7 +342,10 @@
         var urlToCompare7 = 'http://localhost:8080/index/HomePage';
         var urlToCompare8 = 'http://localhost:8080/index/HomePage?';
         var urlToCompare9 = 'http://localhost:8080/announcement/getMine/' + id ;
-
+        var urlToCompare10 = 'http://localhost:8080/announcement/getOthers/0/' + id + '?';
+        var urlToCompare11 = 'http://localhost:8080/announcement/getOthers/1/' + id + '?';
+        var urlToCompare12 = 'http://localhost:8080/announcement/getOthers/0/' + id;
+        var urlToCompare13 = 'http://localhost:8080/announcement/getOthers/1/' + id;
 
         console.log('current path: ', path);
         console.log('previous path: ', previousUrl);
@@ -326,7 +358,10 @@
             && previousUrl !== urlToCompare4 && previousUrl !== urlToCompare5
             && !urlPattern.test(previousUrl) && previousUrl !== urlToCompare6
             && previousUrl !== urlToCompare7 && previousUrl !== urlToCompare8
-            && previousUrl !== urlToCompare9 && !urlPattern1.test(previousUrl)){
+            && previousUrl !== urlToCompare9 && !urlPattern1.test(previousUrl)
+            && !urlPattern2.test(previousUrl)
+            && previousUrl !== urlToCompare10 && previousUrl !== urlToCompare11
+            && previousUrl !== urlToCompare12 && previousUrl !== urlToCompare13){
             window.location.href = 'http://localhost:8080/index/HomePage';
         }
     });
