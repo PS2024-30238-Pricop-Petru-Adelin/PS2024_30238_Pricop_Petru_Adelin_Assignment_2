@@ -45,43 +45,6 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
-//    /**
-//     * Fetches a user by ID from the repository and maps it to a UserDetailsDTO object.
-//     * @param id the ID of the user to fetch.
-//     * @return a UserDetailsDTO object of the fetched user.
-//     * @throws ResourceNotFoundException if no user is found with the provided ID.
-//     */
-//    public UserDetailsDTO findUserById(String id){
-//        Optional<User> userOptional = userRepository.findById(id);
-//        if (userOptional.isEmpty()){
-//            LOGGER.debug(UserMessages.USER_NOT_FOUND);
-//            throw new ResourceNotFoundException(UserMessages.USER_NOT_FOUND + id);
-//        }
-//        return UserMapper.toUserDetailsDTO(userOptional.get());
-//    }
-//
-//    public User findById(String id){
-//        Optional<User> userOptional = userRepository.findById(id);
-//        if (userOptional.isEmpty()){
-//            LOGGER.debug(UserMessages.USER_NOT_FOUND);
-//            throw new ResourceNotFoundException(UserMessages.USER_NOT_FOUND + id);
-//        }
-//        return userOptional.get();
-//    }
-
-
-//    /**
-//     * Fetches users by first name or last name from the repository and maps them to UserDetailsDTO objects.
-//     * @param str the string to match with first name or last name.
-//     * @return a list of UserDetailsDTO objects of the fetched users.
-//     */
-//    public List<UserDetailsDTO> findUserFirstNameOrLastName(String str, String name){
-//        List<User> userList = userRepository.findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(str, str);
-//        return userList.stream()
-//                .map(UserMapper::toUserDetailsDTO)
-//                .collect(Collectors.toList());
-//    }
-
     /**
      * Inserts a new user into the repository after validating the inputs.
      * @param userDTO the UserDetailsDTO object of the user to insert.

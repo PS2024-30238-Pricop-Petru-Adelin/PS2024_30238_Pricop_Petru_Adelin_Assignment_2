@@ -11,8 +11,7 @@ import java.util.List;
  * It offers basic CRUD (Create, Read, Update, Delete) operations for Announcement entities identified by their unique Strings.
  */
 public interface AnnouncementRepository extends JpaRepository<Announcement, String> {
-    List<Announcement> findAnnouncementsByCategoryAndUser_IdNot(Category category, String userId);
+    List<Announcement> findAnnouncementsByCategoryCategoryNameContainsIgnoreCaseAndUserIdNot(String category, String userId);
     List<Announcement> findAnnouncementsByUser_Id(String category_id);
-    List<Announcement> findAnnouncementsByTitleContainsIgnoreCase(String title);
 
 }

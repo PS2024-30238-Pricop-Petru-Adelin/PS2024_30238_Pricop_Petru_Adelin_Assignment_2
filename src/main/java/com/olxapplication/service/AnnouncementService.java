@@ -99,13 +99,7 @@ public class AnnouncementService {
      */
     public List<AnnouncementDetailsDTO> findAnnouncementByCategoryNameAndNotUser(String categoryName, String userId){
 
-        List<Category> categoryList = categoryRepository.findCategoriesByCategoryNameContainsIgnoreCase(categoryName);
-
-        List<Announcement> announces = new ArrayList<>();
-        for(Category c : categoryList){
-            List<Announcement> part = announcementRepository.findAnnouncementsByCategoryAndUser_IdNot(c, userId);
-            announces.addAll(part);
-        }
+        List<Announcement> announces = announcementRepository.findAnnouncementsByCategoryCategoryNameContainsIgnoreCaseAndUserIdNot(categoryName, userId);
 
         return announces.stream()
                 .map(AnnouncementMapper::toAnnouncementDetailsDTO)
@@ -125,19 +119,6 @@ public class AnnouncementService {
                 .map(AnnouncementMapper::toAnnouncementDetailsDTO)
                 .collect(Collectors.toList());
     }
-
-//    /**
-//     * Finds all announcements with a title containing a specific string.
-//     * @param title the string to search for in announcement titles.
-//     * @return a list of AnnouncementDetailsDTO objects.
-//     */
-//    public List<AnnouncementDetailsDTO> findAnnouncementByTitle(String title){
-//        List<Announcement> announces = announcementRepository.findAnnouncementsByTitleContainsIgnoreCase(title);
-//
-//        return announces.stream()
-//                .map(AnnouncementMapper::toAnnouncementDetailsDTO)
-//                .collect(Collectors.toList());
-//    }
 
     /**
      * Inserts a new announcement.
@@ -217,33 +198,6 @@ public class AnnouncementService {
             return AnnouncementMessages.ANNOUNCEMENT_DELETED_SUCCESSFULLY + id;
         }
     }
-
-//    /**
-//     * Updates an announcement by its id with the provided details.
-//     * @param id the id of the announcement to update.
-//     * @param announcementDTO the AnnouncementDetailsDTO object containing the new details of the announcement.
-//     * @return a string message indicating the result of the operation.
-//     */
-//    public String updateAnnouncementById(String id, AnnouncementDetailsDTO announcementDTO) {
-//        Optional<Announcement> announcementOptional = announcementRepository.findById(id);
-//        if (announcementOptional.isEmpty()) {
-//            LOGGER.error(AnnouncementMessages.ANNOUNCEMENT_NOT_FOUND + id);
-//            return AnnouncementMessages.ANNOUNCEMENT_NOT_FOUND + id;
-//        } else {
-//            Announcement toBeUpdated = announcementOptional.get();
-//            toBeUpdated.setTitle(announcementDTO.getTitle());
-//            toBeUpdated.setDescription(announcementDTO.getDescription());
-//            toBeUpdated.setPrice(announcementDTO.getPrice());
-//            toBeUpdated.setUser(UserMapper.toEntity(announcementDTO.getUser()));
-//            toBeUpdated.setCategory(CategoryMapper.toEntity(announcementDTO.getCategory()));
-//            toBeUpdated.setDate(LocalDateTime.now());
-//            toBeUpdated.setDiscount(announcementDTO.getDiscount());
-//            toBeUpdated.setNewPrice(Double.valueOf(decimalFormat.format(announcementDTO.getPrice()*(1-(announcementDTO.getDiscount()/100.0)))));
-//            announcementRepository.save(toBeUpdated);
-//            LOGGER.debug(AnnouncementMessages.ANNOUNCEMENT_UPDATED_SUCCESSFULLY + id);
-//            return AnnouncementMessages.ANNOUNCEMENT_UPDATED_SUCCESSFULLY + id;
-//        }
-//    }
 
     /**
      * Updates an announcement by its id with the provided details after validating the input.

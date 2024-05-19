@@ -1,3 +1,4 @@
 Year-Month	Number of posted announces
-2024-04		1
-2024-05		1
+2017-08		1
+2022-12		2
+2024-05		4

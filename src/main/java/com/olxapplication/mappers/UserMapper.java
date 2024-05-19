@@ -17,27 +17,6 @@ import java.util.stream.Collectors;
 public class UserMapper {
 
     /**
-     * Converts a User entity into a basic UserDTO object.
-     * This DTO includes a full list of announcements created by the user.
-     *
-     * @param user The User entity to be converted.
-     * @return A new UserDTO object containing basic user details and a list of announcements.
-     */
-    public static UserDTO toUserDTO(User user){
-        return UserDTO.builder()
-                .id(user.getId())
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
-                .email(user.getEmail())
-                .password(user.getPassword())
-                .role(user.getRole())
-                .announces(user.getAnnounces().stream().toList())
-                .sentMessages(user.getReceivedMessages())
-                .receivedMessages(user.getReceivedMessages())
-                .build();
-    }
-
-    /**
      * Converts a User entity into a lightweight UserDetailsDTO object.
      * This DTO includes only the user ID, name, email, password, and a list of Strings representing the associated announcements.
      *
@@ -47,7 +26,7 @@ public class UserMapper {
     public static UserDetailsDTO toUserDetailsDTO(User user) {
         List<String> stringList =user.getAnnounces().stream()
                 .map(Announcement::getId)
-                .collect(Collectors.toList());
+                .toList();
 
         return UserDetailsDTO.builder()
                 .id(user.getId())
@@ -59,6 +38,7 @@ public class UserMapper {
                 .announces(stringList)
                 .sentMessages(user.getReceivedMessages())
                 .receivedMessages(user.getReceivedMessages())
+                .favouriteList(user.getFavouriteList())
                 .build();
     }
 
@@ -79,6 +59,7 @@ public class UserMapper {
                 .announces(userDTO.getAnnounces().stream().collect(Collectors.toList()))
                 .sentMessages(userDTO.getSentMessages().stream().collect(Collectors.toList()))
                 .receivedMessages(userDTO.getReceivedMessages().stream().collect(Collectors.toList()))
+                .favouriteList(userDTO.getFavouriteList())
                 .build();
     }
 
@@ -100,6 +81,7 @@ public class UserMapper {
                 .announces((new ArrayList<Announcement>()).stream().collect(Collectors.toList()))
                 .sentMessages((new ArrayList<Message>()).stream().collect(Collectors.toList()))
                 .receivedMessages((new ArrayList<Message>()).stream().collect(Collectors.toList()))
+                .favouriteList(userDTO.getFavouriteList())
                 .build();
     }
 

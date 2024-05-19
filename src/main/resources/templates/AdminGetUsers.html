@@ -398,6 +398,7 @@
         // var path = window.location.pathname; // Get the current URL's path
         // var id = path.split('/').pop();
         var urlPattern1 = new RegExp('^http:\\/\\/localhost:8080\\/user\\/update\\/[^\\/]*$');
+        var urlPattern2 = new RegExp('^http:\\/\\/localhost:8080\\/user\\/get;jsessionid=[^\\/]*$');
 
         var previousUrl = document.referrer; // Get the previous URL
 

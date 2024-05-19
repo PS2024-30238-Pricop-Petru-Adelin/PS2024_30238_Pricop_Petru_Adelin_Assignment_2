@@ -40,41 +40,6 @@ public class CategoryService {
                 .collect(Collectors.toList());
     }
 
-//    /**
-//     * Finds all categories by name.
-//     * @param name the name of the categories to find.
-//     * @return a list of CategoryDetailsDTO objects.
-//     */
-//    public List<CategoryDetailsDTO> findCategoriesByName(String name) {
-//        List<Category> categoryList = categoryRepository.findCategoriesByCategoryNameContainsIgnoreCase(name);
-//        return categoryList.stream()
-//                .map(CategoryMapper::toCategoryDetailsDTO)
-//                .collect(Collectors.toList());
-//    }
-
-//    /**
-//     * Finds a category by its name.
-//     * @param name the name of the category to find.
-//     * @return the CategoryDetailsDTO object of the found category.
-//     */
-//    public CategoryDetailsDTO findCategoryByName(String name) {
-//        List<Category> categoryList = categoryRepository.findCategoriesByCategoryNameContainsIgnoreCase(name);
-//        return CategoryMapper.toCategoryDetailsDTO(categoryList.getFirst());
-//    }
-
-//    /**
-//     * Finds a category by its id.
-//     * @param id the id of the category to find.
-//     * @return the CategoryDetailsDTO object of the found category.
-//     */
-//    public CategoryDetailsDTO findCategoryById(String id) {
-//        Optional<Category> categoryOptional = categoryRepository.findById(id);
-//        if (!categoryOptional.isPresent()) {
-//            LOGGER.debug(CategoryMessages.CATEGORY_NOT_FOUND + id);
-//            throw new ResourceNotFoundException(Category.class.getSimpleName() + "with id: " + id);
-//        }
-//        return CategoryMapper.toCategoryDetailsDTO(categoryOptional.get());
-//    }
 
     /**
      * Inserts a new category after validating the input.

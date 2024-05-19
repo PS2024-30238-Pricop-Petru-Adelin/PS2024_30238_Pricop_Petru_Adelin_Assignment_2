@@ -10,5 +10,4 @@ import java.util.List;
  * It offers basic CRUD (Create, Read, Update, Delete) operations for Announcement entities identified by their unique Strings.
  */
 public interface CategoryRepository extends JpaRepository<Category, String> {
-    List<Category> findCategoriesByCategoryNameContainsIgnoreCase(String name);
 }

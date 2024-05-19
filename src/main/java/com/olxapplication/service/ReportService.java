@@ -5,10 +5,7 @@ import com.olxapplication.entity.Announcement;
 import com.olxapplication.entity.User;
 import com.olxapplication.repository.AnnouncementRepository;
 import com.olxapplication.repository.UserRepository;
-import com.olxapplication.strategy.Context;
-import com.olxapplication.strategy.CsvGenerator;
-import com.olxapplication.strategy.PdfGenerator;
-import com.olxapplication.strategy.TxtGenerator;
+import com.olxapplication.strategy.*;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,19 +72,10 @@ public class ReportService {
     public String generateReport(String fileType) {
         Map<YearMonth, Integer> map = getData(getTimeSortedAnnounces());
 
-        if (fileType.equals("csv")) {
-            Context context = new Context(new CsvGenerator());
-            return context.executeStrategy(map);
-        }
-        if (fileType.equals("txt")) {
-            Context context = new Context(new TxtGenerator());
-            return context.executeStrategy(map);
-        }
-        if (fileType.equals("pdf")) {
-            Context context = new Context(new PdfGenerator());
-            return context.executeStrategy(map);
-        }
-        return ReportMessages.REPORT_NOT_GENERATED + "invalid strategy";
+        StrategyFactory strategyFactory = new StrategyFactory();
+        FileGeneratorStrategy fileGeneratorStrategy = strategyFactory.getStrategy(fileType, map);
+        fileGeneratorStrategy.generateFile(map);
+        return ReportMessages.REPORT_GENERATED_SUCCESSFULLY;
     }
 }
 

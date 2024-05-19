@@ -8,27 +8,6 @@ import com.olxapplication.entity.Announcement;
  * This class provides utility methods for mapping between Announcement entities and their corresponding DTO representations.
  */
 public class AnnouncementMapper {
-    /**
-     * Converts an Announcement entity into a basic AnnouncementDTO object.
-     * This DTO excludes details about the announcement's category and user.
-     *
-     * @param announcement The Announcement entity to be converted.
-     * @return A new AnnouncementDTO object containing basic announcement details.
-     */
-    public static AnnouncementDTO toAnnouncementDTO(Announcement announcement){
-        return AnnouncementDTO.builder()
-                .id(announcement.getId())
-                .title(announcement.getTitle())
-                .description(announcement.getDescription())
-                .price(announcement.getPrice())
-                .category(announcement.getCategory())
-                .user(announcement.getUser())
-                .date(announcement.getDate())
-                .discount(announcement.getDiscount())
-                .newPrice(announcement.getNewPrice())
-                .imageURL(announcement.getImageURL())
-                .build();
-    }
 
     /**
      * Converts an Announcement entity into a comprehensive AnnouncementDetailsDTO object.

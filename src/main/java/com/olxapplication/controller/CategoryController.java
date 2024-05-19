@@ -54,28 +54,6 @@ public class CategoryController {
         return mav;
     }
 
-//    /**
-//     * Get a category by its ID.
-//     * @param categoryId The ID of the category.
-//     * @return ResponseEntity containing the category details.
-//     */
-//    @GetMapping("/get/{id}")
-//    public ResponseEntity<CategoryDetailsDTO> getCategory(@PathVariable("id") String categoryId) {
-//        CategoryDetailsDTO categoryDto = categoryService.findCategoryById(categoryId);
-//        return new ResponseEntity<>(categoryDto, HttpStatus.OK);
-//    }
-
-//    /**
-//     * Get categories by name.
-//     * @param name The name of the category.
-//     * @return ResponseEntity containing the list of categories.
-//     */
-//    @GetMapping("/byName/{name}")
-//    public ResponseEntity<List<CategoryDetailsDTO>> getCategoryByName(@PathVariable("name") String name) {
-//        List<CategoryDetailsDTO> categoryDto = categoryService.findCategoriesByName(name);
-//        return new ResponseEntity<>(categoryDto, HttpStatus.OK);
-//    }
-
     /**
      * Delete a category by its ID.
      * @param categoryId The ID of the category.

@@ -226,14 +226,6 @@
 
         }
 
-        .form-row {
-            margin-left: 2.5%;
-            height: 60px;
-            width: 30%;
-            display: flex; /* Use flexbox to align items */
-            gap: 70%; /* Add some spacing between form elements */
-        }
-
         .form-row form {
             flex: 30; /* Allow forms to take up equal space */
         }
@@ -312,10 +304,6 @@
 
 <br>
 
-<!--<form th:action="@{/announcement/insert}" method="get">-->
-<!--    <input class="button" style="vertical-align:middle" value="Register"/>-->
-<!--    <span>-->
-<!--</form> <br>-->
 <button id="insertBtn" class = "button" style="vertical-align:middle" ><span>Register new announcement</span></button><br>
 <div id="modalInsert" class="modalInsert" style="display: none">
 
@@ -484,9 +472,6 @@
         var urlToCompare2 = 'http://localhost:8080/announcement/getMine/' + id + '?';
         var urlToCompare3 = 'http://localhost:8080/announcement/getMine/' + id ;
         var urlToCompare4 = 'http://localhost:8080/announcement/getOthers/' + id + '?';
-        // var urlToCompare3 = 'http://localhost:8080/favourite/get/' + id ;
-        // var urlToCompare4 = 'http://localhost:8080/favourite/get/' + id + '?';
-        // var urlToCompare5 = 'http://localhost:8080/message/messages/' + id + '?';
         var urlToCompare10 = 'http://localhost:8080/announcement/getOthers/0/' + id + '?';
         var urlToCompare11 = 'http://localhost:8080/announcement/getOthers/1/' + id + '?';
         var urlToCompare12 = 'http://localhost:8080/announcement/getOthers/0/' + id;

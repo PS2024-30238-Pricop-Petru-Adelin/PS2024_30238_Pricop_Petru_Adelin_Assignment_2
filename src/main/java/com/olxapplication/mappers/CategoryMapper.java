@@ -12,20 +12,6 @@ import java.util.stream.Collectors;
  * This class provides utility methods for mapping between Category entities and their corresponding DTO representations.
  */
 public class CategoryMapper {
-    /**
-     * Converts a Category entity into a basic CategoryDTO object.
-     * This DTO includes a full list of announcements within the category.
-     *
-     * @param category The Category entity to be converted.
-     * @return A new CategoryDTO object containing basic category details and a list of announcements.
-     */
-    public static CategoryDTO toCategoryDTO(Category category){
-        return CategoryDTO.builder()
-                .id(category.getId())
-                .categoryName(category.getCategoryName())
-                .announces(category.getAnnounces().stream().toList())
-                .build();
-    }
 
     /**
      * Converts a Category entity into a lightweight CategoryDetailsDTO object.

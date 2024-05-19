@@ -32,4 +32,15 @@ public class Message {
 
     @Column(name="date", nullable = false)
     private LocalDateTime date;
+
+    @Override
+    public String toString() {
+        return "Message{" +
+                "id='" + id + '\'' +
+                ", msg='" + msg + '\'' +
+                ", sender=" + sender.getId() +
+                ", receiver=" + receiver.getId() +
+                ", date=" + date +
+                '}';
+    }
 }

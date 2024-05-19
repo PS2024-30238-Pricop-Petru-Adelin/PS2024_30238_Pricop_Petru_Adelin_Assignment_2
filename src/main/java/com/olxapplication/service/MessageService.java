@@ -28,9 +28,6 @@ public class MessageService {
     private final UserRepository userRepository;
     private final MessageValidator messageValidator = new MessageValidator();
 
-//    public List<Message> findMessages(){
-//        return messageRepository.findAll();
-//    }
 
     /**
      * Inserts a new message into the repository after validating the input.
@@ -56,13 +53,6 @@ public class MessageService {
         }
     }
 
-//    public List<Message> findSent(String id){
-//        return messageRepository.findBySenderId(id);
-//    }
-//
-//    public List<Message> findReceived(String id){
-//        return messageRepository.findByReceiverId(id);
-//    }
 
     /**
      * Finds all correspondents for a specific user.

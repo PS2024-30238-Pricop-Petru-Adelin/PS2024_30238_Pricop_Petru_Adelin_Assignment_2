@@ -41,25 +41,12 @@
         tr:nth-child(even) {
             background-color: #f7f7f7;
         }
+        tr:nth-child(odd) {
+            background-color: rgb(255, 255, 255);
+        }
         tr:hover {
             background-color: #ddd;
         }
-        .button {
-            display: inline-block;
-            border-radius: 4px;
-            background-color: #002e32;
-            border: none;
-            color: #22dcd3;
-            text-align: center;
-            font-size: 16px;
-            padding: 6px;
-            width: 95%;
-            height: 40px;
-            margin-left: 2.5%;
-            transition: all 0.5s;
-            cursor: pointer;
-        }
-
         .button span {
             cursor: pointer;
             display: inline-block;
@@ -108,96 +95,7 @@
             opacity: 1;
             right: 0;
         }
-        .updateBtn{
-            background-color: #4c7eaf;
-            color: white;
-            border: none;
-            padding: 3px 3px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            margin: 2px 2px;
-            cursor: pointer;
-            border-radius: 5px;
-            height: 50%;
-            width: 100%;
-        }
 
-        /* The Modal (background) */
-        .modalInsert {
-            display: none; /* Hidden by default */
-            position: fixed; /* Stay in place */
-            z-index: 1; /* Sit on top */
-            padding-top: 100px; /* Location of the box */
-            left: 0;
-            top: 0;
-            width: 100%; /* Full width */
-            height: 100%; /* Full height */
-            overflow: auto; /* Enable scroll if needed */
-            background-color: rgb(0,0,0); /* Fallback color */
-            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-        }
-
-        .modalUpdate {
-            display: none; /* Hidden by default */
-            position: fixed; /* Stay in place */
-            z-index: 1; /* Sit on top */
-            padding-top: 100px; /* Location of the box */
-            left: 0;
-            top: 0;
-            width: 100%; /* Full width */
-            height: 100%; /* Full height */
-            overflow: auto; /* Enable scroll if needed */
-            background-color: rgb(0,0,0); /* Fallback color */
-            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-        }
-
-        /* Modal Content */
-        .modalInsert-content {
-            background-color: #a1e1d5;
-            margin: auto;
-            padding: 20px;
-            border: 1px solid #888;
-            text-align: left;
-            width: 70%;
-        }
-
-        /* The Close Button */
-        .close1 {
-            color: #aaaaaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
-
-        .close1:hover,
-        .close1:focus {
-            color: #000;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .close {
-            color: #aaaaaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
-
-        .close:hover,
-        .close:focus {
-            color: #000;
-            text-decoration: none;
-            cursor: pointer;
-        }
-        .formField {
-            background-color: white;
-            padding: 20px;
-            border-radius: 5px;
-            width: 95%;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
         input[type="text"], input[type="email"], input[type="password"] {
             width: 100%;
             padding: 10px;
@@ -249,14 +147,14 @@
 <table id="myTable">
     <tr>
         <th></th>
-        <th>Id</th>
+<!--        <th>Id</th>-->
         <th>First Name</th>
         <th>Last Name</th>
         <th>Actions</th>
     </tr>
     <tr th:each="user : ${users}">
         <td></td>
-        <td th:text="${user.id}"></td>
+<!--        <td th:text="${user.id}"></td>-->
         <td th:text="${user.firstName}"></td>
         <td th:text="${user.lastName}"></td>
         <td>
@@ -265,32 +163,6 @@
                 <input type="submit" value="Check messages"  class="delete-button" readonly/>
             </form>
 
-<!--            <button class="updateBtn"  style="vertical-align:middle" ><span>Update</span></button>-->
-<!--            <div class="modalUpdate" >-->
-
-<!--                &lt;!&ndash; Modal content &ndash;&gt;-->
-<!--                <div class="modalInsert-content">-->
-<!--                    <h2 class="modal-title" >Update user-->
-<!--                        <span class="close">&times;</span>-->
-<!--                    </h2>-->
-<!--                    <form class="formField" th:action="@{/user/update/} + ${user.id}" method="post">-->
-<!--                        <input type="hidden" name="_method" value="put" />-->
-<!--                        <label >Id:</label>-->
-<!--                        <input type="text" th:value="${user.id}" name="id" readonly ><br>-->
-<!--                        <label for="firstName">First Name:</label>-->
-<!--                        <input type="text" th:value="${user.firstName}" name="firstName" required><br>-->
-<!--                        <label for="lastName">Last Name:</label>-->
-<!--                        <input type="text" th:value="${user.lastName}" name="lastName" required><br>-->
-<!--                        <label for="email">Email:</label>-->
-<!--                        <input type="email" th:value="${user.email}" name="email" required><br>-->
-<!--                        <label for="password">Password:</label>-->
-<!--                        <input type="password" th:value="${user.password}" name="password" required><br>-->
-<!--                        <label for="role">Role:</label>-->
-<!--                        <input type="text" th:value="${user.role}" name="role" readonly required><br>-->
-<!--                        <input type="submit" value="Update">-->
-<!--                    </form>-->
-<!--                </div>-->
-<!--            </div>-->
         </td>
     </tr>
 </table>

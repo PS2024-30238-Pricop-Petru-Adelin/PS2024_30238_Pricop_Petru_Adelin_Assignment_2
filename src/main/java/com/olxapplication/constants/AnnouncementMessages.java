@@ -10,8 +10,8 @@ public class AnnouncementMessages {
 
 
     public static final String ANNOUNCEMENT_UPDATED_SUCCESSFULLY = "The announcement was updated successfully: ";
-    public static final String ANNOUNCEMENT_INSERTED_SUCCESSFULLY = "The announcement was inserted successfully";
-    public static final String ANNOUNCEMENT_DELETED_SUCCESSFULLY = "The announcement was deleted successfully";
+    public static final String ANNOUNCEMENT_INSERTED_SUCCESSFULLY = "The announcement was inserted successfully: ";
+    public static final String ANNOUNCEMENT_DELETED_SUCCESSFULLY = "The announcement was deleted successfully: ";
     public static final String ANNOUNCEMENT_NOT_INSERTED = "The announcement was not inserted; reason: ";
     public static final String ANNOUNCEMENT_NOT_UPDATED = "The announcement was not updated; reason: ";
 

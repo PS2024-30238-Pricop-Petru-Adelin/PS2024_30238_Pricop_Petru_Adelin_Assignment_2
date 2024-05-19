@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+<title>Chat</title>
 <head>
     <style>
         h1{text-align: center;
@@ -149,20 +150,20 @@
 </head>
 <body>
 <h1 style="color: #a5defb">Chat</h1>
-    <form th:action="@{/index/user/} + ${id}" method="post" style="width: 20%; margin-left: 2.5%">
-        <input id="logOut" name="newLink" th:value="@{redirect:/announcement/getOthers/} + ${id}" type="hidden">
-        <input type="submit" value="<< Back to announces "/>
-    </form>
+<form th:action="@{/index/user/} + ${id}" method="post" style="width: 20%; margin-left: 2.5%">
+    <input id="logOut" name="newLink" th:value="@{redirect:/announcement/getOthers/} + ${id}" type="hidden">
+    <input type="submit" value="<< Back to announces "/>
+</form>
 <br>
 
 <div class="chat-container" th:each="msg : ${msgs}">
     <div class="chat-message" th:class="${msg.sender.getId() == id} ? 'sent' : 'received'">
-<!--        <div th:text="${msgStat.count}"></div>-->
-<!--        <div th:text="${msg.sender.getId()} "></div>-->
+        <!--        <div th:text="${msgStat.count}"></div>-->
+        <!--        <div th:text="${msg.sender.getId()} "></div>-->
         <div th:text="'From: ' + ${msg.sender.getFirstName() + ' ' + msg.sender.getLastName()}" style="color: #4A6782; font-size: 10px;"></div>
         <div th:text="${msg.msg}"></div>
-<!--        <div th:text="${msg.receiver.getId()} "></div>-->
-<!--        <div th:text="${msg.receiver.getFirstName() +' '+ msg.receiver.getLastName()} "></div>-->
+        <!--        <div th:text="${msg.receiver.getId()} "></div>-->
+        <!--        <div th:text="${msg.receiver.getFirstName() +' '+ msg.receiver.getLastName()} "></div>-->
         <div th:text="${msg.date}" style="color: #4A6782; font-size: 10px;"></div>
     </div>
     <br>
@@ -170,18 +171,18 @@
 
 <br><br>
 
-        <form class="form-row1" th:action="@{/message/send}" method="post" >
-<!--            <label for="sender">Sender: </label>-->
-            <input hidden="hidden" type="text" id="sender" name="sender" th:value="${id}" readonly required><br>
+<form class="form-row1" th:action="@{/message/send}" method="post" >
+    <!--            <label for="sender">Sender: </label>-->
+    <input hidden="hidden" type="text" id="sender" name="sender" th:value="${id}" readonly required><br>
 
-<!--            <label for="receiver">Receiver: </label>-->
-            <input hidden="hidden" type="text" id="receiver" name="receiver" th:value="${corespondentId}" readonly required><br>
+    <!--            <label for="receiver">Receiver: </label>-->
+    <input hidden="hidden" type="text" id="receiver" name="receiver" th:value="${corespondentId}" readonly required><br>
 
-<!--            <label for="msg">Message:</label>-->
-            <input type="text" id="msg" name="msg" required><br>
+    <!--            <label for="msg">Message:</label>-->
+    <input type="text" id="msg" name="msg" required><br>
 
-            <input type="submit" value="Send">
-        </form>
+    <input type="submit" value="Send">
+</form>
 
 
 

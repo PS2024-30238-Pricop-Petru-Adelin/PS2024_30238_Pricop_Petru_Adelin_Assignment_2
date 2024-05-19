@@ -32,26 +32,6 @@ import java.util.List;
 public class MessageController {
     private final MessageService messageService;
 
-//    /**
-//     * Retrieve all announcements that are sent by the user with specified id.
-//     * @param id The ID of the user.
-//     * @return ModelAndView "/favourite/get/{id}".
-//     */
-//    @GetMapping("/sent/{id}")
-//    public ModelAndView getSentMessages(@PathVariable("id") String id){
-//        List<Message> messages = messageService.findSent(id);
-//        ModelAndView mav = new ModelAndView("redirect:/announcement/getMine/" + id);
-//        mav.addObject("msgs", messages);
-//        return mav;
-//    }
-//
-//    @GetMapping("/received/{id}")
-//    public ModelAndView getReceivedMessages(@PathVariable("id") String id){
-//        List<Message> messages = messageService.findReceived(id);
-//        ModelAndView mav = new ModelAndView("redirect:/announcement/getMine/" + id);
-//        mav.addObject("msgs", messages);
-//        return mav;
-
     /**
      * Send a message from sender to receiver.
      * @param messageWebDTO The message DTO containing the sender, the receiver and the actual message.

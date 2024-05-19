@@ -1,6 +1,7 @@
 package com.olxapplication.dtos;
 
 import com.olxapplication.entity.Announcement;
+import com.olxapplication.entity.Favourite;
 import com.olxapplication.entity.Message;
 import lombok.*;
 
@@ -25,4 +26,5 @@ public class UserDTO {
     private List<Announcement> announces;
     private List<Message> sentMessages;
     private List<Message> receivedMessages;
+    private Favourite favouriteList;
 }

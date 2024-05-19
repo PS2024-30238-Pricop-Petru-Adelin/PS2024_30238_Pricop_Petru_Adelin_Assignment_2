@@ -40,15 +40,6 @@ public class FavouriteService {
         return ((int) (total * 100)) / 100.0;
     }
 
-//    public Favourite findById(String id) {
-//        Optional<Favourite> favourite = favouriteRepository.findById(id);
-//        if(favourite.isEmpty()) {
-//            LOGGER.debug(FavouriteMessages.FAVOURITE_NOT_FOUND + id);
-//            throw new ResourceNotFoundException(FavouriteMessages.FAVOURITE_NOT_FOUND + id);
-//        }
-//        return favourite.get();
-//    }
-
     /**
      * Finds the favourite list of a user with the specified id.
      *

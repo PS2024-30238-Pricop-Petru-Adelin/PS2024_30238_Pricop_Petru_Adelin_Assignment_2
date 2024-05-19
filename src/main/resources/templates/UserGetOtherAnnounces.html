@@ -230,15 +230,15 @@
 
 </form>
 
-<div class="form-row" style="width: 70%; gap: 1%; margin-left: 11%; text-align: center;">
-    <h2 style="color: white; margin-bottom: 20px;">Sort by price:</h2>
+<div class="form-row" style="width: 14%; margin-left: 11%; text-align: center;">
+    <label style="color: #a5defb; margin-bottom: 20px; font-size: 18px;">Sort by price:</label>
 
-    <form th:action="@{/announcement/getOthers/0/} + ${id}" method="get" style="display: inline-block; margin-right: 10px;">
-        <input type="submit" value="&uarr;" style="width: 50px; height: 30px; font-size: 20px; color: white; background-color: #4CAF50; border: none; cursor: pointer;" />
+    <form th:action="@{/announcement/getOthers/0/} + ${id}" method="get" style="flex:0; display: inline-block; margin-right: 2px;">
+        <input type="submit" value="&uarr;" style="width: auto; height: auto; font-size: 25px; color: #002e32; background-color: #22dcd3; border: none; cursor: pointer;" />
     </form>
 
-    <form th:action="@{/announcement/getOthers/1/} + ${id}" method="get" style="display: inline-block;">
-        <input type="submit" value="&darr;" style="width: 50px; height: 30px; font-size: 20px; color: white; background-color: #f44336; border: none; cursor: pointer;" />
+    <form th:action="@{/announcement/getOthers/1/} + ${id}" method="get" style="flex:0; display: inline-block;">
+        <input type="submit" value="&darr;" style="width: auto; height: auto; font-size: 25px; color: #002e32; background-color: #22dcd3; border: none; cursor: pointer;" />
     </form>
 </div>
 
@@ -291,16 +291,6 @@
 <script>
 
     var k = localStorage.getItem('k') ? parseInt(localStorage.getItem('k')) : 1;
-    var sortedList = k>0 ? [[${announces}]] : [[${reversed}]]
-    function setAscending() {
-        k = 1;
-        localStorage.setItem('k', k); // Store 'k' in localStorage
-    }
-
-    function setDescending() {
-        k = -1;
-        localStorage.setItem('k', k); // Store 'k' in localStorage
-    }
     console.log("k= ", k);
 
     var modal = document.getElementsByClassName("modalMsg");

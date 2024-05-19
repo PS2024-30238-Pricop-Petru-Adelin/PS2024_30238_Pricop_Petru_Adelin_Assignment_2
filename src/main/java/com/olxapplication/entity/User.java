@@ -73,4 +73,7 @@ public class User {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "favourite_id")
     private Favourite favouriteList;
+
+
+
 }
