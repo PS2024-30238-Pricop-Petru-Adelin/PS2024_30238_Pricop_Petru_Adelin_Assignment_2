@@ -166,6 +166,7 @@
         var urlToCompare5 = 'http://localhost:8080/announcement/getMine/' + id + '?';
         var urlPattern1 = new RegExp('^http:\\/\\/localhost:8080\\/announcement\\/getOthers\\/' + id + '\\?categoryName=[^\\/]*$');
 
+        var urlPattern2 = new RegExp('^http:\\/\\/localhost:8080\\/announcement\\/getOthers\\/' + id + ';jsessionid=[^\\/]*$');
         var urlToCompare10 = 'http://localhost:8080/announcement/getOthers/0/' + id + '?';
         var urlToCompare11 = 'http://localhost:8080/announcement/getOthers/1/' + id + '?';
         var urlToCompare12 = 'http://localhost:8080/announcement/getOthers/0/' + id;
@@ -178,7 +179,7 @@
         if(previousUrl !== urlToCompare1 && previousUrl !== urlToCompare2
             && previousUrl !== urlToCompare3 && previousUrl !== urlToCompare4
             && previousUrl !== urlToCompare5 && previousUrl !== urlToCompare6
-            && !urlPattern1.test(previousUrl)
+            && !urlPattern1.test(previousUrl) && !urlPattern2.test(previousUrl)
 
             && previousUrl !== urlToCompare10 && previousUrl !== urlToCompare11
             && previousUrl !== urlToCompare12 && previousUrl !== urlToCompare13) {
